@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://Liangxi2001.github.io</id>
     <title>凉汐博客</title>
-    <updated>2022-02-05T09:11:09.485Z</updated>
+    <updated>2022-02-08T13:05:48.004Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://Liangxi2001.github.io"/>
     <link rel="self" href="https://Liangxi2001.github.io/atom.xml"/>
@@ -10,6 +10,107 @@
     <logo>https://Liangxi2001.github.io/images/avatar.png</logo>
     <icon>https://Liangxi2001.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, 凉汐博客</rights>
+    <entry>
+        <title type="html"><![CDATA[Spring与Mybatis的整合]]></title>
+        <id>https://Liangxi2001.github.io/post/spring-yu-mybatis-de-zheng-he/</id>
+        <link href="https://Liangxi2001.github.io/post/spring-yu-mybatis-de-zheng-he/">
+        </link>
+        <updated>2022-02-08T13:04:28.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="方式一"><em><strong>方式一</strong></em></h1>
+<h2 id="1编写数据源配置">1.编写数据源配置</h2>
+<pre><code class="language-xml">&lt;!--    DataSource:使用spring的数据源替换mybatis的配置，这里用spring提供的JDBC--&gt;
+    &lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt;
+        &lt;property name=&quot;driverClassName&quot; value=&quot;com.mysql.jdbc.Driver&quot;/&gt;
+        &lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/studymybatis?useSSL=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=UTF8&quot;/&gt;
+        &lt;property name=&quot;username&quot; value=&quot;root&quot;/&gt;
+        &lt;property name=&quot;password&quot; value=&quot;Liangxi1125&quot;/&gt;
+    &lt;/bean&gt;
+</code></pre>
+<h2 id="2sqlsessionfactory">2.sqlSessionFactory</h2>
+<pre><code class="language-xml">&lt;!--    sqlSessionFactory--&gt;
+
+    &lt;bean id=&quot;sqlSessionFactory&quot; class=&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;&gt;
+        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
+&lt;!--        绑定mybatis配置文件--&gt;
+        &lt;property name=&quot;configLocation&quot; value=&quot;classpath:mybatis-config.xml&quot;/&gt;
+        &lt;property name=&quot;mapperLocations&quot; value=&quot;classpath:com/study/dao/*.xml&quot;/&gt;
+
+    &lt;/bean&gt;
+</code></pre>
+<h2 id="3sqlsessiontemplate">3.sqlSessionTemplate</h2>
+<pre><code class="language-xml">&lt;!--    SqlSessionTemplate:就是在mybatis中使用的SqlSession--&gt;
+    &lt;bean id=&quot;sqlSession&quot; class=&quot;org.mybatis.spring.SqlSessionTemplate&quot;&gt;
+&lt;!--        只有构造方法，只能使用构造器注入sqlSessionFactory，没有set（）方法--&gt;
+        &lt;constructor-arg index=&quot;0&quot; ref=&quot;sqlSessionFactory&quot;/&gt;
+    &lt;/bean&gt;
+</code></pre>
+<h2 id="4需要给接口加实现类">4.需要给接口加实现类</h2>
+<pre><code class="language-java">public interface UserMapper {
+    List&lt;User&gt; selectUsers();
+}
+</code></pre>
+<p><em>方法仍在mapper.xml中实现</em></p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE mapper
+        PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+        &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;!--namespace用于绑定一个对应的DAO/Mapper接口--&gt;
+&lt;mapper namespace=&quot;com.study.dao.UserMapper&quot;&gt;
+    &lt;select id=&quot;selectUsers&quot; resultType=&quot;user&quot;&gt;
+        select * from user;
+    &lt;/select&gt;
+&lt;/mapper&gt;
+</code></pre>
+<p><em>实现类</em></p>
+<pre><code class="language-java">public class UserMapperImpl implements UserMapper{
+    private SqlSessionTemplate sqlSession;
+
+    public void setSqlSession(SqlSessionTemplate sqlSession) {
+        this.sqlSession = sqlSession;
+    }
+
+    @Override
+    public List&lt;User&gt; selectUsers() {
+        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+        return mapper.selectUsers();
+    }
+}
+</code></pre>
+<h2 id="5将实现类注册到spring中">5.将实现类注册到Spring中</h2>
+<pre><code class="language-xml">    &lt;bean id=&quot;userMapper&quot; class=&quot;com.study.dao.UserMapperImpl&quot;&gt;
+        &lt;property name=&quot;sqlSession&quot; ref=&quot;sqlSession&quot;/&gt;
+    &lt;/bean&gt;
+</code></pre>
+<h2 id="6测试">6.测试</h2>
+<p><em>测试代码</em></p>
+<pre><code class="language-java">    @Test
+    public void selectUsersTest(){
+/*
+        String resources=&quot;mybatis-config.xml&quot;;
+        SqlSession sqlSession = null;
+        try{
+            InputStream in = Resources.getResourceAsStream(resources);
+            SqlSessionFactory build = new SqlSessionFactoryBuilder().build(in);
+            sqlSession = build.openSession(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        assert sqlSession != null;
+        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+        List&lt;User&gt; users = mapper.selectUsers();
+        for (User user : users) {
+            System.out.println(user);
+        }
+*/
+        ApplicationContext context = new ClassPathXmlApplicationContext(&quot;applicationContext.xml&quot;);
+        UserMapper userMapper = context.getBean(&quot;userMapper&quot;, UserMapper.class);
+        for (User user : userMapper.selectUsers()) {
+            System.out.println(user);
+        }
+    }
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[天音：心安即吾乡]]></title>
         <id>https://Liangxi2001.github.io/post/tian-yin-xin-an-ji-wu-xiang/</id>

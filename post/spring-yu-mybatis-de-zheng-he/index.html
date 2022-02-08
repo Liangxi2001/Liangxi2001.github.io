@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Spring与Mybatis的整合 | 凉汐博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Liangxi2001.github.io/favicon.ico?v=1644325543959">
+<link rel="stylesheet" href="https://Liangxi2001.github.io/styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="方式一
+1.编写数据源配置
+&lt;!--    DataSource:使用spring的数据源替换mybatis的配置，这里用spring提供的JDBC--&gt;
+    &lt;bean id=&quot;dataSource&quo..." />
+    <meta name="keywords" content="SSM框架" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Liangxi2001.github.io">
+        <img src="https://Liangxi2001.github.io/images/avatar.png?v=1644325543959" class="site-logo">
+        <h1 class="site-title">凉汐博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      但行好事  莫问前程
+    </div>
+    <div class="site-footer">
+      Powered by  <a href="https://github.com/Liangxi2001/Liangxi2001.github.io" target="_blank">凉汐</a> | <a class="rss" href="https://Liangxi2001.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Spring与Mybatis的整合</h2>
+            <div class="post-date">2022-02-08</div>
+            
+            <div class="post-content" v-pre>
+              <h1 id="方式一"><em><strong>方式一</strong></em></h1>
+<h2 id="1编写数据源配置">1.编写数据源配置</h2>
+<pre><code class="language-xml">&lt;!--    DataSource:使用spring的数据源替换mybatis的配置，这里用spring提供的JDBC--&gt;
+    &lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt;
+        &lt;property name=&quot;driverClassName&quot; value=&quot;com.mysql.jdbc.Driver&quot;/&gt;
+        &lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/studymybatis?useSSL=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=UTF8&quot;/&gt;
+        &lt;property name=&quot;username&quot; value=&quot;root&quot;/&gt;
+        &lt;property name=&quot;password&quot; value=&quot;Liangxi1125&quot;/&gt;
+    &lt;/bean&gt;
+</code></pre>
+<h2 id="2sqlsessionfactory">2.sqlSessionFactory</h2>
+<pre><code class="language-xml">&lt;!--    sqlSessionFactory--&gt;
+
+    &lt;bean id=&quot;sqlSessionFactory&quot; class=&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;&gt;
+        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
+&lt;!--        绑定mybatis配置文件--&gt;
+        &lt;property name=&quot;configLocation&quot; value=&quot;classpath:mybatis-config.xml&quot;/&gt;
+        &lt;property name=&quot;mapperLocations&quot; value=&quot;classpath:com/study/dao/*.xml&quot;/&gt;
+
+    &lt;/bean&gt;
+</code></pre>
+<h2 id="3sqlsessiontemplate">3.sqlSessionTemplate</h2>
+<pre><code class="language-xml">&lt;!--    SqlSessionTemplate:就是在mybatis中使用的SqlSession--&gt;
+    &lt;bean id=&quot;sqlSession&quot; class=&quot;org.mybatis.spring.SqlSessionTemplate&quot;&gt;
+&lt;!--        只有构造方法，只能使用构造器注入sqlSessionFactory，没有set（）方法--&gt;
+        &lt;constructor-arg index=&quot;0&quot; ref=&quot;sqlSessionFactory&quot;/&gt;
+    &lt;/bean&gt;
+</code></pre>
+<h2 id="4需要给接口加实现类">4.需要给接口加实现类</h2>
+<pre><code class="language-java">public interface UserMapper {
+    List&lt;User&gt; selectUsers();
+}
+</code></pre>
+<p><em>方法仍在mapper.xml中实现</em></p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE mapper
+        PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+        &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;!--namespace用于绑定一个对应的DAO/Mapper接口--&gt;
+&lt;mapper namespace=&quot;com.study.dao.UserMapper&quot;&gt;
+    &lt;select id=&quot;selectUsers&quot; resultType=&quot;user&quot;&gt;
+        select * from user;
+    &lt;/select&gt;
+&lt;/mapper&gt;
+</code></pre>
+<p><em>实现类</em></p>
+<pre><code class="language-java">public class UserMapperImpl implements UserMapper{
+    private SqlSessionTemplate sqlSession;
+
+    public void setSqlSession(SqlSessionTemplate sqlSession) {
+        this.sqlSession = sqlSession;
+    }
+
+    @Override
+    public List&lt;User&gt; selectUsers() {
+        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+        return mapper.selectUsers();
+    }
+}
+</code></pre>
+<h2 id="5将实现类注册到spring中">5.将实现类注册到Spring中</h2>
+<pre><code class="language-xml">    &lt;bean id=&quot;userMapper&quot; class=&quot;com.study.dao.UserMapperImpl&quot;&gt;
+        &lt;property name=&quot;sqlSession&quot; ref=&quot;sqlSession&quot;/&gt;
+    &lt;/bean&gt;
+</code></pre>
+<h2 id="6测试">6.测试</h2>
+<p><em>测试代码</em></p>
+<pre><code class="language-java">    @Test
+    public void selectUsersTest(){
+/*
+        String resources=&quot;mybatis-config.xml&quot;;
+        SqlSession sqlSession = null;
+        try{
+            InputStream in = Resources.getResourceAsStream(resources);
+            SqlSessionFactory build = new SqlSessionFactoryBuilder().build(in);
+            sqlSession = build.openSession(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        assert sqlSession != null;
+        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+        List&lt;User&gt; users = mapper.selectUsers();
+        for (User user : users) {
+            System.out.println(user);
+        }
+*/
+        ApplicationContext context = new ClassPathXmlApplicationContext(&quot;applicationContext.xml&quot;);
+        UserMapper userMapper = context.getBean(&quot;userMapper&quot;, UserMapper.class);
+        for (User user : userMapper.selectUsers()) {
+            System.out.println(user);
+        }
+    }
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://Liangxi2001.github.io/tag/ssm-kuang-jia/" class="tag">
+                    SSM框架
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Liangxi2001.github.io/post/tian-yin-xin-an-ji-wu-xiang/">
+                  <h3 class="post-title">
+                    天音：心安即吾乡
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: '80e65e0628ad6f63ce37',
+        clientSecret: '2b9e05bec061b03c2143359c32c3b5d4f4e45df6',
+        repo: 'Liangxi2001.github.io',
+        owner: 'Liangxi2001',
+        admin: ['Liangxi2001'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>
