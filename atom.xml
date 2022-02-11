@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://Liangxi2001.github.io</id>
     <title>凉汐博客</title>
-    <updated>2022-02-11T03:51:10.985Z</updated>
+    <updated>2022-02-11T04:48:00.397Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://Liangxi2001.github.io"/>
     <link rel="self" href="https://Liangxi2001.github.io/atom.xml"/>
@@ -22,6 +22,96 @@
 <li>编程式事务：需要修改源代码</li>
 </ul>
 <h2 id="声明式事务">声明式事务</h2>
+<h3 id="1在xml文件中注入datasourcetransactionmanager">1.在xml文件中注入DataSourceTransactionManager</h3>
+<pre><code class="language-xml">&lt;!--    配置声明式事务--&gt;
+    &lt;bean id=&quot;transactionManager&quot; class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
+        &lt;constructor-arg ref=&quot;dataSource&quot; /&gt;
+    &lt;/bean&gt;
+</code></pre>
+<h3 id="2aop织入与事务配">2.AOP织入与事务配</h3>
+<ol>
+<li>绑定命名空间</li>
+</ol>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+       xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;
+       xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd&quot;&gt;
+</code></pre>
+<ol start="2">
+<li>织入AOP并配置事务</li>
+</ol>
+<pre><code class="language-xml">&lt;!--    结合AOP实现事务的织入--&gt;
+&lt;!--    配置事务通知--&gt;
+    &lt;tx:advice id=&quot;txAdvice&quot; transaction-manager=&quot;transactionManager&quot;&gt;
+&lt;!--        给方法配置事务--&gt;
+&lt;!--        配置事务的传播特性:propagation--&gt;
+        &lt;tx:attributes&gt;
+            &lt;tx:method name=&quot;add&quot; propagation=&quot;REQUIRED&quot;/&gt;
+            &lt;tx:method name=&quot;delete&quot; propagation=&quot;REQUIRED&quot;/&gt;
+            &lt;tx:method name=&quot;update&quot; propagation=&quot;REQUIRED&quot;/&gt;
+            &lt;tx:method name=&quot;query&quot; read-only=&quot;true&quot;/&gt;
+&lt;!--            实际应用只需要这一条--&gt;
+            &lt;tx:method name=&quot;*&quot; propagation=&quot;REQUIRED&quot;/&gt;
+        &lt;/tx:attributes&gt;
+    &lt;/tx:advice&gt;
+</code></pre>
+<ol start="3">
+<li>配置事务切入</li>
+</ol>
+<pre><code class="language-xml">&lt;!--    配置事务切入--&gt;
+    &lt;aop:config&gt;
+        &lt;aop:pointcut id=&quot;txPointCut&quot; expression=&quot;execution(* com.study.dao.*.*(..))&quot;/&gt;
+        &lt;aop:advisor advice-ref=&quot;txAdvice&quot; pointcut-ref=&quot;txPointCut&quot;/&gt;
+    &lt;/aop:config&gt;
+</code></pre>
+<h3 id="3测试">3.测试</h3>
+<p><em>实现类</em></p>
+<pre><code class="language-java">/**
+ * @author 此间凉汐
+ * @date 2022/2/11 10:41
+ */
+public class UserMapperImpl extends SqlSessionDaoSupport implements UserMapper{
+    @Override
+    public List&lt;User&gt; selectUser() {
+        User user = new User(4, &quot;test&quot;, &quot;123123&quot;);
+        UserMapper mapper = getSqlSession().getMapper(UserMapper.class);
+
+        mapper.addUser(user);
+        mapper.deleteUser(3);
+
+        return mapper.selectUser();
+    }
+
+    @Override
+    public int addUser(User user) {
+        return getSqlSession().getMapper(UserMapper.class).addUser(user);
+    }
+
+    @Override
+    public int deleteUser(int id) {
+        return getSqlSession().getMapper(UserMapper.class).deleteUser(id);
+    }
+}
+</code></pre>
+<p><em>测试方法</em></p>
+<pre><code class="language-java">    public static void main(String[] args) {
+        ApplicationContext context = new ClassPathXmlApplicationContext(&quot;applicationContext.xml&quot;);
+        UserMapper mapper = context.getBean(&quot;userMapper&quot;, UserMapper.class);
+        for (User user : mapper.selectUser()) {
+            System.out.println(user);
+        }
+    }
+</code></pre>
 <h2 id="编程式事务">编程式事务</h2>
 <pre><code class="language-java">public class UserService {
   private final PlatformTransactionManager transactionManager;
@@ -160,7 +250,7 @@
     }
 
 
-# ***方式二***
+#  ***方式二***
 ## 1.编写一个实现相应接口并继承SqlSessionDaoSupport的实现类
 *实现类*
 
