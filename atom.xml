@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://Liangxi2001.github.io</id>
     <title>凉汐博客</title>
-    <updated>2022-02-11T02:26:55.435Z</updated>
+    <updated>2022-02-11T03:51:10.985Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://Liangxi2001.github.io"/>
     <link rel="self" href="https://Liangxi2001.github.io/atom.xml"/>
@@ -10,6 +10,56 @@
     <logo>https://Liangxi2001.github.io/images/avatar.png</logo>
     <icon>https://Liangxi2001.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, 凉汐博客</rights>
+    <entry>
+        <title type="html"><![CDATA[Spring事务管理]]></title>
+        <id>https://Liangxi2001.github.io/post/spring-shi-wu-guan-li/</id>
+        <link href="https://Liangxi2001.github.io/post/spring-shi-wu-guan-li/">
+        </link>
+        <updated>2022-02-11T03:43:14.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="事务">事务：</h1>
+<ul>
+<li>声明式事务：基于AOP</li>
+<li>编程式事务：需要修改源代码</li>
+</ul>
+<h2 id="声明式事务">声明式事务</h2>
+<h2 id="编程式事务">编程式事务</h2>
+<pre><code class="language-java">public class UserService {
+  private final PlatformTransactionManager transactionManager;
+  public UserService(PlatformTransactionManager transactionManager) {
+    this.transactionManager = transactionManager;
+  }
+  public void createUser() {
+    TransactionStatus txStatus =
+        transactionManager.getTransaction(new DefaultTransactionDefinition());
+    try {
+      userMapper.insertUser(user);
+    } catch (Exception e) {
+      transactionManager.rollback(txStatus);
+      throw e;
+    }
+    transactionManager.commit(txStatus);
+  }
+}
+</code></pre>
+<blockquote>
+<p>在使用 TransactionTemplate 的时候，可以省略对 commit 和 rollback 方法的调用。</p>
+</blockquote>
+<pre><code class="language-java">public class UserService {
+  private final PlatformTransactionManager transactionManager;
+  public UserService(PlatformTransactionManager transactionManager) {
+    this.transactionManager = transactionManager;
+  }
+  public void createUser() {
+    TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+    transactionTemplate.execute(txStatus -&gt; {
+      userMapper.insertUser(user);
+      return null;
+    });
+  }
+}
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Spring与Mybatis的整合]]></title>
         <id>https://Liangxi2001.github.io/post/spring-yu-mybatis-de-zheng-he/</id>
