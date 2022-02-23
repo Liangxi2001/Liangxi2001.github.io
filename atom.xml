@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://Liangxi2001.github.io</id>
     <title>凉汐博客</title>
-    <updated>2022-02-23T08:49:17.808Z</updated>
+    <updated>2022-02-23T09:09:02.385Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://Liangxi2001.github.io"/>
     <link rel="self" href="https://Liangxi2001.github.io/atom.xml"/>
@@ -159,8 +159,6 @@
 <p><em><strong>注意：在整合时,因为使用了mapper,service以及controller层的bean,所以应该绑定一个总的文件,一个囊括了所有bean的文件，可用import进行导入</strong></em></p>
 <h2 id="3编写配置文件">3.编写配置文件</h2>
 <h3 id="31-mybatis核心配置文件">3.1 Mybatis核心配置文件</h3>
-<p><em><strong>依赖关系：</strong></em><br>
-<img src="https://raw.githubusercontent.com/Liangxi2001/Pictures/main/Blogimg/QQ%E6%88%AA%E5%9B%BE20220223160334.png" alt="QQ截图20220223160334" loading="lazy"></p>
 <p><em>mybatis-config.xml：</em></p>
 <pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
 &lt;!DOCTYPE configuration
