@@ -1,22 +1,109 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://Liangxi2001.github.io</id>
-    <title>凉汐博客</title>
-    <updated>2022-02-23T08:47:02.778Z</updated>
-    <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://Liangxi2001.github.io"/>
-    <link rel="self" href="https://Liangxi2001.github.io/atom.xml"/>
-    <subtitle>但行好事  莫问前程</subtitle>
-    <logo>https://Liangxi2001.github.io/images/avatar.png</logo>
-    <icon>https://Liangxi2001.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2022, 凉汐博客</rights>
-    <entry>
-        <title type="html"><![CDATA[SSM框架整合]]></title>
-        <id>https://Liangxi2001.github.io/post/ssm-kuang-jia-zheng-he/</id>
-        <link href="https://Liangxi2001.github.io/post/ssm-kuang-jia-zheng-he/">
-        </link>
-        <updated>2022-02-23T08:34:44.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="ssm框架整合">SSM框架整合</h1>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>SSM框架整合 | 凉汐博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Liangxi2001.github.io/favicon.ico?v=1645606019575">
+<link rel="stylesheet" href="https://Liangxi2001.github.io/styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="SSM框架整合
+1.导入相关jar包
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Liangxi2001.github.io">
+        <img src="https://Liangxi2001.github.io/images/avatar.png?v=1645606019575" class="site-logo">
+        <h1 class="site-title">凉汐博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      但行好事  莫问前程
+    </div>
+    <div class="site-footer">
+      Powered by  <a href="https://github.com/Liangxi2001/Liangxi2001.github.io" target="_blank">凉汐</a> | <a class="rss" href="https://Liangxi2001.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">SSM框架整合</h2>
+            <div class="post-date">2022-02-23</div>
+            
+            <div class="post-content" v-pre>
+              <h1 id="ssm框架整合">SSM框架整合</h1>
 <h2 id="1导入相关jar包">1.导入相关jar包</h2>
 <pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
@@ -565,276 +652,80 @@ public class BookController {
 </code></pre>
 </li>
 </ol>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Spring事务管理]]></title>
-        <id>https://Liangxi2001.github.io/post/spring-shi-wu-guan-li/</id>
-        <link href="https://Liangxi2001.github.io/post/spring-shi-wu-guan-li/">
-        </link>
-        <updated>2022-02-11T03:43:14.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="事务">事务：</h1>
-<ul>
-<li>声明式事务：基于AOP</li>
-<li>编程式事务：需要修改源代码</li>
-</ul>
-<h2 id="声明式事务">声明式事务</h2>
-<h3 id="1在xml文件中注入datasourcetransactionmanager">1.在xml文件中注入DataSourceTransactionManager</h3>
-<pre><code class="language-xml">&lt;!--    配置声明式事务--&gt;
-    &lt;bean id=&quot;transactionManager&quot; class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
-        &lt;constructor-arg ref=&quot;dataSource&quot; /&gt;
-    &lt;/bean&gt;
-</code></pre>
-<h3 id="2aop织入与事务配">2.AOP织入与事务配</h3>
-<ol>
-<li>绑定命名空间</li>
-</ol>
-<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
-       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
-       xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;
-       xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot;
-       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context.xsd
-        http://www.springframework.org/schema/tx
-        http://www.springframework.org/schema/tx/spring-tx.xsd
-        http://www.springframework.org/schema/aop
-        http://www.springframework.org/schema/aop/spring-aop.xsd&quot;&gt;
-</code></pre>
-<ol start="2">
-<li>织入AOP并配置事务</li>
-</ol>
-<pre><code class="language-xml">&lt;!--    结合AOP实现事务的织入--&gt;
-&lt;!--    配置事务通知--&gt;
-    &lt;tx:advice id=&quot;txAdvice&quot; transaction-manager=&quot;transactionManager&quot;&gt;
-&lt;!--        给方法配置事务--&gt;
-&lt;!--        配置事务的传播特性:propagation--&gt;
-        &lt;tx:attributes&gt;
-            &lt;tx:method name=&quot;add&quot; propagation=&quot;REQUIRED&quot;/&gt;
-            &lt;tx:method name=&quot;delete&quot; propagation=&quot;REQUIRED&quot;/&gt;
-            &lt;tx:method name=&quot;update&quot; propagation=&quot;REQUIRED&quot;/&gt;
-            &lt;tx:method name=&quot;query&quot; read-only=&quot;true&quot;/&gt;
-&lt;!--            实际应用只需要这一条--&gt;
-            &lt;tx:method name=&quot;*&quot; propagation=&quot;REQUIRED&quot;/&gt;
-        &lt;/tx:attributes&gt;
-    &lt;/tx:advice&gt;
-</code></pre>
-<ol start="3">
-<li>配置事务切入</li>
-</ol>
-<pre><code class="language-xml">&lt;!--    配置事务切入--&gt;
-    &lt;aop:config&gt;
-        &lt;aop:pointcut id=&quot;txPointCut&quot; expression=&quot;execution(* com.study.dao.*.*(..))&quot;/&gt;
-        &lt;aop:advisor advice-ref=&quot;txAdvice&quot; pointcut-ref=&quot;txPointCut&quot;/&gt;
-    &lt;/aop:config&gt;
-</code></pre>
-<h3 id="3测试">3.测试</h3>
-<p><em>实现类</em></p>
-<pre><code class="language-java">/**
- * @author 此间凉汐
- * @date 2022/2/11 10:41
- */
-public class UserMapperImpl extends SqlSessionDaoSupport implements UserMapper{
-    @Override
-    public List&lt;User&gt; selectUser() {
-        User user = new User(4, &quot;test&quot;, &quot;123123&quot;);
-        UserMapper mapper = getSqlSession().getMapper(UserMapper.class);
 
-        mapper.addUser(user);
-        mapper.deleteUser(3);
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Liangxi2001.github.io/post/spring-shi-wu-guan-li/">
+                  <h3 class="post-title">
+                    Spring事务管理
+                  </h3>
+                </a>
+              </div>
+            
 
-        return mapper.selectUser();
-    }
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
 
-    @Override
-    public int addUser(User user) {
-        return getSqlSession().getMapper(UserMapper.class).addUser(user);
-    }
+              
+            
 
-    @Override
-    public int deleteUser(int id) {
-        return getSqlSession().getMapper(UserMapper.class).deleteUser(id);
-    }
-}
-</code></pre>
-<p><em>测试方法</em></p>
-<pre><code class="language-java">    public static void main(String[] args) {
-        ApplicationContext context = new ClassPathXmlApplicationContext(&quot;applicationContext.xml&quot;);
-        UserMapper mapper = context.getBean(&quot;userMapper&quot;, UserMapper.class);
-        for (User user : mapper.selectUser()) {
-            System.out.println(user);
-        }
-    }
-</code></pre>
-<h2 id="编程式事务">编程式事务</h2>
-<pre><code class="language-java">public class UserService {
-  private final PlatformTransactionManager transactionManager;
-  public UserService(PlatformTransactionManager transactionManager) {
-    this.transactionManager = transactionManager;
-  }
-  public void createUser() {
-    TransactionStatus txStatus =
-        transactionManager.getTransaction(new DefaultTransactionDefinition());
-    try {
-      userMapper.insertUser(user);
-    } catch (Exception e) {
-      transactionManager.rollback(txStatus);
-      throw e;
-    }
-    transactionManager.commit(txStatus);
-  }
-}
-</code></pre>
-<blockquote>
-<p>在使用 TransactionTemplate 的时候，可以省略对 commit 和 rollback 方法的调用。</p>
-</blockquote>
-<pre><code class="language-java">public class UserService {
-  private final PlatformTransactionManager transactionManager;
-  public UserService(PlatformTransactionManager transactionManager) {
-    this.transactionManager = transactionManager;
-  }
-  public void createUser() {
-    TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
-    transactionTemplate.execute(txStatus -&gt; {
-      userMapper.insertUser(user);
-      return null;
-    });
-  }
-}
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Spring与Mybatis的整合]]></title>
-        <id>https://Liangxi2001.github.io/post/spring-yu-mybatis-de-zheng-he/</id>
-        <link href="https://Liangxi2001.github.io/post/spring-yu-mybatis-de-zheng-he/">
-        </link>
-        <updated>2022-02-08T13:04:28.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="方式一"><em><strong>方式一</strong></em></h1>
-<h2 id="1编写数据源配置">1.编写数据源配置</h2>
-<pre><code class="language-xml">&lt;!--    DataSource:使用spring的数据源替换mybatis的配置，这里用spring提供的JDBC--&gt;
-    &lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt;
-        &lt;property name=&quot;driverClassName&quot; value=&quot;com.mysql.jdbc.Driver&quot;/&gt;
-        &lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/studymybatis?useSSL=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=UTF8&quot;/&gt;
-        &lt;property name=&quot;username&quot; value=&quot;root&quot;/&gt;
-        &lt;property name=&quot;password&quot; value=&quot;xxxxxx&quot;/&gt;
-    &lt;/bean&gt;
-</code></pre>
-<h2 id="2sqlsessionfactory">2.sqlSessionFactory</h2>
-<pre><code class="language-xml">&lt;!--    sqlSessionFactory--&gt;
+          </div>
 
-    &lt;bean id=&quot;sqlSessionFactory&quot; class=&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;&gt;
-        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
-&lt;!--        绑定mybatis配置文件--&gt;
-        &lt;property name=&quot;configLocation&quot; value=&quot;classpath:mybatis-config.xml&quot;/&gt;
-        &lt;property name=&quot;mapperLocations&quot; value=&quot;classpath:com/study/dao/*.xml&quot;/&gt;
+        </div>
+      </div>
+    </div>
 
-    &lt;/bean&gt;
-</code></pre>
-<h2 id="3sqlsessiontemplate">3.sqlSessionTemplate</h2>
-<pre><code class="language-xml">&lt;!--    SqlSessionTemplate:就是在mybatis中使用的SqlSession--&gt;
-    &lt;bean id=&quot;sqlSession&quot; class=&quot;org.mybatis.spring.SqlSessionTemplate&quot;&gt;
-&lt;!--        只有构造方法，只能使用构造器注入sqlSessionFactory，没有set（）方法--&gt;
-        &lt;constructor-arg index=&quot;0&quot; ref=&quot;sqlSessionFactory&quot;/&gt;
-    &lt;/bean&gt;
-</code></pre>
-<h2 id="4需要给接口加实现类">4.需要给接口加实现类</h2>
-<pre><code class="language-java">public interface UserMapper {
-    List&lt;User&gt; selectUsers();
-}
-</code></pre>
-<p><em>方法仍在mapper.xml中实现</em></p>
-<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
-&lt;!DOCTYPE mapper
-        PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
-        &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
-&lt;!--namespace用于绑定一个对应的DAO/Mapper接口--&gt;
-&lt;mapper namespace=&quot;com.study.dao.UserMapper&quot;&gt;
-    &lt;select id=&quot;selectUsers&quot; resultType=&quot;user&quot;&gt;
-        select * from user;
-    &lt;/select&gt;
-&lt;/mapper&gt;
-</code></pre>
-<p><em>实现类</em></p>
-<pre><code class="language-java">public class UserMapperImpl implements UserMapper{
-    private SqlSessionTemplate sqlSession;
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
 
-    public void setSqlSession(SqlSessionTemplate sqlSession) {
-        this.sqlSession = sqlSession;
-    }
+AOS.init();
 
-    @Override
-    public List&lt;User&gt; selectUsers() {
-        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
-        return mapper.selectUsers();
-    }
-}
-</code></pre>
-<h2 id="5将实现类注册到spring中">5.将实现类注册到Spring中</h2>
-<pre><code class="language-xml">    &lt;bean id=&quot;userMapper&quot; class=&quot;com.study.dao.UserMapperImpl&quot;&gt;
-        &lt;property name=&quot;sqlSession&quot; ref=&quot;sqlSession&quot;/&gt;
-    &lt;/bean&gt;
-</code></pre>
-<h2 id="6测试">6.测试</h2>
-<p><em>Mybatis的方式</em></p>
-<pre><code class="language-java">public void selectUsersTest(){
-        String resources=&quot;mybatis-config.xml&quot;;
-        SqlSession sqlSession = null;
-        try{
-            InputStream in = Resources.getResourceAsStream(resources);
-            SqlSessionFactory build = new SqlSessionFactoryBuilder().build(in);
-            sqlSession = build.openSession(true);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        assert sqlSession != null;
-        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
-        List&lt;User&gt; users = mapper.selectUsers();
-        for (User user : users) {
-            System.out.println(user);
-        }
-}
-</code></pre>
-<p><em>测试代码</em></p>
-<pre><code class="language-java">    @Test
-public void selectUsersTest(){
-        ApplicationContext context = new ClassPathXmlApplicationContext(&quot;applicationContext.xml&quot;);
-        UserMapper userMapper = context.getBean(&quot;userMapper&quot;, UserMapper.class);
-        for (User user : userMapper.selectUsers()) {
-        System.out.println(user);
-        }
-}
-</code></pre>
-<h1 id="方式二"><em><strong>方式二</strong></em></h1>
-<h2 id="1编写一个实现相应接口并继承sqlsessiondaosupport的实现类">1.编写一个实现相应接口并继承SqlSessionDaoSupport的实现类</h2>
-<p><em>实现类</em></p>
-<pre><code class="language-java">public class UserMapperImpl2 extends SqlSessionDaoSupport implements UserMapper{
-    @Override
-    public List&lt;User&gt; selectUsers() {
-        return getSqlSession().getMapper(UserMapper.class).selectUsers();
-    }
-}
-</code></pre>
-<h2 id="2将该类注入spring容器">2.将该类注入Spring容器</h2>
-<p><em>注意：SqlSessionDaoSupport 需要通过属性设置一个 sqlSessionFactory</em></p>
-<pre><code class="language-xml">    &lt;bean id=&quot;userMapper2&quot; class=&quot;com.study.dao.UserMapperImpl2&quot;&gt;
-        &lt;property name=&quot;sqlSessionFactory&quot; ref=&quot;sqlSessionFactory&quot;/&gt;
-    &lt;/bean&gt;
-</code></pre>
-<h2 id="3测试">3.测试</h2>
-<p><em>测试方法</em></p>
-<pre><code class="language-java">    @Test
-    public void selectUsersTest2(){
-        ApplicationContext context = new ClassPathXmlApplicationContext(&quot;applicationContext.xml&quot;);
-        UserMapper userMapper = context.getBean(&quot;userMapper2&quot;, UserMapper.class);
-        for (User user : userMapper.selectUsers()) {
-            System.out.println(user);
-        }
-    }
-</code></pre>
-]]></content>
-    </entry>
-</feed>
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: '80e65e0628ad6f63ce37',
+        clientSecret: '2b9e05bec061b03c2143359c32c3b5d4f4e45df6',
+        repo: 'Liangxi2001.github.io',
+        owner: 'Liangxi2001',
+        admin: ['Liangxi2001'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>
