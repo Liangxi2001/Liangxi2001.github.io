@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://Liangxi2001.github.io</id>
     <title>凉汐博客</title>
-    <updated>2022-02-23T08:48:00.515Z</updated>
+    <updated>2022-02-23T08:49:17.808Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://Liangxi2001.github.io"/>
     <link rel="self" href="https://Liangxi2001.github.io/atom.xml"/>
@@ -16,8 +16,7 @@
         <link href="https://Liangxi2001.github.io/post/ssm-kuang-jia-zheng-he/">
         </link>
         <updated>2022-02-23T08:34:44.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="ssm框架整合">SSM框架整合</h1>
-<h2 id="1导入相关jar包">1.导入相关jar包</h2>
+        <content type="html"><![CDATA[<h2 id="1导入相关jar包">1.导入相关jar包</h2>
 <pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
          xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
