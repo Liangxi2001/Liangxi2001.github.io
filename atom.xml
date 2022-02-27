@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://Liangxi2001.github.io</id>
     <title>凉汐博客</title>
-    <updated>2022-02-27T02:03:15.379Z</updated>
+    <updated>2022-02-27T08:30:27.928Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://Liangxi2001.github.io"/>
     <link rel="self" href="https://Liangxi2001.github.io/atom.xml"/>
@@ -10,6 +10,202 @@
     <logo>https://Liangxi2001.github.io/images/avatar.png</logo>
     <icon>https://Liangxi2001.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, 凉汐博客</rights>
+    <entry>
+        <title type="html"><![CDATA[SpringBoot2基础入门]]></title>
+        <id>https://Liangxi2001.github.io/post/springboot2-ji-chu-ru-men/</id>
+        <link href="https://Liangxi2001.github.io/post/springboot2-ji-chu-ru-men/">
+        </link>
+        <updated>2022-02-27T08:22:37.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="1-springboot2基础入门">1. SpringBoot2基础入门</h2>
+<h3 id="11-什么是springboot">1.1 什么是SpringBoot</h3>
+<ul>
+<li>Spring应用需要进行大量的配置，各种xml配置和注解配置让人眼花缭乱，且极容易出错，因此Spring一度被称为“配置地狱”。</li>
+</ul>
+<ul>
+<li>为了简化 Spring 应用的搭建和开发过程，Pivotal 团队在 Spring 基础上提供了一套全新的开源的框架，它就是 Spring Boot。<em><strong>Spring Boot拥有Spring的一切优点与特性，而且使用更加简单，功能更加丰富，性能更见稳定而健壮</strong></em>。</li>
+</ul>
+<ul>
+<li>Spring Boot 提供了大量开箱即用（out-of-the-box）的依赖模块，例如 spring-boot-starter-redis、spring-boot-starter-data-mongodb 和 spring-boot-starter-data-elasticsearch 等。这些依赖模块为 Spring Boot 应用提供了大量的自动配置，使得 Spring Boot 应用只需要非常少量的配置甚至零配置，便可以运行起来，让开发人员从 Spring 的“配置地狱”中解放出来，有更多的精力专注于业务逻辑的开发。</li>
+</ul>
+<h3 id="12-为什么用springboot">1.2 为什么用SpringBoot</h3>
+<blockquote>
+<p>Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can &quot;just run&quot;.</p>
+<p>能快速创建出生产级别的Spring应用.</p>
+</blockquote>
+<h4 id="121-springboot的优点">1.2.1 SpringBoot的优点</h4>
+<ul>
+<li>Create stand-alone Spring applications
+<ul>
+<li>创建独立的Spring应用</li>
+</ul>
+</li>
+<li>Embed Tomcat, Jetty or Undertow directly (no need to deploy WAR files)
+<ul>
+<li>内置web服务器，无需配置如Tomcat之类的服务器</li>
+</ul>
+</li>
+<li>Provide opinionated 'starter' dependencies to simplify your build configuration
+<ul>
+<li>智能的提供依赖，简化提供配置</li>
+</ul>
+</li>
+<li>Automatically configure Spring and 3rd party libraries whenever possible
+<ul>
+<li>自动配置Spring以及第三方库</li>
+</ul>
+</li>
+<li>Provide production-ready features such as metrics, health checks, and externalized configuration
+<ul>
+<li>提供生成级别的监控，健康检查和外部化配置</li>
+</ul>
+</li>
+<li>Absolutely no code generation and no requirement for XML configuration
+<ul>
+<li>无代码生成，无需编写xml</li>
+</ul>
+</li>
+</ul>
+<h4 id="122-springboot的缺点">1.2.2 SpringBoot的缺点</h4>
+<ul>
+<li>迭代快，需要时刻关注变化，也从侧面说明了使用Spring Boot的人很多</li>
+<li>基于Spring，封装太深，内部原理复杂，不易精通</li>
+</ul>
+<h3 id="13-入门学习">1.3 入门学习</h3>
+<blockquote>
+<p>官方文档：https://docs.spring.io/spring-boot/docs/current/reference/html/</p>
+</blockquote>
+<h4 id="131-编写hellospringboot程序">1.3.1 编写Hello，SpringBoot程序</h4>
+<ol>
+<li>
+<p>编写pom.xml</p>
+<blockquote>
+<p>We need to start by creating a Maven <code>pom.xml</code> file. The <code>pom.xml</code> is the recipe that is used to build your project.</p>
+</blockquote>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
+         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+    &lt;groupId&gt;org.example&lt;/groupId&gt;
+    &lt;artifactId&gt;SpringBoot&lt;/artifactId&gt;
+    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+
+    &lt;properties&gt;
+        &lt;maven.compiler.source&gt;8&lt;/maven.compiler.source&gt;
+        &lt;maven.compiler.target&gt;8&lt;/maven.compiler.target&gt;
+    &lt;/properties&gt;
+
+    &lt;parent&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+        &lt;version&gt;2.6.4&lt;/version&gt;
+    &lt;/parent&gt;
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+&lt;/project&gt;
+</code></pre>
+</li>
+<li>
+<p>根据需求编写代码</p>
+<ol>
+<li>
+<p>首先，为了运行程序，我们需要一个主程序类，作为程序的入口</p>
+<pre><code class="language-java">package com.study.boot;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+/**
+ * @author 此间凉汐
+ * @date 2022/2/26 22:48
+ */
+
+/**
+ * 主程序类
+ * @SpringBootApplication：这是一个SpringBoot应用
+ */
+@SpringBootApplication
+public class MainApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(MainApplication.class,args);
+    }
+}
+</code></pre>
+</li>
+<li>
+<p>编写具体实现的controller</p>
+<pre><code class="language-java">package com.study.boot.controller;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * @author 此间凉汐
+ * @date 2022/2/26 22:56
+ */
+
+/**
+ * @RestController = @Controller + @ResponseBody(可用于方法)
+ * @RestController：说明此类为一个controller,并且只向浏览器传送字符串，而不进行页面跳转
+ */
+@RestController
+public class HelloController {
+    @RequestMapping(&quot;/hello&quot;)
+    public String hello(){
+        return &quot;Hello,Spring Boot!&quot;;
+    }
+}
+
+</code></pre>
+</li>
+</ol>
+</li>
+<li>
+<p>创建可执行的jar</p>
+<ol>
+<li>
+<p>向pom.xml中导入插件</p>
+<pre><code class="language-xml">&lt;build&gt;
+    &lt;plugins&gt;
+        &lt;plugin&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+        &lt;/plugin&gt;
+    &lt;/plugins&gt;
+&lt;/build&gt;
+</code></pre>
+</li>
+<li>
+<p>进行打包</p>
+<p>同时选择maven下的clean和package，并运行。</p>
+</li>
+<li>
+<p>运行jar</p>
+<figure data-type="image" tabindex="1"><img src="https://raw.githubusercontent.com/Liangxi2001/Pictures/main/Blogimg/QQ%E6%88%AA%E5%9B%BE20220226232021.png" alt="QQ截图20220226232021" loading="lazy"></figure>
+</li>
+</ol>
+</li>
+<li>
+<p>进行一些配置</p>
+<p>在resources目录下创建application.properties，即可进行配置</p>
+<pre><code class="language-properties">#把运行端口设置为8888
+server.port=8888
+</code></pre>
+<p><em>详情请见：</em></p>
+<blockquote>
+<p>https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html#appendix.application-properties  详解</p>
+</blockquote>
+</li>
+</ol>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[SSM框架整合]]></title>
         <id>https://Liangxi2001.github.io/post/ssm-kuang-jia-zheng-he/</id>
