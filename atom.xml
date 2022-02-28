@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://Liangxi2001.github.io</id>
     <title>凉汐博客</title>
-    <updated>2022-02-27T08:30:27.928Z</updated>
+    <updated>2022-02-28T08:33:50.915Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://Liangxi2001.github.io"/>
     <link rel="self" href="https://Liangxi2001.github.io/atom.xml"/>
@@ -16,7 +16,31 @@
         <link href="https://Liangxi2001.github.io/post/springboot2-ji-chu-ru-men/">
         </link>
         <updated>2022-02-27T08:22:37.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="1-springboot2基础入门">1. SpringBoot2基础入门</h2>
+        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
+<li><a href="#springboot2%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8">SpringBoot2基础入门</a>
+<ul>
+<li><a href="#1-springboot2%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8">1. SpringBoot2基础入门</a>
+<ul>
+<li><a href="#11-%E4%BB%80%E4%B9%88%E6%98%AFspringboot">1.1 什么是SpringBoot</a></li>
+<li><a href="#12-%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8springboot">1.2 为什么用SpringBoot</a>
+<ul>
+<li><a href="#121-springboot%E7%9A%84%E4%BC%98%E7%82%B9">1.2.1 SpringBoot的优点</a></li>
+<li><a href="#122-springboot%E7%9A%84%E7%BC%BA%E7%82%B9">1.2.2 SpringBoot的缺点</a></li>
+</ul>
+</li>
+<li><a href="#13-%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0">1.3 入门学习</a>
+<ul>
+<li><a href="#131-%E7%BC%96%E5%86%99hellospringboot%E7%A8%8B%E5%BA%8F">1.3.1 编写Hello，SpringBoot程序</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h1 id="springboot2基础入门">SpringBoot2基础入门</h1>
+<h2 id="1-springboot2基础入门">1. SpringBoot2基础入门</h2>
 <h3 id="11-什么是springboot">1.1 什么是SpringBoot</h3>
 <ul>
 <li>Spring应用需要进行大量的配置，各种xml配置和注解配置让人眼花缭乱，且极容易出错，因此Spring一度被称为“配置地狱”。</li>
@@ -212,7 +236,29 @@ server.port=8888
         <link href="https://Liangxi2001.github.io/post/ssm-kuang-jia-zheng-he/">
         </link>
         <updated>2022-02-23T08:34:44.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="1导入相关jar包">1.导入相关jar包</h2>
+        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#1%E5%AF%BC%E5%85%A5%E7%9B%B8%E5%85%B3jar%E5%8C%85">1.导入相关jar包</a></li>
+<li><a href="#2%E6%B7%BB%E5%8A%A0web%E6%94%AF%E6%8C%81%E5%B9%B6%E9%85%8D%E7%BD%AEwebxml">2.添加web支持并配置web.xml</a></li>
+<li><a href="#3%E7%BC%96%E5%86%99%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">3.编写配置文件</a>
+<ul>
+<li><a href="#31-mybatis%E6%A0%B8%E5%BF%83%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">3.1 Mybatis核心配置文件</a></li>
+<li><a href="#32-spring-daoxml">3.2 spring-dao.xml</a></li>
+<li><a href="#33-spring-servicexml">3.3 spring-service.xml</a></li>
+<li><a href="#34-spring-mvcxml">3.4 spring-mvc.xml</a></li>
+</ul>
+</li>
+<li><a href="#4%E6%B5%8B%E8%AF%95">4.测试</a>
+<ul>
+<li><a href="#41%E6%9F%A5%E8%AF%A2%E5%85%A8%E9%83%A8%E5%9B%BE%E4%B9%A6">4.1查询全部图书</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="1导入相关jar包">1.导入相关jar包</h2>
 <pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
          xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
@@ -766,7 +812,22 @@ public class BookController {
         <link href="https://Liangxi2001.github.io/post/spring-shi-wu-guan-li/">
         </link>
         <updated>2022-02-11T03:43:14.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="事务">事务：</h1>
+        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
+<li><a href="#%E4%BA%8B%E5%8A%A1">事务：</a>
+<ul>
+<li><a href="#%E5%A3%B0%E6%98%8E%E5%BC%8F%E4%BA%8B%E5%8A%A1">声明式事务</a>
+<ul>
+<li><a href="#1%E5%9C%A8xml%E6%96%87%E4%BB%B6%E4%B8%AD%E6%B3%A8%E5%85%A5datasourcetransactionmanager">1.在xml文件中注入DataSourceTransactionManager</a></li>
+<li><a href="#2aop%E7%BB%87%E5%85%A5%E4%B8%8E%E4%BA%8B%E5%8A%A1%E9%85%8D">2.AOP织入与事务配</a></li>
+<li><a href="#3%E6%B5%8B%E8%AF%95">3.测试</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BC%96%E7%A8%8B%E5%BC%8F%E4%BA%8B%E5%8A%A1">编程式事务</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h1 id="事务">事务：</h1>
 <ul>
 <li>声明式事务：基于AOP</li>
 <li>编程式事务：需要修改源代码</li>
@@ -906,7 +967,27 @@ public class UserMapperImpl extends SqlSessionDaoSupport implements UserMapper{
         <link href="https://Liangxi2001.github.io/post/spring-yu-mybatis-de-zheng-he/">
         </link>
         <updated>2022-02-08T13:04:28.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="方式一"><em><strong>方式一</strong></em></h1>
+        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
+<li><a href="#%E6%96%B9%E5%BC%8F%E4%B8%80"><em><strong>方式一</strong></em></a>
+<ul>
+<li><a href="#1%E7%BC%96%E5%86%99%E6%95%B0%E6%8D%AE%E6%BA%90%E9%85%8D%E7%BD%AE">1.编写数据源配置</a></li>
+<li><a href="#2sqlsessionfactory">2.sqlSessionFactory</a></li>
+<li><a href="#3sqlsessiontemplate">3.sqlSessionTemplate</a></li>
+<li><a href="#4%E9%9C%80%E8%A6%81%E7%BB%99%E6%8E%A5%E5%8F%A3%E5%8A%A0%E5%AE%9E%E7%8E%B0%E7%B1%BB">4.需要给接口加实现类</a></li>
+<li><a href="#5%E5%B0%86%E5%AE%9E%E7%8E%B0%E7%B1%BB%E6%B3%A8%E5%86%8C%E5%88%B0spring%E4%B8%AD">5.将实现类注册到Spring中</a></li>
+<li><a href="#6%E6%B5%8B%E8%AF%95">6.测试</a></li>
+</ul>
+</li>
+<li><a href="#%E6%96%B9%E5%BC%8F%E4%BA%8C"><em><strong>方式二</strong></em></a>
+<ul>
+<li><a href="#1%E7%BC%96%E5%86%99%E4%B8%80%E4%B8%AA%E5%AE%9E%E7%8E%B0%E7%9B%B8%E5%BA%94%E6%8E%A5%E5%8F%A3%E5%B9%B6%E7%BB%A7%E6%89%BFsqlsessiondaosupport%E7%9A%84%E5%AE%9E%E7%8E%B0%E7%B1%BB">1.编写一个实现相应接口并继承SqlSessionDaoSupport的实现类</a></li>
+<li><a href="#2%E5%B0%86%E8%AF%A5%E7%B1%BB%E6%B3%A8%E5%85%A5spring%E5%AE%B9%E5%99%A8">2.将该类注入Spring容器</a></li>
+<li><a href="#3%E6%B5%8B%E8%AF%95">3.测试</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h1 id="方式一"><em><strong>方式一</strong></em></h1>
 <h2 id="1编写数据源配置">1.编写数据源配置</h2>
 <pre><code class="language-xml">&lt;!--    DataSource:使用spring的数据源替换mybatis的配置，这里用spring提供的JDBC--&gt;
     &lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt;

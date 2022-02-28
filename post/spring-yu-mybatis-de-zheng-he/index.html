@@ -7,7 +7,7 @@
 <meta name="description" content="但行好事  莫问前程">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<link rel="shortcut icon" href="https://Liangxi2001.github.io/favicon.ico?v=1645950611534">
+<link rel="shortcut icon" href="https://Liangxi2001.github.io/favicon.ico?v=1646037222575">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://unpkg.com/papercss@1.6.1/dist/paper.min.css" />
@@ -91,14 +91,34 @@
             <p class="article-meta">
               2022-02-08
               
-                <a href="https://Liangxi2001.github.io/tag/ssm-kuang-jia/" class="badge success">
+                <a href="https://Liangxi2001.github.io/tag/ssm-kuang-jia/" class="badge secondary">
                   SSM框架
                 </a>
               
             </p>
             
             <div class="post-content">
-              <h1 id="方式一"><em><strong>方式一</strong></em></h1>
+              <p><ul class="markdownIt-TOC">
+<li><a href="#%E6%96%B9%E5%BC%8F%E4%B8%80"><em><strong>方式一</strong></em></a>
+<ul>
+<li><a href="#1%E7%BC%96%E5%86%99%E6%95%B0%E6%8D%AE%E6%BA%90%E9%85%8D%E7%BD%AE">1.编写数据源配置</a></li>
+<li><a href="#2sqlsessionfactory">2.sqlSessionFactory</a></li>
+<li><a href="#3sqlsessiontemplate">3.sqlSessionTemplate</a></li>
+<li><a href="#4%E9%9C%80%E8%A6%81%E7%BB%99%E6%8E%A5%E5%8F%A3%E5%8A%A0%E5%AE%9E%E7%8E%B0%E7%B1%BB">4.需要给接口加实现类</a></li>
+<li><a href="#5%E5%B0%86%E5%AE%9E%E7%8E%B0%E7%B1%BB%E6%B3%A8%E5%86%8C%E5%88%B0spring%E4%B8%AD">5.将实现类注册到Spring中</a></li>
+<li><a href="#6%E6%B5%8B%E8%AF%95">6.测试</a></li>
+</ul>
+</li>
+<li><a href="#%E6%96%B9%E5%BC%8F%E4%BA%8C"><em><strong>方式二</strong></em></a>
+<ul>
+<li><a href="#1%E7%BC%96%E5%86%99%E4%B8%80%E4%B8%AA%E5%AE%9E%E7%8E%B0%E7%9B%B8%E5%BA%94%E6%8E%A5%E5%8F%A3%E5%B9%B6%E7%BB%A7%E6%89%BFsqlsessiondaosupport%E7%9A%84%E5%AE%9E%E7%8E%B0%E7%B1%BB">1.编写一个实现相应接口并继承SqlSessionDaoSupport的实现类</a></li>
+<li><a href="#2%E5%B0%86%E8%AF%A5%E7%B1%BB%E6%B3%A8%E5%85%A5spring%E5%AE%B9%E5%99%A8">2.将该类注入Spring容器</a></li>
+<li><a href="#3%E6%B5%8B%E8%AF%95">3.测试</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h1 id="方式一"><em><strong>方式一</strong></em></h1>
 <h2 id="1编写数据源配置">1.编写数据源配置</h2>
 <pre><code class="language-xml">&lt;!--    DataSource:使用spring的数据源替换mybatis的配置，这里用spring提供的JDBC--&gt;
     &lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt;
@@ -240,7 +260,7 @@ public void selectUsersTest(){
 
       <div class="sm-12 md-4 col sidebar">
   <div class="paper info-container">
-    <img src="https://Liangxi2001.github.io/images/avatar.png?v=1645950611534" class="no-responsive avatar">
+    <img src="https://Liangxi2001.github.io/images/avatar.png?v=1646037222575" class="no-responsive avatar">
     <div class="text-muted">但行好事  莫问前程</div>
     <div class="social-container">
       
@@ -318,11 +338,11 @@ public void selectUsersTest(){
     </div>
     <div class="row">
       
-        <a href="https://Liangxi2001.github.io/tag/springboot2/" class="badge secondary">
+        <a href="https://Liangxi2001.github.io/tag/springboot2/" class="badge ">
           SpringBoot2
         </a>
       
-        <a href="https://Liangxi2001.github.io/tag/ssm-kuang-jia/" class="badge secondary">
+        <a href="https://Liangxi2001.github.io/tag/ssm-kuang-jia/" class="badge ">
           SSM框架
         </a>
       
