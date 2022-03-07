@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://Liangxi2001.github.io</id>
     <title>凉汐博客</title>
-    <updated>2022-03-07T09:40:46.354Z</updated>
+    <updated>2022-03-07T11:26:54.903Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://Liangxi2001.github.io"/>
     <link rel="self" href="https://Liangxi2001.github.io/atom.xml"/>
@@ -10,6 +10,60 @@
     <logo>https://Liangxi2001.github.io/images/avatar.png</logo>
     <icon>https://Liangxi2001.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, 凉汐博客</rights>
+    <entry>
+        <title type="html"><![CDATA[关于git使用时遇到的一些问题]]></title>
+        <id>https://Liangxi2001.github.io/post/guan-yu-git-shi-yong-shi-yu-dao-de-yi-xie-wen-ti/</id>
+        <link href="https://Liangxi2001.github.io/post/guan-yu-git-shi-yong-shi-yu-dao-de-yi-xie-wen-ti/">
+        </link>
+        <updated>2022-03-07T11:19:41.000Z</updated>
+        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
+<li><a href="#git-%E8%A7%A3%E5%86%B3-error-failed-to-push-some-refs-to-httpsgithubcomxxxxgit">git 解决 error: failed to push some refs to 'https://github.com/xxxx.git'</a></li>
+<li><a href="#master%E6%97%81%E8%BE%B9%E6%9C%89merging">master旁边有MERGING</a></li>
+</ul>
+</p>
+<h1 id="git-解决-error-failed-to-push-some-refs-to-httpsgithubcomxxxxgit">git 解决 error: failed to push some refs to 'https://github.com/xxxx.git'</h1>
+<ul>
+<li>
+<p>描述</p>
+<pre><code class="language-git">To https://github.com/xuefeilong/test.git
+! [rejected]        master -&gt; master (non-fast-forward)
+error: failed to push some refs to 'https://github.com/xuefeilong/test.git'
+hint: Updates were rejected because the tip of your current branch is behind
+hint: its remote counterpart. Merge the remote changes (e.g. 'git pull')
+hint: before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+</code></pre>
+</li>
+<li>
+<p>解决</p>
+<blockquote>
+<p>1: 进行push前先将远程仓库pull到本地仓库<br>
+$ git pull origin master    #git pull --rebase origin master<br>
+$ git push -u origin master</p>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<p>2: 强制push本地仓库到远程 (这种情况不会进行merge, 强制push后远程文件可能会丢失 不建议使用此方法)<br>
+$ git push -u origin master -f<br>
+3: 避开解决冲突, 将本地文件暂时提交到远程新建的分支中<br>
+$ git branch [name]<br>
+创建完branch后, 再进行push<br>
+$ git push -u origin [name]</p>
+</blockquote>
+<h1 id="master旁边有merging">master旁边有MERGING</h1>
+<ul>
+<li>解决</li>
+</ul>
+<pre><code class="language-git">(master|MERGING)
+$ git update-ref -d MERGE_HEAD
+(master)
+$ git push
+Everything up-to-date
+
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[SpringBoot2基础入门]]></title>
         <id>https://Liangxi2001.github.io/post/springboot2-ji-chu-ru-men/</id>
