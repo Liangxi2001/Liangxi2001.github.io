@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>Gridea | 凉汐博客</title>
+<title>YAML简介 | 凉汐博客</title>
 <meta name="description" content="但行前路  莫问西东">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -15,6 +15,12 @@
 <link rel="stylesheet" href="https://Liangxi2001.github.io/styles/main.css">
 
 
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
 <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
 
 
@@ -23,6 +29,7 @@
 
   </head>
   <body>
+  
     <nav class="navbar border fixed split-nav">
   <div class="nav-brand">
     <h3><a href="https://Liangxi2001.github.io">凉汐博客</a></h3>
@@ -79,42 +86,123 @@
     <div id="top" class="row site">
       <div class="sm-12 md-8 col">
         <div class="paper">
-          <h2 class="current-tag">标签: Gridea</h2>
-          
-  <article class="article">
-    <h2 class="article-title">
-      <a href="https://Liangxi2001.github.io/post/hello-gridea/">Hello Gridea</a>
-    </h2>
-    <p class="article-meta">
-      2018-12-12
-      
-        <a href="https://Liangxi2001.github.io/tag/li6oyY5j9/" class="badge success">
-          Gridea
-        </a>
-      
-    </p>
-    <p class="text-lead">
-      <p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
-✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
+          <article class="article">
+            <h1>YAML简介</h1>
+            <p class="article-meta">
+              2022-03-13
+              
+                <a href="https://Liangxi2001.github.io/tag/springboot2/" class="badge success">
+                  SpringBoot2
+                </a>
+              
+            </p>
+            
+            <div class="post-content">
+              <p><ul class="markdownIt-TOC">
+<li><a href="#1-%E7%AE%80%E4%BB%8B">1. 简介</a></li>
+<li><a href="#2-%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95">2. 基本语法</a></li>
+<li><a href="#3-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">3. 数据类型</a></li>
+<li><a href="#4-%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E9%85%8D%E7%BD%AE%E6%8F%90%E7%A4%BA">4. 自定义的配置提示</a></li>
+</ul>
+</p>
+<h1 id="1-简介">1. 简介</h1>
+<p>YAML*是&quot;YAML Ain't a Markup Language&quot;（YAML不是一种<a href="https://baike.baidu.com/item/%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80">标记语言</a>）的<a href="https://baike.baidu.com/item/%E9%80%92%E5%BD%92%E7%BC%A9%E5%86%99">递归缩写</a>。在开发的这种语言时，<em>YAML</em> 的意思其实是：&quot;Yet Another Markup Language&quot;（仍是一种<a href="https://baike.baidu.com/item/%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80">标记语言</a>），但为了强调这种语言以数据做为中心，而不是以标记语言为重点，而用反向缩略语重命名。<br>
+<em><strong>非常适合用来做以数据为中心的配置文件</strong></em></p>
+<h1 id="2-基本语法">2. 基本语法</h1>
+<ul>
+<li>key: value形式；注意冒号后面有空格；</li>
+<li>大小写敏感；</li>
+<li>使用缩进表示层级关系；</li>
+<li>缩进只允许使用空格；</li>
+<li>缩进的空格数不重要，只要相同层级的元素左对齐即可；</li>
+<li>'#'表示注释；</li>
+<li>&quot;与&quot;&quot;表示字符串的内容会被<strong>转义/不转义</strong>；</li>
+</ul>
+<h1 id="3-数据类型">3. 数据类型</h1>
+<ul>
+<li>
+<p>字面量：原子性的值，例如：date，boolean，string，number，null</p>
+<pre><code class="language-yaml">k: v
+</code></pre>
+</li>
+<li>
+<p>对象：键值对的集合，例如：map，hash，set，object</p>
+<pre><code class="language-yaml">#行内写法
+k: {k1:v1,k2:v2,k3:v3}
+#或者
+k:
+  k1: v1
+  k2: v2
+  k3: v3
+</code></pre>
+</li>
+<li>
+<p>数组：一组按次序排列的值，例如：array，list，queue</p>
+<pre><code class="language-yaml">K: {v1,v2,v3}
+k:
+ - v1 
+ - v2
+ - v3
+</code></pre>
+</li>
+</ul>
+<h1 id="4-自定义的配置提示">4. 自定义的配置提示</h1>
+<!--        在配置文件中配置自己的javabean时有提示-->
+<pre><code>    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-configuration-processor&lt;/artifactId&gt;
+        &lt;optional&gt;true&lt;/optional&gt;
+    &lt;/dependency&gt;
 
-    </p>
-    <div class="row">
-      <a href="https://Liangxi2001.github.io/post/hello-gridea/" class="readmore-link">
-        <button>
-          Read More
-        </button>
-      </a>
-    </div>
-  </article>
+&lt;build&gt;
+    &lt;plugins&gt;
+        &lt;plugin&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+            &lt;version&gt;2.3.4.RELEASE&lt;/version&gt;
+</code></pre>
+<!--                在打包时，不允许打包spring-boot-configuration-processor-->
+<pre><code>            &lt;configuration&gt;
+                &lt;excludes&gt;
+                    &lt;exclude&gt;
+                        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+                        &lt;artifactId&gt;spring-boot-configuration-processor&lt;/artifactId&gt;
+                    &lt;/exclude&gt;
+                &lt;/excludes&gt;
+            &lt;/configuration&gt;
+        &lt;/plugin&gt;
+    &lt;/plugins&gt;
+&lt;/build&gt;
+</code></pre>
 
-
+            </div>
+          </article>
         </div>
-        <div class="row flex-edges">
-  
-  
-</div>
+        <div class="paper" data-aos="fade-in">
+          
+            <div class="next-post">
+              <div class="next">
+                下一篇
+              </div>
+              <a href="https://Liangxi2001.github.io/post/guan-yu-git-shi-yong-shi-yu-dao-de-yi-xie-wen-ti/">
+                <h3 class="post-title">
+                  关于git使用时遇到的一些问题
+                </h3>
+              </a>
+            </div>
+          
+        </div>
+        
+          
+            <div class="paper" data-aos="fade-in">
+              <div id="gitalk-container"></div>
+            </div>
+          
 
+          
+        
       </div>
+
       <div class="sm-12 md-4 col sidebar">
   <div class="paper info-container">
     <img src="https://Liangxi2001.github.io/images/avatar.png?v=1647148533328" class="no-responsive avatar">
@@ -207,7 +295,7 @@
     </div>
     <div class="row">
       
-        <a href="https://Liangxi2001.github.io/tag/springboot2/" class="badge secondary">
+        <a href="https://Liangxi2001.github.io/tag/springboot2/" class="badge ">
           SpringBoot2
         </a>
       
@@ -222,6 +310,7 @@
   </div>
 </div>
 
+
     </div>
 
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
@@ -233,6 +322,29 @@ AOS.init();
 hljs.initHighlightingOnLoad()
 
 </script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: '80e65e0628ad6f63ce37',
+        clientSecret: '2b9e05bec061b03c2143359c32c3b5d4f4e45df6',
+        repo: 'Liangxi2001.github.io',
+        owner: 'Liangxi2001',
+        admin: ['Liangxi2001'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
 
 
 
