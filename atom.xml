@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://Liangxi2001.github.io</id>
     <title>凉汐博客</title>
-    <updated>2022-03-13T05:15:36.912Z</updated>
+    <updated>2022-03-13T05:34:50.045Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://Liangxi2001.github.io"/>
     <link rel="self" href="https://Liangxi2001.github.io/atom.xml"/>
@@ -11,11 +11,222 @@
     <icon>https://Liangxi2001.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, 凉汐博客</rights>
     <entry>
+        <title type="html"><![CDATA[SpringBoot中web开发的简单功能]]></title>
+        <id>https://Liangxi2001.github.io/post/springboot-zhong-web-kai-fa-de-jian-dan-gong-neng/</id>
+        <link href="https://Liangxi2001.github.io/post/springboot-zhong-web-kai-fa-de-jian-dan-gong-neng/">
+        </link>
+        <updated>2022-03-13T05:25:51.000Z</updated>
+        <summary type="html"><![CDATA[<p>SpringBoot开发web中关于静态资源访问，欢迎页以及Favicon的介绍。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>SpringBoot开发web中关于静态资源访问，欢迎页以及Favicon的介绍。</p>
+<!-- more -->
+<p><ul class="markdownIt-TOC">
+<li><a href="#1-web%E5%BC%80%E5%8F%91">1. web开发</a>
+<ul>
+<li><a href="#11-%E7%AE%80%E5%8D%95%E5%8A%9F%E8%83%BD%E5%88%86%E6%9E%90">1.1 简单功能分析</a>
+<ul>
+<li><a href="#111-%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E8%AE%BF%E9%97%AE">1.1.1 静态资源访问</a></li>
+<li><a href="#112-webjar">1.1.2 webjar</a></li>
+<li><a href="#113-%E6%AC%A2%E8%BF%8E%E9%A1%B5%E6%94%AF%E6%8C%81">1.1.3 欢迎页支持</a></li>
+<li><a href="#114-%E8%87%AA%E5%AE%9A%E4%B9%89favicon">1.1.4 自定义Favicon</a></li>
+<li><a href="#115-%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E9%85%8D%E7%BD%AE%E5%8E%9F%E7%90%86">1.1.5 静态资源配置原理</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h1 id="1-web开发">1. web开发</h1>
+<p><em>官方文档：</em></p>
+<blockquote>
+<p>https://docs.spring.io/spring-boot/docs/current/reference/html/web.html#web.servlet.spring-mvc</p>
+</blockquote>
+<h2 id="11-简单功能分析">1.1 简单功能分析</h2>
+<h3 id="111-静态资源访问">1.1.1 静态资源访问</h3>
+<blockquote>
+<p>官方地址：https://docs.spring.io/spring-boot/docs/current/reference/html/web.html#web.servlet.spring-mvc.static-content</p>
+</blockquote>
+<p>默认情况下，Spring Boot 从类路径中名为<code>/static</code>（或<code>/public</code>或<code>/resources</code>或<code>/META-INF/resources</code>）的目录。</p>
+<p>访问地址：当前项目根路径/+静态资源名</p>
+<p>*原理：*请求进来，先去找Controller看能不能处理。不能处理的所有请求又都交给静态资源处理器。静态资源也找不到则响应404页面。</p>
+<p>默认情况下，资源映射在 上<code>/**</code>，但可以使用该<code>spring.mvc.static-path-pattern</code>属性对其进行调整。例如，将所有资源重新定位到<code>/res/**</code>可以实现如下：</p>
+<pre><code class="language-yaml">spring:
+  mvc:
+    static-path-pattern: /res/**
+</code></pre>
+<p>还可以使用该<code>spring.web.resources.static-locations</code>属性自定义静态资源位置（将默认值替换为目录位置列表）。</p>
+<pre><code class="language-yaml">web:
+  resources:
+    static-locations: [classpath:/haha/]
+</code></pre>
+<h3 id="112-webjar">1.1.2 webjar</h3>
+<p>自动映射 /<a href="http://localhost:8080/webjars/jquery/3.5.1/jquery.js">webjars</a>/**</p>
+<p>https://www.webjars.org/</p>
+<pre><code class="language-xml">        &lt;dependency&gt;
+            &lt;groupId&gt;org.webjars&lt;/groupId&gt;
+            &lt;artifactId&gt;jquery&lt;/artifactId&gt;
+            &lt;version&gt;3.5.1&lt;/version&gt;
+        &lt;/dependency&gt;
+</code></pre>
+<p>访问地址：<a href="http://localhost:8080/webjars/jquery/3.5.1/jquery.js">http://localhost:8080/webjars/<strong>jquery/3.5.1/jquery.js</strong></a>   后面地址要按照依赖里面的包路径。</p>
+<h3 id="113-欢迎页支持">1.1.3 欢迎页支持</h3>
+<ul>
+<li>
+<p>静态资源路径下的index.html；</p>
+<pre><code class="language-yaml">spring:
+#  mvc:
+#    static-path-pattern: /res/**  这个会影响默认欢迎页面的访问
+  web:
+    resources:
+      static-locations: [classpath:/haha/]  这个不会
+</code></pre>
+</li>
+<li>
+<p>controller能处理/index请求；</p>
+</li>
+</ul>
+<h3 id="114-自定义favicon">1.1.4 自定义Favicon</h3>
+<p><strong>需要放在静态资源目录下。</strong></p>
+<pre><code class="language-yaml">spring:
+#  mvc:
+#    static-path-pattern: /res/**  这个会影响默认Favicon的访问
+  web:
+    resources:
+      static-locations: [classpath:/haha/]  这个不会
+</code></pre>
+<h3 id="115-静态资源配置原理">1.1.5 静态资源配置原理</h3>
+<ol>
+<li>
+<p>WebMvcAutoConfiguration</p>
+<p>首先找到web的自动配置类</p>
+<pre><code class="language-java">@ConditionalOnClass({Servlet.class, DispatcherServlet.class, WebMvcConfigurer.class})
+@ConditionalOnMissingBean({WebMvcConfigurationSupport.class})
+@AutoConfigureOrder(-2147483638)
+@AutoConfigureAfter({DispatcherServletAut.class, TaskExecutionAutoConfiguration.class, ValidationAutoConfiguration.class})
+public class WebMvcAutoConfiguration {}
+</code></pre>
+</li>
+<li>
+<p>该类中有一个内部类</p>
+</li>
+</ol>
+<pre><code class="language-java">@Import({WebMvcAutoConfiguration.EnableWebMvcConfiguration.class})
+@EnableConfigurationProperties({WebMvcProperties.class, WebProperties.class})
+@Order(0)
+public static class WebMvcAutoConfigurationAdapter implements WebMvcConfigurer, ServletContextAware {}
+
+//WebMvcProperties绑定了配置文件中以spring.mvc做前缀的值
+@ConfigurationProperties(
+    prefix = &quot;spring.mvc&quot;
+)
+public class WebMvcProperties {}
+
+//WebProperties绑定了配置文件中以spring.web做前缀的值
+@ConfigurationProperties(&quot;spring.web&quot;)
+public class WebProperties {}
+</code></pre>
+<p>WebMvcAutoConfigurationAdapter只有一个有参的构造器</p>
+<pre><code class="language-java">/**
+ * 有参构造器的所有参数都会从容器中确定
+ * WebProperties：WebProperties绑定了配置文件中以spring.web做前缀的值
+ * WebMvcProperties：绑定了配置文件中以spring.mvc做前缀的值
+ * ListableBeanFactory：Spring的BeanFactory
+ * ObjectProvider&lt;HttpMessageConverters&gt;：找到所有的HttpMessageConverters
+ * ResourceHandlerRegistrationCustomizer：找到资源处理器的自定义器
+ * DispatcherServletPath：
+ * ServletRegistrationBean：给应用注册Servlet，Filter...
+ */
+public WebMvcAutoConfigurationAdapter(WebProperties webProperties, WebMvcProperties mvcProperties, ListableBeanFactory beanFactory, ObjectProvider&lt;HttpMessageConverters&gt; messageConvertersProvider, ObjectProvider&lt;WebMvcAutoConfiguration.ResourceHandlerRegistrationCustomizer&gt; resourceHandlerRegistrationCustomizerProvider, ObjectProvider&lt;DispatcherServletPath&gt; dispatcherServletPath, ObjectProvider&lt;ServletRegistrationBean&lt;?&gt;&gt; servletRegistrations) {
+    this.resourceProperties = webProperties.getResources();
+    this.mvcProperties = mvcProperties;
+    this.beanFactory = beanFactory;
+    this.messageConvertersProvider = messageConvertersProvider;
+    this.resourceHandlerRegistrationCustomizer = (WebMvcAutoConfiguration.ResourceHandlerRegistrationCustomizer)resourceHandlerRegistrationCustomizerProvider.getIfAvailable();
+    this.dispatcherServletPath = dispatcherServletPath;
+    this.servletRegistrations = servletRegistrations;
+    this.mvcProperties.checkConfiguration();
+}
+</code></pre>
+<p>关于资源处理器部分的代码：</p>
+<pre><code class="language-java">public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    if (!this.resourceProperties.isAddMappings()) {
+        logger.debug(&quot;Default resource handling disabled&quot;);
+    } else {
+        //这里绑定了加载webjars的默认规则
+        this.addResourceHandler(registry, &quot;/webjars/**&quot;, &quot;classpath:/META-INF/resources/webjars/&quot;);
+        this.addResourceHandler(registry, this.mvcProperties.getStaticPathPattern(), (registration) -&gt; {
+            registration.addResourceLocations(this.resourceProperties.getStaticLocations());
+            if (this.servletContext != null) {
+                ServletContextResource resource = new ServletContextResource(this.servletContext, &quot;/&quot;);
+                registration.addResourceLocations(new Resource[]{resource});
+            }
+
+        });
+    }
+}
+
+private void addResourceHandler(ResourceHandlerRegistry registry, String pattern, String... locations) {
+    this.addResourceHandler(registry, pattern, (registration) -&gt; {
+        registration.addResourceLocations(locations);
+    });
+}
+
+private void addResourceHandler(ResourceHandlerRegistry registry, String pattern, Consumer&lt;ResourceHandlerRegistration&gt; customizer) {
+    if (!registry.hasMappingForPattern(pattern)) {
+        ResourceHandlerRegistration registration = registry.addResourceHandler(new String[]{pattern});
+        customizer.accept(registration);
+        registration.setCachePeriod(this.getSeconds(this.resourceProperties.getCache().getPeriod()));
+        registration.setCacheControl(this.resourceProperties.getCache().getCachecontrol().toHttpCacheControl());
+        registration.setUseLastModified(this.resourceProperties.getCache().isUseLastModified());
+        this.customizeResourceHandlerRegistration(registration);
+    }
+}
+</code></pre>
+<p>WebProperties类中：</p>
+<pre><code class="language-java">public static class Resources {
+    //资源的默认加载地址
+    private static final String[] CLASSPATH_RESOURCE_LOCATIONS = new String[]{&quot;classpath:/META-INF/resources/&quot;, &quot;classpath:/resources/&quot;, &quot;classpath:/static/&quot;, &quot;classpath:/public/&quot;};
+    private String[] staticLocations;
+
+    public Resources() {
+        this.staticLocations = CLASSPATH_RESOURCE_LOCATIONS;
+        this.addMappings = true;
+    }
+</code></pre>
+<ol start="3">
+<li>
+<p>欢迎页处理规则</p>
+<pre><code class="language-java">final class WelcomePageHandlerMapping extends AbstractUrlHandlerMapping {
+    private static final Log logger = LogFactory.getLog(WelcomePageHandlerMapping.class);
+    private static final List&lt;MediaType&gt; MEDIA_TYPES_ALL;
+
+    WelcomePageHandlerMapping(TemplateAvailabilityProviders templateAvailabilityProviders, ApplicationContext applicationContext, Resource welcomePage, String staticPathPattern) {
+        //可以看到，默认的PathPattern为/**，如果不是，那么只能通过controller处理
+        if (welcomePage != null &amp;&amp; &quot;/**&quot;.equals(staticPathPattern)) {
+            logger.info(&quot;Adding welcome page: &quot; + welcomePage);
+            this.setRootViewName(&quot;forward:index.html&quot;);
+        } else if (this.welcomeTemplateExists(templateAvailabilityProviders, applicationContext)) {
+            logger.info(&quot;Adding welcome page template: index&quot;);
+            this.setRootViewName(&quot;index&quot;);
+        }
+
+    }
+    }
+</code></pre>
+</li>
+<li>
+<p>favicon<br>
+浏览器会发生/favicon.ico请求获取到图标，整个session期间不再获取。</p>
+</li>
+</ol>
+]]></content>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[YAML简介]]></title>
         <id>https://Liangxi2001.github.io/post/yaml-jian-jie/</id>
         <link href="https://Liangxi2001.github.io/post/yaml-jian-jie/">
         </link>
-        <updated>2022-03-13T05:09:12.000Z</updated>
+        <updated>2022-03-11T08:19:15.000Z</updated>
         <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
 <li><a href="#1-%E7%AE%80%E4%BB%8B">1. 简介</a></li>
 <li><a href="#2-%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95">2. 基本语法</a></li>
@@ -1817,161 +2028,6 @@ public class BookController {
 </code></pre>
 </li>
 </ol>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Spring事务管理]]></title>
-        <id>https://Liangxi2001.github.io/post/spring-shi-wu-guan-li/</id>
-        <link href="https://Liangxi2001.github.io/post/spring-shi-wu-guan-li/">
-        </link>
-        <updated>2022-02-11T03:43:14.000Z</updated>
-        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
-<li><a href="#%E4%BA%8B%E5%8A%A1">事务：</a>
-<ul>
-<li><a href="#%E5%A3%B0%E6%98%8E%E5%BC%8F%E4%BA%8B%E5%8A%A1">声明式事务</a>
-<ul>
-<li><a href="#1%E5%9C%A8xml%E6%96%87%E4%BB%B6%E4%B8%AD%E6%B3%A8%E5%85%A5datasourcetransactionmanager">1.在xml文件中注入DataSourceTransactionManager</a></li>
-<li><a href="#2aop%E7%BB%87%E5%85%A5%E4%B8%8E%E4%BA%8B%E5%8A%A1%E9%85%8D">2.AOP织入与事务配</a></li>
-<li><a href="#3%E6%B5%8B%E8%AF%95">3.测试</a></li>
-</ul>
-</li>
-<li><a href="#%E7%BC%96%E7%A8%8B%E5%BC%8F%E4%BA%8B%E5%8A%A1">编程式事务</a></li>
-</ul>
-</li>
-</ul>
-</p>
-<h1 id="事务">事务：</h1>
-<ul>
-<li>声明式事务：基于AOP</li>
-<li>编程式事务：需要修改源代码</li>
-</ul>
-<h2 id="声明式事务">声明式事务</h2>
-<h3 id="1在xml文件中注入datasourcetransactionmanager">1.在xml文件中注入DataSourceTransactionManager</h3>
-<pre><code class="language-xml">&lt;!--    配置声明式事务--&gt;
-    &lt;bean id=&quot;transactionManager&quot; class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
-        &lt;constructor-arg ref=&quot;dataSource&quot; /&gt;
-    &lt;/bean&gt;
-</code></pre>
-<h3 id="2aop织入与事务配">2.AOP织入与事务配</h3>
-<ol>
-<li>绑定命名空间</li>
-</ol>
-<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
-       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
-       xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;
-       xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot;
-       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context.xsd
-        http://www.springframework.org/schema/tx
-        http://www.springframework.org/schema/tx/spring-tx.xsd
-        http://www.springframework.org/schema/aop
-        http://www.springframework.org/schema/aop/spring-aop.xsd&quot;&gt;
-</code></pre>
-<ol start="2">
-<li>织入AOP并配置事务</li>
-</ol>
-<pre><code class="language-xml">&lt;!--    结合AOP实现事务的织入--&gt;
-&lt;!--    配置事务通知--&gt;
-    &lt;tx:advice id=&quot;txAdvice&quot; transaction-manager=&quot;transactionManager&quot;&gt;
-&lt;!--        给方法配置事务--&gt;
-&lt;!--        配置事务的传播特性:propagation--&gt;
-        &lt;tx:attributes&gt;
-            &lt;tx:method name=&quot;add&quot; propagation=&quot;REQUIRED&quot;/&gt;
-            &lt;tx:method name=&quot;delete&quot; propagation=&quot;REQUIRED&quot;/&gt;
-            &lt;tx:method name=&quot;update&quot; propagation=&quot;REQUIRED&quot;/&gt;
-            &lt;tx:method name=&quot;query&quot; read-only=&quot;true&quot;/&gt;
-&lt;!--            实际应用只需要这一条--&gt;
-            &lt;tx:method name=&quot;*&quot; propagation=&quot;REQUIRED&quot;/&gt;
-        &lt;/tx:attributes&gt;
-    &lt;/tx:advice&gt;
-</code></pre>
-<ol start="3">
-<li>配置事务切入</li>
-</ol>
-<pre><code class="language-xml">&lt;!--    配置事务切入--&gt;
-    &lt;aop:config&gt;
-        &lt;aop:pointcut id=&quot;txPointCut&quot; expression=&quot;execution(* com.study.dao.*.*(..))&quot;/&gt;
-        &lt;aop:advisor advice-ref=&quot;txAdvice&quot; pointcut-ref=&quot;txPointCut&quot;/&gt;
-    &lt;/aop:config&gt;
-</code></pre>
-<h3 id="3测试">3.测试</h3>
-<p><em>实现类</em></p>
-<pre><code class="language-java">/**
- * @author 此间凉汐
- * @date 2022/2/11 10:41
- */
-public class UserMapperImpl extends SqlSessionDaoSupport implements UserMapper{
-    @Override
-    public List&lt;User&gt; selectUser() {
-        User user = new User(4, &quot;test&quot;, &quot;123123&quot;);
-        UserMapper mapper = getSqlSession().getMapper(UserMapper.class);
-
-        mapper.addUser(user);
-        mapper.deleteUser(3);
-
-        return mapper.selectUser();
-    }
-
-    @Override
-    public int addUser(User user) {
-        return getSqlSession().getMapper(UserMapper.class).addUser(user);
-    }
-
-    @Override
-    public int deleteUser(int id) {
-        return getSqlSession().getMapper(UserMapper.class).deleteUser(id);
-    }
-}
-</code></pre>
-<p><em>测试方法</em></p>
-<pre><code class="language-java">    public static void main(String[] args) {
-        ApplicationContext context = new ClassPathXmlApplicationContext(&quot;applicationContext.xml&quot;);
-        UserMapper mapper = context.getBean(&quot;userMapper&quot;, UserMapper.class);
-        for (User user : mapper.selectUser()) {
-            System.out.println(user);
-        }
-    }
-</code></pre>
-<h2 id="编程式事务">编程式事务</h2>
-<pre><code class="language-java">public class UserService {
-  private final PlatformTransactionManager transactionManager;
-  public UserService(PlatformTransactionManager transactionManager) {
-    this.transactionManager = transactionManager;
-  }
-  public void createUser() {
-    TransactionStatus txStatus =
-        transactionManager.getTransaction(new DefaultTransactionDefinition());
-    try {
-      userMapper.insertUser(user);
-    } catch (Exception e) {
-      transactionManager.rollback(txStatus);
-      throw e;
-    }
-    transactionManager.commit(txStatus);
-  }
-}
-</code></pre>
-<blockquote>
-<p>在使用 TransactionTemplate 的时候，可以省略对 commit 和 rollback 方法的调用。</p>
-</blockquote>
-<pre><code class="language-java">public class UserService {
-  private final PlatformTransactionManager transactionManager;
-  public UserService(PlatformTransactionManager transactionManager) {
-    this.transactionManager = transactionManager;
-  }
-  public void createUser() {
-    TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
-    transactionTemplate.execute(txStatus -&gt; {
-      userMapper.insertUser(user);
-      return null;
-    });
-  }
-}
-</code></pre>
 ]]></content>
     </entry>
 </feed>
