@@ -7,7 +7,7 @@
 <meta name="description" content="但行前路  莫问西东">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<link rel="shortcut icon" href="https://Liangxi2001.github.io/favicon.ico?v=1648028675909">
+<link rel="shortcut icon" href="https://Liangxi2001.github.io/favicon.ico?v=1648029741319">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://unpkg.com/papercss@1.6.1/dist/paper.min.css" />
@@ -96,7 +96,27 @@
             <div class="post-content">
               <p>采用springsecurity和Jwt实现登录模块，其中使用jwt生成token，security进行相关整合。</p>
 <!-- more -->
-<p>[@TOC]</p>
+<p><ul class="markdownIt-TOC">
+<li><a href="#1-%E5%AF%BC%E5%85%A5%E7%9B%B8%E5%85%B3%E4%BE%9D%E8%B5%96">1. 导入相关依赖</a></li>
+<li><a href="#2-demo">2. demo</a>
+<ul>
+<li><a href="#21-%E5%87%86%E5%A4%87%E7%99%BB%E5%BD%95%E5%8F%82%E6%95%B0">2.1 准备登录参数</a></li>
+<li><a href="#22-%E8%87%AA%E9%A1%B6%E5%90%91%E4%B8%8B%E8%AE%BE%E8%AE%A1%E6%8E%A5%E4%B8%8B%E6%9D%A5%E8%AE%BE%E8%AE%A1controller%E5%B1%82">2.2 自顶向下设计，接下来设计controller层</a></li>
+<li><a href="#23-service%E5%B1%82">2.3 Service层</a></li>
+<li><a href="#24-mapper%E5%B1%82">2.4 Mapper层</a></li>
+</ul>
+</li>
+<li><a href="#3-%E4%BD%BF%E7%94%A8springsecurity%E5%92%8Cjwt">3. 使用springsecurity和jwt</a>
+<ul>
+<li><a href="#31-jwttoken%E5%B7%A5%E5%85%B7%E7%B1%BB">3.1 jwttoken工具类</a></li>
+<li><a href="#32-jwt%E7%99%BB%E5%BD%95%E6%8E%88%E6%9D%83%E8%BF%87%E6%BB%A4%E5%99%A8">3.2 JWT登录授权过滤器</a></li>
+<li><a href="#33-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BF%94%E5%9B%9E%E7%BB%93%E6%9E%9C">3.3 自定义返回结果</a></li>
+<li><a href="#34-%E6%95%B4%E5%90%88">3.4 整合</a></li>
+</ul>
+</li>
+<li><a href="#4-%E4%B8%80%E4%BA%9B%E9%85%8D%E7%BD%AE">4. 一些配置</a></li>
+</ul>
+</p>
 <h1 id="1-导入相关依赖">1. 导入相关依赖</h1>
 <pre><code class="language-xml&lt;dependencies&gt;">        &lt;!--        web,lombok,mysql,mybatis-plus--&gt;
         &lt;dependency&gt;
@@ -616,7 +636,7 @@ jwt:
 
       <div class="sm-12 md-4 col sidebar">
   <div class="paper info-container">
-    <img src="https://Liangxi2001.github.io/images/avatar.png?v=1648028675909" class="no-responsive avatar">
+    <img src="https://Liangxi2001.github.io/images/avatar.png?v=1648029741319" class="no-responsive avatar">
     <div class="text-muted">但行前路  莫问西东</div>
     <div class="social-container">
       
@@ -714,11 +734,11 @@ jwt:
     </div>
     <div class="row">
       
-        <a href="https://Liangxi2001.github.io/tag/springboot2/" class="badge ">
+        <a href="https://Liangxi2001.github.io/tag/springboot2/" class="badge secondary">
           SpringBoot2
         </a>
       
-        <a href="https://Liangxi2001.github.io/tag/ssm-kuang-jia/" class="badge warning">
+        <a href="https://Liangxi2001.github.io/tag/ssm-kuang-jia/" class="badge secondary">
           SSM框架
         </a>
       
