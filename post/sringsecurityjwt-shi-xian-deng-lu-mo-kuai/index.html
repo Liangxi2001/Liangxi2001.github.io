@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>SringSecurity+Jwt实现登录模块 | 凉汐博客</title>
+<meta name="description" content="但行前路  莫问西东">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="https://Liangxi2001.github.io/favicon.ico?v=1648026806404">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://unpkg.com/papercss@1.6.1/dist/paper.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://Liangxi2001.github.io/styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+  </head>
+  <body>
+  
+    <nav class="navbar border fixed split-nav">
+  <div class="nav-brand">
+    <h3><a href="https://Liangxi2001.github.io">凉汐博客</a></h3>
+  </div>
+  <div class="collapsible">
+    <input id="collapsible1" type="checkbox" name="collapsible1">
+    <button>
+      <label for="collapsible1">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+      </label>
+    </button>
+    <div class="collapsible-body">
+      <ul class="inline">
+        
+          <li>
+            
+              <a href="/" class="menu">
+                首页
+              </a>
+            
+          </li>
+        
+          <li>
+            
+              <a href="/archives" class="menu">
+                归档
+              </a>
+            
+          </li>
+        
+          <li>
+            
+              <a href="/tags" class="menu">
+                标签
+              </a>
+            
+          </li>
+        
+          <li>
+            
+              <a href="/post/about" class="menu">
+                关于
+              </a>
+            
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div id="top" class="row site">
+      <div class="sm-12 md-8 col">
+        <div class="paper">
+          <article class="article">
+            <h1>SringSecurity+Jwt实现登录模块</h1>
+            <p class="article-meta">
+              2022-03-23
+              
+            </p>
+            
+            <div class="post-content">
+              <p>采用springsecurity和Jwt实现登录模块，其中使用jwt生成token，security进行相关整合。</p>
+<!-- more -->
+<p>[@TOC]</p>
+<h1 id="1-导入相关依赖">1. 导入相关依赖</h1>
+<pre><code class="language-xml&lt;dependencies&gt;">        &lt;!--        web,lombok,mysql,mybatis-plus--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+            &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;mysql&lt;/groupId&gt;
+            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.baomidou&lt;/groupId&gt;
+            &lt;artifactId&gt;mybatis-plus-boot-starter&lt;/artifactId&gt;
+            &lt;version&gt;3.3.1.tmp&lt;/version&gt;
+        &lt;/dependency&gt;
+&lt;!--        swagger(生成接口文档)+第三方ui--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;io.springfox&lt;/groupId&gt;
+            &lt;artifactId&gt;springfox-swagger2&lt;/artifactId&gt;
+            &lt;version&gt;2.7.0&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.github.xiaoymin&lt;/groupId&gt;
+            &lt;artifactId&gt;swagger-bootstrap-ui&lt;/artifactId&gt;
+            &lt;version&gt;1.9.6&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;!--        使用springsecurity + jwt实现登录相关功能--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;io.jsonwebtoken&lt;/groupId&gt;
+            &lt;artifactId&gt;jjwt&lt;/artifactId&gt;
+            &lt;version&gt;0.9.0&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+</code></pre>
+<h1 id="2-demo">2. demo</h1>
+<h2 id="21-准备登录参数">2.1 准备登录参数</h2>
+<pre><code class="language-java">/**
+ * @author 此间凉汐
+ * @date 2022/3/22 19:23
+ */
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+@ApiModel(value = &quot;adminLogin对象&quot;, description = &quot;&quot;)
+public class AdminLoginParam {
+    @ApiModelProperty(value = &quot;用户名&quot;, required = true)
+    private String username;
+    @ApiModelProperty(value = &quot;密码&quot;, required = true)
+    private String password;
+}
+</code></pre>
+<h2 id="22-自顶向下设计接下来设计controller层">2.2 自顶向下设计，接下来设计controller层</h2>
+<pre><code class="language-java">@Api(tags = &quot;loginController&quot;)
+@RestController
+public class LoginController {
+    @Autowired
+    private IAdminService adminService;
+    @ApiOperation(value = &quot;登录之后返回token&quot;)
+    @PostMapping(&quot;/login&quot;)
+    public RespBean login(@RequestBody AdminLoginParam adminLoginParam, HttpServletRequest request) {
+        return adminService.login(adminLoginParam.getUsername(), adminLoginParam.getPassword(), request);
+    }
+    @ApiOperation(value = &quot;获取当前登录用户的信息&quot;)
+    @GetMapping(&quot;/admin/info&quot;)
+    public Admin getAdminInfo(Principal principal) {
+        if (null == principal) {
+            return null;
+        }
+        String username = principal.getName();
+        Admin admin = adminService.getAdminByUserName(username);
+        admin.setPassword(null);
+        return admin;
+    }
+    @ApiOperation(value = &quot;退出登录&quot;)
+    @PostMapping(&quot;/logout&quot;)
+    public RespBean logout() {
+        return RespBean.success(&quot;注销成功！&quot;);
+    }
+}
+</code></pre>
+<h2 id="23-service层">2.3 Service层</h2>
+<p>在使用Mybatis-plus之后的接口</p>
+<pre><code class="language-java">public interface IAdminService extends IService&lt;Admin&gt; {
+    RespBean login(String username, String password, HttpServletRequest request);
+    Admin getAdminByUserName(String username);
+}
+</code></pre>
+<p>对应的实现类</p>
+<pre><code class="language-java">@Service
+public class AdminServiceImpl extends ServiceImpl&lt;AdminMapper, Admin&gt; implements IAdminService {
+    @Autowired
+    private AdminMapper adminMapper;
+    @Autowired
+    private UserDetailsService userDetailsService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+    @Value(&quot;${jwt.tokenHead}&quot;)
+    private String tokenHead;
+
+    /**
+     * 登录之后返回token
+     * @param username
+     * @param password
+     * @return
+     */
+    @Override
+    public RespBean login(String username, String password,HttpServletRequest request) {
+//        登录
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        if (null == userDetails || !passwordEncoder.matches(password, userDetails.getPassword())) {
+            return RespBean.error(&quot;用户名或密码不正确&quot;);
+        }
+        if (!userDetails.isEnabled()) {
+            return RespBean.error(&quot;账号被禁用，请联系管理员！&quot;);
+        }
+//        更新登录用户对象
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails
+                , null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+//        生成token
+        String token = jwtTokenUtil.generateToken(userDetails);
+        Map&lt;String, String&gt; tokenMap = new HashMap&lt;&gt;();
+        tokenMap.put(&quot;token&quot;, token);
+        tokenMap.put(&quot;tokenHead&quot;, tokenHead);
+
+        return RespBean.success(&quot;登录成功&quot;, tokenMap);
+    }
+
+    /**
+     * 根据用户名获取用户
+     * @param username
+     * @return
+     */
+    @Override
+    public Admin getAdminByUserName(String username) {
+        return adminMapper.selectOne(new QueryWrapper&lt;Admin&gt;().eq(&quot;username&quot;, username)
+                .eq(&quot;enabled&quot;, true));
+    }
+}
+</code></pre>
+<h2 id="24-mapper层">2.4 Mapper层</h2>
+<p>同样是基于Mybatis-plus</p>
+<pre><code class="language-java">public interface AdminMapper extends BaseMapper&lt;Admin&gt; { }
+</code></pre>
+<h1 id="3-使用springsecurity和jwt">3. 使用springsecurity和jwt</h1>
+<h2 id="31-jwttoken工具类">3.1 jwttoken工具类</h2>
+<pre><code class="language-java">@Component
+public class JwtTokenUtil {
+    private static final String CLAIM_KEY_USERNAME = &quot;sub&quot;;
+    private static final String CLAIM_KEY_CREATED = &quot;created&quot;;
+
+    @Value(&quot;${jwt.secret}&quot;)
+    private String secret;
+    @Value(&quot;${jwt.expiration}&quot;)
+    private Long expiration;
+
+    /**
+     * 根据用户信息生成token
+     *
+     * @param userDetails
+     * @return
+     */
+    public String generateToken(UserDetails userDetails) {
+        Map&lt;String, Object&gt; claims = new HashMap&lt;&gt;();
+        claims.put(CLAIM_KEY_USERNAME, userDetails.getUsername());
+        claims.put(CLAIM_KEY_CREATED, new Date());
+        return generateToken(claims);
+    }
+
+    public String getUserNameFromToken(String token) {
+        String userName;
+        try {
+            Claims claims = getClaimsFormToken(token);
+            userName = claims.getSubject();
+        } catch (Exception e) {
+            userName = null;
+        }
+        return userName;
+    }
+
+    /**
+     * 验证token是否有效
+     *
+     * @param token
+     * @param userDetails
+     * @return
+     */
+    public boolean validateToken(String token, UserDetails userDetails) {
+        String userName = getUserNameFromToken(token);
+        return userName.equals(userDetails.getUsername()) &amp;&amp; !isTokenExpired(token);
+    }
+
+    private boolean isTokenExpired(String token) {
+        Date expiredDate = getExpiredDateFromToken(token);
+        return expiredDate.before(new Date());
+    }
+
+    private Date getExpiredDateFromToken(String token) {
+        Claims claims = getClaimsFormToken(token);
+        return claims.getExpiration();
+    }
+
+    public boolean canRefresh(String token) {
+        return !isTokenExpired(token);
+    }
+
+    public String refreshToken(String token) {
+        Claims claims = getClaimsFormToken(token);
+        claims.put(CLAIM_KEY_CREATED, new Date());
+        return generateToken(claims);
+    }
+
+
+    /**
+     * 从Token中获取荷载
+     *
+     * @param token
+     * @return
+     */
+    private Claims getClaimsFormToken(String token) {
+        Claims claims = null;
+        try {
+            claims = Jwts.parser()
+                    .setSigningKey(secret)
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return claims;
+    }
+
+    /**
+     * 根据荷载生成JWT Token
+     * @param claims
+     * @return
+     */
+    private String generateToken(Map&lt;String, Object&gt; claims) {
+        return Jwts.builder()
+                .setClaims(claims)
+                .setExpiration(generateExpirationDate())
+                .signWith(SignatureAlgorithm.HS512, secret)
+                .compact();
+    }
+    /**
+     * 生成的Token失效时间
+     * @return
+     */
+    private Date generateExpirationDate() {
+        return new Date(System.currentTimeMillis() + expiration * 1000);
+    }
+}
+</code></pre>
+<h2 id="32-jwt登录授权过滤器">3.2 JWT登录授权过滤器</h2>
+<pre><code class="language-java">public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
+    @Autowired
+    private UserDetailsService userDetailsService;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
+    @Value(&quot;${jwt.tokenHeader}&quot;)
+    private String tokenHeader;
+    @Value(&quot;${jwt.tokenHead}&quot;)
+    private String tokenHead;
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String authHeader = request.getHeader(tokenHeader);
+        //存在token
+        if (null != authHeader &amp;&amp; authHeader.startsWith(tokenHead)) {
+            String authToken = authHeader.substring(tokenHead.length());
+            String username = jwtTokenUtil.getUserNameFromToken(authToken);
+//            token中存在用户名但未登录
+            if (null != username &amp;&amp; null == SecurityContextHolder.getContext().getAuthentication()) {
+//                登录
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+//                验证token是否有效，重新设置用户对象
+                if (jwtTokenUtil.validateToken(authToken, userDetails)) {
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails,
+                            null, userDetails.getAuthorities());
+                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                }
+            }
+        }
+        filterChain.doFilter(request, response);
+    }
+}
+</code></pre>
+<h2 id="33-自定义返回结果">3.3 自定义返回结果</h2>
+<pre><code class="language-java">@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class RespBean {
+    private long code;
+    private String message;
+    private Object obj;
+
+    /**
+     * 成功返回结果
+     *
+     * @param message
+     * @return
+     */
+    public static RespBean success(String message) {
+        return new RespBean(200, message, null);
+    }
+
+    public static RespBean success(String message, Object obj) {
+        return new RespBean(200, message, obj);
+    }
+
+    /**
+     * 错误返回结果
+     *
+     * @param message
+     * @return
+     */
+    public static RespBean error(String message) {
+        return new RespBean(500, message, null);
+    }
+
+    public static RespBean error(String message, Object obj) {
+        return new RespBean(500, message, obj);
+    }
+}
+</code></pre>
+<pre><code class="language-java">@Component
+public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
+    @Override
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+        response.setCharacterEncoding(&quot;UTF-8&quot;);
+        response.setContentType(&quot;application/json&quot;);
+        PrintWriter out = response.getWriter();
+        RespBean bean = RespBean.error(&quot;尚未登录，请登录！&quot;);
+        bean.setCode(401);
+        out.write(new ObjectMapper().writeValueAsString(bean));
+        out.flush();
+        out.close();
+    }
+}
+</code></pre>
+<pre><code class="language-java">@Component
+public class RestfulAccessDeniedHandler implements AccessDeniedHandler {
+    @Override
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+        response.setCharacterEncoding(&quot;UTF-8&quot;);
+        response.setContentType(&quot;application/json&quot;);
+        PrintWriter out = response.getWriter();
+        RespBean bean = RespBean.error(&quot;权限不足，请联系管理员！&quot;);
+        bean.setCode(403);
+        out.write(new ObjectMapper().writeValueAsString(bean));
+        out.flush();
+        out.close();
+    }
+}
+</code></pre>
+<h2 id="34-整合">3.4 整合</h2>
+<pre><code class="language-java">@Configuration
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private IAdminService adminService ;
+    @Autowired
+    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    @Autowired
+    private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+//        使用JWT，不需要csrf
+        http.csrf()
+                .disable()
+                //基于token，不需要session
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests()
+                //所有请求都要认证
+                .anyRequest()
+                .authenticated()
+                .and()
+                .headers()
+                .cacheControl();
+//        添加jwt，登录授权过滤器
+        http.addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+//        添加自定义未授权和未登录结果返回
+        http.exceptionHandling()
+                .accessDeniedHandler(restfulAccessDeniedHandler)
+                .authenticationEntryPoint(restAuthenticationEntryPoint);
+
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        //放行的请求
+        web.ignoring().antMatchers(
+                &quot;/login&quot;,
+                &quot;/logout&quot;,
+                &quot;/css/**&quot;,
+                &quot;/js/**&quot;,
+                &quot;/index.html&quot;,
+                &quot;favicon.ico&quot;,
+                &quot;/doc.html&quot;,
+                &quot;/webjars/**&quot;,
+                &quot;/swagger-resources/**&quot;,
+                &quot;/v2/api-docs/**&quot;
+        );
+    }
+
+    @Override
+    @Bean
+    public UserDetailsService userDetailsService() {
+        //获取登录用户信息
+        return username -&gt; {
+            Admin admin = adminService.getAdminByUserName(username);
+            if (null != admin) {
+                return admin;
+            }
+            return null;
+        };
+    }
+
+    @Bean
+    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter() {
+        return new JwtAuthenticationTokenFilter();
+    }
+}
+</code></pre>
+<h1 id="4-一些配置">4. 一些配置</h1>
+<pre><code class="language-yaml">server:
+  port: 8081
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/yeb?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=UTC
+    username: root
+    password: xxxx
+    hikari:
+      pool-name: DateHikariCP
+      minimum-idle: 5
+      idle-timeout: 180000
+      auto-commit: true
+      maximum-pool-size: 10
+      max-lifetime: 180000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/*Mapper.xml
+  type-aliases-package: com.yebProject.server.pojo
+  configuration:
+    map-underscore-to-camel-case: false
+
+logging:
+  level:
+    com.yebProject.server.mapper: debug
+
+jwt:
+  tokenHeader: Authorization
+  secret: yeb-secret
+  expiration: 604800
+  tokenHead: Bearer
+</code></pre>
+
+            </div>
+          </article>
+        </div>
+        <div class="paper" data-aos="fade-in">
+          
+            <div class="next-post">
+              <div class="next">
+                下一篇
+              </div>
+              <a href="https://Liangxi2001.github.io/post/springboot-zhong-web-kai-fa-de-jian-dan-gong-neng/">
+                <h3 class="post-title">
+                  SpringBoot中web开发的简单功能
+                </h3>
+              </a>
+            </div>
+          
+        </div>
+        
+          
+            <div class="paper" data-aos="fade-in">
+              <div id="gitalk-container"></div>
+            </div>
+          
+
+          
+        
+      </div>
+
+      <div class="sm-12 md-4 col sidebar">
+  <div class="paper info-container">
+    <img src="https://Liangxi2001.github.io/images/avatar.png?v=1648026806404" class="no-responsive avatar">
+    <div class="text-muted">但行前路  莫问西东</div>
+    <div class="social-container">
+      
+        
+          <a href="https://github.com/Liangxi2001" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+  </div>
+  <div class="paper">
+    <div class="sidebar-title">
+      最新文章
+    </div>
+    <div class="row">
+      <ul>
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/sringsecurityjwt-shi-xian-deng-lu-mo-kuai/">SringSecurity+Jwt实现登录模块</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/springboot-zhong-web-kai-fa-de-jian-dan-gong-neng/">SpringBoot中web开发的简单功能</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/yaml-jian-jie/">YAML简介</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/guan-yu-git-shi-yong-shi-yu-dao-de-yi-xie-wen-ti/">关于git使用时遇到的一些问题</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/springboot2-ji-chu-ru-men/">SpringBoot2基础入门</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/ssm-kuang-jia-zheng-he/">SSM框架整合</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/spring-shi-wu-guan-li/">Spring事务管理</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/spring-yu-mybatis-de-zheng-he/">Spring与Mybatis的整合</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/tian-yin-xin-an-ji-wu-xiang/">天音：心安即吾乡</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/about/">关于</a>
+            </li>
+          
+        
+          
+        
+      </ul>
+    </div>
+  </div>
+  <div class="paper">
+    <div class="sidebar-title">
+      标签列表
+    </div>
+    <div class="row">
+      
+        <a href="https://Liangxi2001.github.io/tag/springboot2/" class="badge ">
+          SpringBoot2
+        </a>
+      
+        <a href="https://Liangxi2001.github.io/tag/ssm-kuang-jia/" class="badge ">
+          SSM框架
+        </a>
+      
+    </div>
+  </div>
+  <div class="paper">
+    Powered by  <a href="https://github.com/Liangxi2001/Liangxi2001.github.io" target="_blank">凉汐</a> | <a class="rss" href="https://Liangxi2001.github.io/atom.xml" target="_blank">RSS</a>
+  </div>
+</div>
+
+
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+</script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: '80e65e0628ad6f63ce37',
+        clientSecret: '2b9e05bec061b03c2143359c32c3b5d4f4e45df6',
+        repo: 'Liangxi2001.github.io',
+        owner: 'Liangxi2001',
+        admin: ['Liangxi2001'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>

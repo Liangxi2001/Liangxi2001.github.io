@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://Liangxi2001.github.io</id>
     <title>凉汐博客</title>
-    <updated>2022-03-13T05:34:50.045Z</updated>
+    <updated>2022-03-23T09:44:33.258Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://Liangxi2001.github.io"/>
     <link rel="self" href="https://Liangxi2001.github.io/atom.xml"/>
@@ -10,6 +10,507 @@
     <logo>https://Liangxi2001.github.io/images/avatar.png</logo>
     <icon>https://Liangxi2001.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, 凉汐博客</rights>
+    <entry>
+        <title type="html"><![CDATA[SringSecurity+Jwt实现登录模块]]></title>
+        <id>https://Liangxi2001.github.io/post/sringsecurityjwt-shi-xian-deng-lu-mo-kuai/</id>
+        <link href="https://Liangxi2001.github.io/post/sringsecurityjwt-shi-xian-deng-lu-mo-kuai/">
+        </link>
+        <updated>2022-03-23T08:47:06.000Z</updated>
+        <summary type="html"><![CDATA[<p>采用springsecurity和Jwt实现登录模块，其中使用jwt生成token，security进行相关整合。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>采用springsecurity和Jwt实现登录模块，其中使用jwt生成token，security进行相关整合。</p>
+<!-- more -->
+<p>[@TOC]</p>
+<h1 id="1-导入相关依赖">1. 导入相关依赖</h1>
+<pre><code class="language-xml&lt;dependencies&gt;">        &lt;!--        web,lombok,mysql,mybatis-plus--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+            &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;mysql&lt;/groupId&gt;
+            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.baomidou&lt;/groupId&gt;
+            &lt;artifactId&gt;mybatis-plus-boot-starter&lt;/artifactId&gt;
+            &lt;version&gt;3.3.1.tmp&lt;/version&gt;
+        &lt;/dependency&gt;
+&lt;!--        swagger(生成接口文档)+第三方ui--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;io.springfox&lt;/groupId&gt;
+            &lt;artifactId&gt;springfox-swagger2&lt;/artifactId&gt;
+            &lt;version&gt;2.7.0&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.github.xiaoymin&lt;/groupId&gt;
+            &lt;artifactId&gt;swagger-bootstrap-ui&lt;/artifactId&gt;
+            &lt;version&gt;1.9.6&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;!--        使用springsecurity + jwt实现登录相关功能--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;io.jsonwebtoken&lt;/groupId&gt;
+            &lt;artifactId&gt;jjwt&lt;/artifactId&gt;
+            &lt;version&gt;0.9.0&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+</code></pre>
+<h1 id="2-demo">2. demo</h1>
+<h2 id="21-准备登录参数">2.1 准备登录参数</h2>
+<pre><code class="language-java">/**
+ * @author 此间凉汐
+ * @date 2022/3/22 19:23
+ */
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+@ApiModel(value = &quot;adminLogin对象&quot;, description = &quot;&quot;)
+public class AdminLoginParam {
+    @ApiModelProperty(value = &quot;用户名&quot;, required = true)
+    private String username;
+    @ApiModelProperty(value = &quot;密码&quot;, required = true)
+    private String password;
+}
+</code></pre>
+<h2 id="22-自顶向下设计接下来设计controller层">2.2 自顶向下设计，接下来设计controller层</h2>
+<pre><code class="language-java">@Api(tags = &quot;loginController&quot;)
+@RestController
+public class LoginController {
+    @Autowired
+    private IAdminService adminService;
+    @ApiOperation(value = &quot;登录之后返回token&quot;)
+    @PostMapping(&quot;/login&quot;)
+    public RespBean login(@RequestBody AdminLoginParam adminLoginParam, HttpServletRequest request) {
+        return adminService.login(adminLoginParam.getUsername(), adminLoginParam.getPassword(), request);
+    }
+    @ApiOperation(value = &quot;获取当前登录用户的信息&quot;)
+    @GetMapping(&quot;/admin/info&quot;)
+    public Admin getAdminInfo(Principal principal) {
+        if (null == principal) {
+            return null;
+        }
+        String username = principal.getName();
+        Admin admin = adminService.getAdminByUserName(username);
+        admin.setPassword(null);
+        return admin;
+    }
+    @ApiOperation(value = &quot;退出登录&quot;)
+    @PostMapping(&quot;/logout&quot;)
+    public RespBean logout() {
+        return RespBean.success(&quot;注销成功！&quot;);
+    }
+}
+</code></pre>
+<h2 id="23-service层">2.3 Service层</h2>
+<p>在使用Mybatis-plus之后的接口</p>
+<pre><code class="language-java">public interface IAdminService extends IService&lt;Admin&gt; {
+    RespBean login(String username, String password, HttpServletRequest request);
+    Admin getAdminByUserName(String username);
+}
+</code></pre>
+<p>对应的实现类</p>
+<pre><code class="language-java">@Service
+public class AdminServiceImpl extends ServiceImpl&lt;AdminMapper, Admin&gt; implements IAdminService {
+    @Autowired
+    private AdminMapper adminMapper;
+    @Autowired
+    private UserDetailsService userDetailsService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+    @Value(&quot;${jwt.tokenHead}&quot;)
+    private String tokenHead;
+
+    /**
+     * 登录之后返回token
+     * @param username
+     * @param password
+     * @return
+     */
+    @Override
+    public RespBean login(String username, String password,HttpServletRequest request) {
+//        登录
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        if (null == userDetails || !passwordEncoder.matches(password, userDetails.getPassword())) {
+            return RespBean.error(&quot;用户名或密码不正确&quot;);
+        }
+        if (!userDetails.isEnabled()) {
+            return RespBean.error(&quot;账号被禁用，请联系管理员！&quot;);
+        }
+//        更新登录用户对象
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails
+                , null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+//        生成token
+        String token = jwtTokenUtil.generateToken(userDetails);
+        Map&lt;String, String&gt; tokenMap = new HashMap&lt;&gt;();
+        tokenMap.put(&quot;token&quot;, token);
+        tokenMap.put(&quot;tokenHead&quot;, tokenHead);
+
+        return RespBean.success(&quot;登录成功&quot;, tokenMap);
+    }
+
+    /**
+     * 根据用户名获取用户
+     * @param username
+     * @return
+     */
+    @Override
+    public Admin getAdminByUserName(String username) {
+        return adminMapper.selectOne(new QueryWrapper&lt;Admin&gt;().eq(&quot;username&quot;, username)
+                .eq(&quot;enabled&quot;, true));
+    }
+}
+</code></pre>
+<h2 id="24-mapper层">2.4 Mapper层</h2>
+<p>同样是基于Mybatis-plus</p>
+<pre><code class="language-java">public interface AdminMapper extends BaseMapper&lt;Admin&gt; { }
+</code></pre>
+<h1 id="3-使用springsecurity和jwt">3. 使用springsecurity和jwt</h1>
+<h2 id="31-jwttoken工具类">3.1 jwttoken工具类</h2>
+<pre><code class="language-java">@Component
+public class JwtTokenUtil {
+    private static final String CLAIM_KEY_USERNAME = &quot;sub&quot;;
+    private static final String CLAIM_KEY_CREATED = &quot;created&quot;;
+
+    @Value(&quot;${jwt.secret}&quot;)
+    private String secret;
+    @Value(&quot;${jwt.expiration}&quot;)
+    private Long expiration;
+
+    /**
+     * 根据用户信息生成token
+     *
+     * @param userDetails
+     * @return
+     */
+    public String generateToken(UserDetails userDetails) {
+        Map&lt;String, Object&gt; claims = new HashMap&lt;&gt;();
+        claims.put(CLAIM_KEY_USERNAME, userDetails.getUsername());
+        claims.put(CLAIM_KEY_CREATED, new Date());
+        return generateToken(claims);
+    }
+
+    public String getUserNameFromToken(String token) {
+        String userName;
+        try {
+            Claims claims = getClaimsFormToken(token);
+            userName = claims.getSubject();
+        } catch (Exception e) {
+            userName = null;
+        }
+        return userName;
+    }
+
+    /**
+     * 验证token是否有效
+     *
+     * @param token
+     * @param userDetails
+     * @return
+     */
+    public boolean validateToken(String token, UserDetails userDetails) {
+        String userName = getUserNameFromToken(token);
+        return userName.equals(userDetails.getUsername()) &amp;&amp; !isTokenExpired(token);
+    }
+
+    private boolean isTokenExpired(String token) {
+        Date expiredDate = getExpiredDateFromToken(token);
+        return expiredDate.before(new Date());
+    }
+
+    private Date getExpiredDateFromToken(String token) {
+        Claims claims = getClaimsFormToken(token);
+        return claims.getExpiration();
+    }
+
+    public boolean canRefresh(String token) {
+        return !isTokenExpired(token);
+    }
+
+    public String refreshToken(String token) {
+        Claims claims = getClaimsFormToken(token);
+        claims.put(CLAIM_KEY_CREATED, new Date());
+        return generateToken(claims);
+    }
+
+
+    /**
+     * 从Token中获取荷载
+     *
+     * @param token
+     * @return
+     */
+    private Claims getClaimsFormToken(String token) {
+        Claims claims = null;
+        try {
+            claims = Jwts.parser()
+                    .setSigningKey(secret)
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return claims;
+    }
+
+    /**
+     * 根据荷载生成JWT Token
+     * @param claims
+     * @return
+     */
+    private String generateToken(Map&lt;String, Object&gt; claims) {
+        return Jwts.builder()
+                .setClaims(claims)
+                .setExpiration(generateExpirationDate())
+                .signWith(SignatureAlgorithm.HS512, secret)
+                .compact();
+    }
+    /**
+     * 生成的Token失效时间
+     * @return
+     */
+    private Date generateExpirationDate() {
+        return new Date(System.currentTimeMillis() + expiration * 1000);
+    }
+}
+</code></pre>
+<h2 id="32-jwt登录授权过滤器">3.2 JWT登录授权过滤器</h2>
+<pre><code class="language-java">public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
+    @Autowired
+    private UserDetailsService userDetailsService;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
+    @Value(&quot;${jwt.tokenHeader}&quot;)
+    private String tokenHeader;
+    @Value(&quot;${jwt.tokenHead}&quot;)
+    private String tokenHead;
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String authHeader = request.getHeader(tokenHeader);
+        //存在token
+        if (null != authHeader &amp;&amp; authHeader.startsWith(tokenHead)) {
+            String authToken = authHeader.substring(tokenHead.length());
+            String username = jwtTokenUtil.getUserNameFromToken(authToken);
+//            token中存在用户名但未登录
+            if (null != username &amp;&amp; null == SecurityContextHolder.getContext().getAuthentication()) {
+//                登录
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+//                验证token是否有效，重新设置用户对象
+                if (jwtTokenUtil.validateToken(authToken, userDetails)) {
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails,
+                            null, userDetails.getAuthorities());
+                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                }
+            }
+        }
+        filterChain.doFilter(request, response);
+    }
+}
+</code></pre>
+<h2 id="33-自定义返回结果">3.3 自定义返回结果</h2>
+<pre><code class="language-java">@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class RespBean {
+    private long code;
+    private String message;
+    private Object obj;
+
+    /**
+     * 成功返回结果
+     *
+     * @param message
+     * @return
+     */
+    public static RespBean success(String message) {
+        return new RespBean(200, message, null);
+    }
+
+    public static RespBean success(String message, Object obj) {
+        return new RespBean(200, message, obj);
+    }
+
+    /**
+     * 错误返回结果
+     *
+     * @param message
+     * @return
+     */
+    public static RespBean error(String message) {
+        return new RespBean(500, message, null);
+    }
+
+    public static RespBean error(String message, Object obj) {
+        return new RespBean(500, message, obj);
+    }
+}
+</code></pre>
+<pre><code class="language-java">@Component
+public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
+    @Override
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+        response.setCharacterEncoding(&quot;UTF-8&quot;);
+        response.setContentType(&quot;application/json&quot;);
+        PrintWriter out = response.getWriter();
+        RespBean bean = RespBean.error(&quot;尚未登录，请登录！&quot;);
+        bean.setCode(401);
+        out.write(new ObjectMapper().writeValueAsString(bean));
+        out.flush();
+        out.close();
+    }
+}
+</code></pre>
+<pre><code class="language-java">@Component
+public class RestfulAccessDeniedHandler implements AccessDeniedHandler {
+    @Override
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+        response.setCharacterEncoding(&quot;UTF-8&quot;);
+        response.setContentType(&quot;application/json&quot;);
+        PrintWriter out = response.getWriter();
+        RespBean bean = RespBean.error(&quot;权限不足，请联系管理员！&quot;);
+        bean.setCode(403);
+        out.write(new ObjectMapper().writeValueAsString(bean));
+        out.flush();
+        out.close();
+    }
+}
+</code></pre>
+<h2 id="34-整合">3.4 整合</h2>
+<pre><code class="language-java">@Configuration
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private IAdminService adminService ;
+    @Autowired
+    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    @Autowired
+    private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+//        使用JWT，不需要csrf
+        http.csrf()
+                .disable()
+                //基于token，不需要session
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests()
+                //所有请求都要认证
+                .anyRequest()
+                .authenticated()
+                .and()
+                .headers()
+                .cacheControl();
+//        添加jwt，登录授权过滤器
+        http.addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+//        添加自定义未授权和未登录结果返回
+        http.exceptionHandling()
+                .accessDeniedHandler(restfulAccessDeniedHandler)
+                .authenticationEntryPoint(restAuthenticationEntryPoint);
+
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        //放行的请求
+        web.ignoring().antMatchers(
+                &quot;/login&quot;,
+                &quot;/logout&quot;,
+                &quot;/css/**&quot;,
+                &quot;/js/**&quot;,
+                &quot;/index.html&quot;,
+                &quot;favicon.ico&quot;,
+                &quot;/doc.html&quot;,
+                &quot;/webjars/**&quot;,
+                &quot;/swagger-resources/**&quot;,
+                &quot;/v2/api-docs/**&quot;
+        );
+    }
+
+    @Override
+    @Bean
+    public UserDetailsService userDetailsService() {
+        //获取登录用户信息
+        return username -&gt; {
+            Admin admin = adminService.getAdminByUserName(username);
+            if (null != admin) {
+                return admin;
+            }
+            return null;
+        };
+    }
+
+    @Bean
+    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter() {
+        return new JwtAuthenticationTokenFilter();
+    }
+}
+</code></pre>
+<h1 id="4-一些配置">4. 一些配置</h1>
+<pre><code class="language-yaml">server:
+  port: 8081
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/yeb?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=UTC
+    username: root
+    password: xxxx
+    hikari:
+      pool-name: DateHikariCP
+      minimum-idle: 5
+      idle-timeout: 180000
+      auto-commit: true
+      maximum-pool-size: 10
+      max-lifetime: 180000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/*Mapper.xml
+  type-aliases-package: com.yebProject.server.pojo
+  configuration:
+    map-underscore-to-camel-case: false
+
+logging:
+  level:
+    com.yebProject.server.mapper: debug
+
+jwt:
+  tokenHeader: Authorization
+  secret: yeb-secret
+  expiration: 604800
+  tokenHead: Bearer
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[SpringBoot中web开发的简单功能]]></title>
         <id>https://Liangxi2001.github.io/post/springboot-zhong-web-kai-fa-de-jian-dan-gong-neng/</id>
@@ -1450,582 +1951,6 @@ public class HelloController {
 </li>
 <li>
 <p>自动编写好主配置类</p>
-</li>
-</ol>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[SSM框架整合]]></title>
-        <id>https://Liangxi2001.github.io/post/ssm-kuang-jia-zheng-he/</id>
-        <link href="https://Liangxi2001.github.io/post/ssm-kuang-jia-zheng-he/">
-        </link>
-        <updated>2022-02-23T08:34:44.000Z</updated>
-        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#1%E5%AF%BC%E5%85%A5%E7%9B%B8%E5%85%B3jar%E5%8C%85">1.导入相关jar包</a></li>
-<li><a href="#2%E6%B7%BB%E5%8A%A0web%E6%94%AF%E6%8C%81%E5%B9%B6%E9%85%8D%E7%BD%AEwebxml">2.添加web支持并配置web.xml</a></li>
-<li><a href="#3%E7%BC%96%E5%86%99%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">3.编写配置文件</a>
-<ul>
-<li><a href="#31-mybatis%E6%A0%B8%E5%BF%83%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">3.1 Mybatis核心配置文件</a></li>
-<li><a href="#32-spring-daoxml">3.2 spring-dao.xml</a></li>
-<li><a href="#33-spring-servicexml">3.3 spring-service.xml</a></li>
-<li><a href="#34-spring-mvcxml">3.4 spring-mvc.xml</a></li>
-</ul>
-</li>
-<li><a href="#4%E6%B5%8B%E8%AF%95">4.测试</a>
-<ul>
-<li><a href="#41%E6%9F%A5%E8%AF%A2%E5%85%A8%E9%83%A8%E5%9B%BE%E4%B9%A6">4.1查询全部图书</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</p>
-<h2 id="1导入相关jar包">1.导入相关jar包</h2>
-<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
-         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
-    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
-
-    &lt;groupId&gt;org.study&lt;/groupId&gt;
-    &lt;artifactId&gt;ssmbuild&lt;/artifactId&gt;
-    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
-
-    &lt;properties&gt;
-        &lt;maven.compiler.source&gt;8&lt;/maven.compiler.source&gt;
-        &lt;maven.compiler.target&gt;8&lt;/maven.compiler.target&gt;
-    &lt;/properties&gt;
-
-&lt;!--    导入相关依赖--&gt;
-    &lt;dependencies&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;junit&lt;/groupId&gt;
-            &lt;artifactId&gt;junit&lt;/artifactId&gt;
-            &lt;version&gt;4.12&lt;/version&gt;
-        &lt;/dependency&gt;
-&lt;!--        数据库驱动--&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;mysql&lt;/groupId&gt;
-            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
-            &lt;version&gt;5.1.47&lt;/version&gt;
-        &lt;/dependency&gt;
-&lt;!--        数据库连接池--&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;com.mchange&lt;/groupId&gt;
-            &lt;artifactId&gt;c3p0&lt;/artifactId&gt;
-            &lt;version&gt;0.9.5.2&lt;/version&gt;
-        &lt;/dependency&gt;
-&lt;!--        servlet-jsp--&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
-            &lt;artifactId&gt;servlet-api&lt;/artifactId&gt;
-            &lt;version&gt;2.5&lt;/version&gt;
-        &lt;/dependency&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;javax.servlet.jsp&lt;/groupId&gt;
-            &lt;artifactId&gt;jsp-api&lt;/artifactId&gt;
-            &lt;version&gt;2.2&lt;/version&gt;
-        &lt;/dependency&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
-            &lt;artifactId&gt;jstl&lt;/artifactId&gt;
-            &lt;version&gt;1.2&lt;/version&gt;
-        &lt;/dependency&gt;
-&lt;!--        Mybatis--&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.mybatis&lt;/groupId&gt;
-            &lt;artifactId&gt;mybatis&lt;/artifactId&gt;
-            &lt;version&gt;3.5.2&lt;/version&gt;
-        &lt;/dependency&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.mybatis&lt;/groupId&gt;
-            &lt;artifactId&gt;mybatis-spring&lt;/artifactId&gt;
-            &lt;version&gt;2.0.2&lt;/version&gt;
-        &lt;/dependency&gt;
-&lt;!--        Spring--&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
-            &lt;artifactId&gt;spring-webmvc&lt;/artifactId&gt;
-            &lt;version&gt;5.1.9.RELEASE&lt;/version&gt;
-        &lt;/dependency&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
-            &lt;artifactId&gt;spring-jdbc&lt;/artifactId&gt;
-            &lt;version&gt;5.1.9.RELEASE&lt;/version&gt;
-        &lt;/dependency&gt;
-    &lt;/dependencies&gt;
-
-&lt;!--    Maven资源过滤设置--&gt;
-    &lt;build&gt;
-        &lt;resources&gt;
-            &lt;resource&gt;
-                &lt;directory&gt;src/main/java&lt;/directory&gt;
-                &lt;includes&gt;
-                    &lt;include&gt;**/*.properties&lt;/include&gt;
-                    &lt;include&gt;**/*.xml&lt;/include&gt;
-                &lt;/includes&gt;
-                &lt;filtering&gt;false&lt;/filtering&gt;
-            &lt;/resource&gt;
-            &lt;resource&gt;
-                &lt;directory&gt;src/main/resources&lt;/directory&gt;
-                &lt;includes&gt;
-                    &lt;include&gt;**/*.properties&lt;/include&gt;
-                    &lt;include&gt;**/*.xml&lt;/include&gt;
-                &lt;/includes&gt;
-                &lt;filtering&gt;false&lt;/filtering&gt;
-            &lt;/resource&gt;
-        &lt;/resources&gt;
-    &lt;/build&gt;
-
-&lt;/project&gt;
-</code></pre>
-<h2 id="2添加web支持并配置webxml">2.添加web支持并配置web.xml</h2>
-<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;web-app xmlns=&quot;http://xmlns.jcp.org/xml/ns/javaee&quot;
-         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-         xsi:schemaLocation=&quot;http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd&quot;
-         version=&quot;4.0&quot;&gt;
-&lt;!--    DispatcherServlet--&gt;
-    &lt;servlet&gt;
-        &lt;servlet-name&gt;Springmvc&lt;/servlet-name&gt;
-        &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
-        &lt;init-param&gt;
-            &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
-&lt;!--            在整合时,因为使用了mapper,service以及controller层的bean,所以应该绑定一个总的文件,一个囊括了所有bean的文件--&gt;
-            &lt;param-value&gt;classpath:applicationContext.xml&lt;/param-value&gt;
-        &lt;/init-param&gt;
-        &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
-    &lt;/servlet&gt;
-    &lt;servlet-mapping&gt;
-        &lt;servlet-name&gt;Springmvc&lt;/servlet-name&gt;
-        &lt;url-pattern&gt;/&lt;/url-pattern&gt;
-    &lt;/servlet-mapping&gt;
-&lt;!--    filter--&gt;
-    &lt;filter&gt;
-        &lt;filter-name&gt;encodingFilter&lt;/filter-name&gt;
-        &lt;filter-class&gt;org.springframework.web.filter.CharacterEncodingFilter&lt;/filter-class&gt;
-        &lt;init-param&gt;
-            &lt;param-name&gt;encoding&lt;/param-name&gt;
-            &lt;param-value&gt;UTF-8&lt;/param-value&gt;
-        &lt;/init-param&gt;
-    &lt;/filter&gt;
-    &lt;filter-mapping&gt;
-        &lt;filter-name&gt;encodingFilter&lt;/filter-name&gt;
-        &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
-    &lt;/filter-mapping&gt;
-
-&lt;!--    Session--&gt;
-    &lt;session-config&gt;
-        &lt;session-timeout&gt;15&lt;/session-timeout&gt;
-    &lt;/session-config&gt;
-&lt;/web-app&gt;
-</code></pre>
-<p><em><strong>注意：在整合时,因为使用了mapper,service以及controller层的bean,所以应该绑定一个总的文件,一个囊括了所有bean的文件，可用import进行导入</strong></em></p>
-<h2 id="3编写配置文件">3.编写配置文件</h2>
-<h3 id="31-mybatis核心配置文件">3.1 Mybatis核心配置文件</h3>
-<p><em>mybatis-config.xml：</em></p>
-<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
-&lt;!DOCTYPE configuration
-        PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot;
-        &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;
-&lt;configuration&gt;
-    
-    
-    &lt;typeAliases&gt;
-        &lt;package name=&quot;com.study.pojo&quot;/&gt;
-    &lt;/typeAliases&gt;
-
-    &lt;mappers&gt;
-        &lt;mapper class=&quot;com.study.mapper.BookMapper&quot;/&gt;
-    &lt;/mappers&gt;
-&lt;/configuration&gt;
-</code></pre>
-<p><em>个人信息database.properties：</em></p>
-<pre><code class="language-properties">jdbc.driver=com.mysql.jdbc.Driver
-jdbc.url=jdbc:mysql://localhost:3306/ssmbuild?useSSL=true&amp;useUnicode=true&amp;characterEncoding=utf8
-jdbc.username=root
-jdbc.password=******
-</code></pre>
-<h3 id="32-spring-daoxml">3.2 spring-dao.xml</h3>
-<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
-       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
-       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context
-        https://www.springframework.org/schema/context/spring-context.xsd&quot;&gt;
-    &lt;!-- 配置整合mybatis --&gt;
-    &lt;!-- 1.关联数据库文件 --&gt;
-    &lt;context:property-placeholder location=&quot;classpath:database.properties&quot;/&gt;
-    &lt;!-- 2.数据库连接池 --&gt;
-    &lt;!--数据库连接池
-        dbcp  半自动化操作  不能自动连接
-        c3p0  自动化操作（自动的加载配置文件 并且设置到对象里面）
-    --&gt;
-    &lt;bean id=&quot;dataSource&quot; class=&quot;com.mchange.v2.c3p0.ComboPooledDataSource&quot;&gt;
-        &lt;!-- 配置连接池属性 --&gt;
-        &lt;property name=&quot;driverClass&quot; value=&quot;${jdbc.driver}&quot;/&gt;
-        &lt;property name=&quot;jdbcUrl&quot; value=&quot;${jdbc.url}&quot;/&gt;
-        &lt;property name=&quot;user&quot; value=&quot;${jdbc.username}&quot;/&gt;
-        &lt;property name=&quot;password&quot; value=&quot;${jdbc.password}&quot;/&gt;
-        &lt;!-- c3p0连接池的私有属性 --&gt;
-        &lt;property name=&quot;maxPoolSize&quot; value=&quot;30&quot;/&gt;
-        &lt;property name=&quot;minPoolSize&quot; value=&quot;4&quot;/&gt;
-        &lt;!-- 关闭连接后不自动commit --&gt;
-        &lt;property name=&quot;autoCommitOnClose&quot; value=&quot;false&quot;/&gt;
-        &lt;!-- 获取连接超时时间 --&gt;
-        &lt;property name=&quot;checkoutTimeout&quot; value=&quot;10000&quot;/&gt;
-        &lt;!-- 当获取连接失败重试次数 --&gt;
-        &lt;property name=&quot;acquireRetryAttempts&quot; value=&quot;2&quot;/&gt;
-    &lt;/bean&gt;
-    &lt;!-- 3.配置SqlSessionFactory对象 --&gt;
-    &lt;bean id=&quot;sqlSessionFactory&quot; class=&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;&gt;
-        &lt;!-- 注入数据库连接池 --&gt;
-        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
-        &lt;!-- 配置Mybatis全局配置文件:mybatis-config.xml --&gt;
-        &lt;property name=&quot;configLocation&quot; value=&quot;classpath:mybatis-config.xml&quot;/&gt;
-    &lt;/bean&gt;
-    &lt;!-- 4.配置扫描Dao接口包，动态实现Dao接口注入到spring容器中 --&gt;
-    &lt;!--解释 ： https://www.cnblogs.com/jpfss/p/7799806.html--&gt;
-    &lt;bean class=&quot;org.mybatis.spring.mapper.MapperScannerConfigurer&quot;&gt;
-        &lt;!-- 注入sqlSessionFactory --&gt;
-        &lt;property name=&quot;sqlSessionFactoryBeanName&quot; value=&quot;sqlSessionFactory&quot;/&gt;
-        &lt;!-- 给出需要扫描Dao接口包 --&gt;
-        &lt;property name=&quot;basePackage&quot; value=&quot;com.study.mapper&quot;/&gt;
-    &lt;/bean&gt;
-&lt;/beans&gt;
-</code></pre>
-<h3 id="33-spring-servicexml">3.3 spring-service.xml</h3>
-<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
-       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
-       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context
-        https://www.springframework.org/schema/context/spring-context.xsd&quot;&gt;
-&lt;!--导入包--&gt;
-    &lt;import resource=&quot;classpath:spring-dao.xml&quot;/&gt;
-&lt;!--    1.扫描service包--&gt;
-    &lt;context:component-scan base-package=&quot;com.study.service&quot;/&gt;
-&lt;!--    2.将所有的业务类注入Spring，可以通过配置或注解实现(注解参考BookServiceImpl的代码)--&gt;
-    &lt;bean id=&quot;BookServiceImpl&quot; class=&quot;com.study.service.BookServiceImpl&quot;&gt;
-&lt;!--        注意：需要此属性的set()方法，否则无法注入该属性--&gt;
-        &lt;property name=&quot;bookMapper&quot; ref=&quot;bookMapper&quot;/&gt;
-    &lt;/bean&gt;
-&lt;!--    3.声明式事务--&gt;
-    &lt;bean id=&quot;transactionManager&quot; class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
-        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
-    &lt;/bean&gt;
-&lt;/beans&gt;
-</code></pre>
-<h3 id="34-spring-mvcxml">3.4 spring-mvc.xml</h3>
-<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
-       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
-       xmlns:mvc=&quot;http://www.springframework.org/schema/mvc&quot;
-       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans.xsd
-    http://www.springframework.org/schema/context
-    http://www.springframework.org/schema/context/spring-context.xsd
-    http://www.springframework.org/schema/mvc
-    https://www.springframework.org/schema/mvc/spring-mvc.xsd&quot;&gt;
-
-&lt;!--    1.注解驱动--&gt;
-    &lt;mvc:annotation-driven/&gt;
-&lt;!--    2.静态资源过滤--&gt;
-    &lt;mvc:default-servlet-handler/&gt;
-&lt;!--   3. 扫描包:controller--&gt;
-    &lt;context:component-scan base-package=&quot;com.study.controller&quot;/&gt;
-&lt;!--    4.视图解析器--&gt;
-    &lt;bean  class=&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;&gt;
-        &lt;property name=&quot;prefix&quot; value=&quot;/WEB-INF/jsp/&quot;/&gt;
-        &lt;property name=&quot;suffix&quot; value=&quot;.jsp&quot;/&gt;
-    &lt;/bean&gt;
-&lt;/beans&gt;
-</code></pre>
-<h2 id="4测试">4.测试</h2>
-<p><em><strong>测试类：</strong></em></p>
-<pre><code class="language-java">package com.study.pojo;
-
-/**
- * @author 此间凉汐
- * @date 2022/2/21 15:18
- */
-public class Books {
-    private int bookID;
-    private String bookName;
-    private int bookCounts;
-    private String detail;
-
-    public int getBookID() {
-        return bookID;
-    }
-
-    public void setBookID(int bookID) {
-        this.bookID = bookID;
-    }
-
-    public String getBookName() {
-        return bookName;
-    }
-
-    public void setBookName(String bookName) {
-        this.bookName = bookName;
-    }
-
-    public int getBookCounts() {
-        return bookCounts;
-    }
-
-    public void setBookCounts(int bookCounts) {
-        this.bookCounts = bookCounts;
-    }
-
-    public String getDetail() {
-        return detail;
-    }
-
-    public void setDetail(String detail) {
-        this.detail = detail;
-    }
-
-    public Books() {
-    }
-
-    public Books(int bookID, String bookName, int bookCounts, String detail) {
-        this.bookID = bookID;
-        this.bookName = bookName;
-        this.bookCounts = bookCounts;
-        this.detail = detail;
-    }
-
-    @Override
-    public String toString() {
-        return &quot;Books{&quot; +
-                &quot;bookID=&quot; + bookID +
-                &quot;, bookName='&quot; + bookName + '\'' +
-                &quot;, bookCounts=&quot; + bookCounts +
-                &quot;, detail='&quot; + detail + '\'' +
-                '}';
-    }
-}
-
-</code></pre>
-<h3 id="41查询全部图书">4.1查询全部图书</h3>
-<ol>
-<li>
-<p>编写接口并实现（mapper层）</p>
-<pre><code class="language-java">package com.study.mapper;
-
-import com.study.pojo.Books;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
-
-/**
- * @author 此间凉汐
- * @date 2022/2/21 15:20
- */
-public interface BookMapper {
-    //增加一本图书
-    int addBook(Books book);
-
-    //删除一本图书
-    int deleteBookById(@Param(&quot;bookId&quot;) int id);
-
-    //修改一本图书
-    int updateBook(Books book);
-
-    //查找一本图书
-    Books queryBookById(@Param(&quot;bookId&quot;) int id);
-
-    //查找全部图书
-    List&lt;Books&gt; queryAllBook();
-}
-</code></pre>
-<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
-&lt;!DOCTYPE mapper
-        PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot;
-        &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
-&lt;mapper namespace=&quot;com.study.mapper.BookMapper&quot;&gt;
-
-    &lt;insert id=&quot;addBook&quot; parameterType=&quot;books&quot;&gt;
-        insert into books(bookName,bookCounts,detail)
-        values (#{bookName},#{bookCounts},#{detail})
-    &lt;/insert&gt;
-
-    &lt;delete id=&quot;deleteBookById&quot; parameterType=&quot;int&quot;&gt;
-        delete
-        from books
-        where bookId = #{bookId};
-    &lt;/delete&gt;
-
-    &lt;update id=&quot;updateBook&quot; parameterType=&quot;books&quot;&gt;
-        update books
-        set bookName = #{bookName},bookCounts=#{bookCounts},detail=#{detail}
-        where bookID = #{bookID};
-    &lt;/update&gt;
-
-    &lt;select id=&quot;queryBookById&quot; resultType=&quot;books&quot;&gt;
-        select * from books where bookId = #{bookId};
-    &lt;/select&gt;
-
-    &lt;select id=&quot;queryAllBook&quot; resultType=&quot;books&quot;&gt;
-        select * from books;
-    &lt;/select&gt;
-&lt;/mapper&gt;
-</code></pre>
-</li>
-<li>
-<p>编写接口并实现（Service）</p>
-<pre><code class="language-java">package com.study.service;
-
-import com.study.pojo.Books;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
-
-/**
- * @author 此间凉汐
- * @date 2022/2/21 15:38
- */
-public interface BookService {
-    //增加一本图书
-    int addBook(Books book);
-
-    //删除一本图书
-    int deleteBookById(int id);
-
-    //修改一本图书
-    int updateBook(Books book);
-
-    //查找一本图书
-    Books queryBookById(int id);
-
-    //查找全部图书
-    List&lt;Books&gt; queryAllBook();
-}
-
-</code></pre>
-<pre><code class="language-java">package com.study.service;
-
-import com.study.mapper.BookMapper;
-import com.study.pojo.Books;
-
-import java.util.List;
-
-/**
- * @author 此间凉汐
- * @date 2022/2/21 15:39
- */
-//@Service
-public class BookServiceImpl implements BookService{
-//    @Autowired
-    private BookMapper bookMapper;
-
-    public void setBookMapper(BookMapper bookMapper) {
-        this.bookMapper = bookMapper;
-    }
-
-    @Override
-    public int addBook(Books book) {
-        return bookMapper.addBook(book);
-    }
-
-    @Override
-    public int deleteBookById(int id) {
-        return bookMapper.deleteBookById(id);
-    }
-
-    @Override
-    public int updateBook(Books book) {
-        return bookMapper.updateBook(book);
-    }
-
-    @Override
-    public Books queryBookById(int id) {
-        return bookMapper.queryBookById(id);
-    }
-
-    @Override
-    public List&lt;Books&gt; queryAllBook() {
-        return bookMapper.queryAllBook();
-    }
-}
-
-</code></pre>
-</li>
-<li>
-<p>编写Controller</p>
-<pre><code class="language-java">package com.study.controller;
-
-import com.study.pojo.Books;
-import com.study.service.BookService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import java.util.List;
-/**
- * @author 此间凉汐
- * @date 2022/2/22 13:18
- */
-@Controller
-@RequestMapping(&quot;/book&quot;)
-public class BookController {
-    //实现自动装配
-    @Autowired
-    @Qualifier(&quot;BookServiceImpl&quot;)
-    private BookService bookService;
-
-    @RequestMapping(&quot;allBook&quot;)
-    public String list(Model mv){
-        List&lt;Books&gt; books = bookService.queryAllBook();
-        mv.addAttribute(&quot;list&quot;,books);
-        return &quot;allBook&quot;;
-    }
-}
-</code></pre>
-</li>
-<li>
-<p>前端（jsp）</p>
-<pre><code class="language-jsp">&lt;%@ taglib prefix=&quot;c&quot; uri=&quot;http://java.sun.com/jsp/jstl/core&quot; %&gt;
-&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
-&lt;html&gt;
-&lt;head&gt;
-    &lt;title&gt;书籍展示&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;table&gt;
-    &lt;thead&gt;
-        &lt;tr&gt;
-            &lt;th&gt;书籍编号&lt;/th&gt;
-            &lt;th&gt;书籍名称&lt;/th&gt;
-            &lt;th&gt;书籍数量&lt;/th&gt;
-            &lt;th&gt;书籍详情&lt;/th&gt;
-        &lt;/tr&gt;
-    &lt;/thead&gt;
-&lt;%--    从list中遍历--%&gt;
-    &lt;tbody&gt;
-        &lt;c:forEach var=&quot;book&quot; items=&quot;${list}&quot;&gt;
-            &lt;tr&gt;
-                &lt;td&gt;${book.bookID}&lt;/td&gt;
-                &lt;td&gt;${book.bookName}&lt;/td&gt;
-                &lt;td&gt;${book.bookCounts}&lt;/td&gt;
-                &lt;td&gt;${book.detail}&lt;/td&gt;
-            &lt;/tr&gt;
-        &lt;/c:forEach&gt;
-    &lt;/tbody&gt;
-&lt;/table&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
 </li>
 </ol>
 ]]></content>

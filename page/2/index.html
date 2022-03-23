@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>关于git使用时遇到的一些问题 | 凉汐博客</title>
+<title>凉汐博客</title>
 <meta name="description" content="但行前路  莫问西东">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -15,12 +15,6 @@
 <link rel="stylesheet" href="https://Liangxi2001.github.io/styles/main.css">
 
 
-  
-    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
-  
-
-  
-
 <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
 
 
@@ -29,7 +23,6 @@
 
   </head>
   <body>
-  
     <nav class="navbar border fixed split-nav">
   <div class="nav-brand">
     <h3><a href="https://Liangxi2001.github.io">凉汐博客</a></h3>
@@ -83,92 +76,49 @@
   </div>
 </nav>
 
+
     <div id="top" class="row site">
       <div class="sm-12 md-8 col">
         <div class="paper">
-          <article class="article">
-            <h1>关于git使用时遇到的一些问题</h1>
-            <p class="article-meta">
-              2022-03-07
-              
-            </p>
-            
-            <div class="post-content">
-              <p><ul class="markdownIt-TOC">
-<li><a href="#git-%E8%A7%A3%E5%86%B3-error-failed-to-push-some-refs-to-httpsgithubcomxxxxgit">git 解决 error: failed to push some refs to 'https://github.com/xxxx.git'</a></li>
-<li><a href="#master%E6%97%81%E8%BE%B9%E6%9C%89merging">master旁边有MERGING</a></li>
-</ul>
-</p>
-<h1 id="git-解决-error-failed-to-push-some-refs-to-httpsgithubcomxxxxgit">git 解决 error: failed to push some refs to 'https://github.com/xxxx.git'</h1>
-<ul>
-<li>
-<p>描述</p>
-<pre><code class="language-git">To https://github.com/xuefeilong/test.git
-! [rejected]        master -&gt; master (non-fast-forward)
-error: failed to push some refs to 'https://github.com/xuefeilong/test.git'
-hint: Updates were rejected because the tip of your current branch is behind
-hint: its remote counterpart. Merge the remote changes (e.g. 'git pull')
-hint: before pushing again.
-hint: See the 'Note about fast-forwards' in 'git push --help' for details.
-</code></pre>
-</li>
-<li>
-<p>解决</p>
-<blockquote>
-<p>1: 进行push前先将远程仓库pull到本地仓库<br>
-$ git pull origin master    #git pull --rebase origin master<br>
-$ git push -u origin master</p>
-</blockquote>
-</li>
-</ul>
-<blockquote>
-<p>2: 强制push本地仓库到远程 (这种情况不会进行merge, 强制push后远程文件可能会丢失 不建议使用此方法)<br>
-$ git push -u origin master -f<br>
-3: 避开解决冲突, 将本地文件暂时提交到远程新建的分支中<br>
-$ git branch [name]<br>
-创建完branch后, 再进行push<br>
-$ git push -u origin [name]</p>
-</blockquote>
-<h1 id="master旁边有merging">master旁边有MERGING</h1>
-<ul>
-<li>解决</li>
-</ul>
-<pre><code class="language-git">(master|MERGING)
-$ git update-ref -d MERGE_HEAD
-(master)
-$ git push
-Everything up-to-date
-
-</code></pre>
-
-            </div>
-          </article>
-        </div>
-        <div class="paper" data-aos="fade-in">
           
-            <div class="next-post">
-              <div class="next">
-                下一篇
-              </div>
-              <a href="https://Liangxi2001.github.io/post/springboot2-ji-chu-ru-men/">
-                <h3 class="post-title">
-                  SpringBoot2基础入门
-                </h3>
-              </a>
-            </div>
-          
+  <article class="article">
+    <h2 class="article-title">
+      <a href="https://Liangxi2001.github.io/post/spring-yu-mybatis-de-zheng-he/">Spring与Mybatis的整合</a>
+    </h2>
+    <p class="article-meta">
+      2022-02-08
+      
+        <a href="https://Liangxi2001.github.io/tag/ssm-kuang-jia/" class="badge ">
+          SSM框架
+        </a>
+      
+    </p>
+    <p class="text-lead">
+      
+    </p>
+    <div class="row">
+      <a href="https://Liangxi2001.github.io/post/spring-yu-mybatis-de-zheng-he/" class="readmore-link">
+        <button>
+          Read More
+        </button>
+      </a>
+    </div>
+  </article>
+
+
         </div>
         
-          
-            <div class="paper" data-aos="fade-in">
-              <div id="gitalk-container"></div>
-            </div>
-          
+        <div class="row flex-edges">
+  
+    <a href="https://Liangxi2001.github.io/" class="paper-btn">
+      上一页
+    </a>
+  
+  
+</div>
 
-          
-        
       </div>
-
+      
       <div class="sm-12 md-4 col sidebar">
   <div class="paper info-container">
     <img src="https://Liangxi2001.github.io/images/avatar.png?v=1648026806404" class="no-responsive avatar">
@@ -273,7 +223,7 @@ Everything up-to-date
           SpringBoot2
         </a>
       
-        <a href="https://Liangxi2001.github.io/tag/ssm-kuang-jia/" class="badge secondary">
+        <a href="https://Liangxi2001.github.io/tag/ssm-kuang-jia/" class="badge ">
           SSM框架
         </a>
       
@@ -284,9 +234,7 @@ Everything up-to-date
   </div>
 </div>
 
-
     </div>
-
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 
 <script type="application/javascript">
@@ -296,29 +244,6 @@ AOS.init();
 hljs.initHighlightingOnLoad()
 
 </script>
-
-
-
-  
-    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
-    <script>
-
-      var gitalk = new Gitalk({
-        clientID: '80e65e0628ad6f63ce37',
-        clientSecret: '2b9e05bec061b03c2143359c32c3b5d4f4e45df6',
-        repo: 'Liangxi2001.github.io',
-        owner: 'Liangxi2001',
-        admin: ['Liangxi2001'],
-        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
-        distractionFreeMode: false  // Facebook-like distraction free mode
-      })
-
-      gitalk.render('gitalk-container')
-
-    </script>
-  
-
-  
 
 
 
