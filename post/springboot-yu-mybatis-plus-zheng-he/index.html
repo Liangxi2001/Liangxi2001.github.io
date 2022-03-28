@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>关于git使用时遇到的一些问题 | 凉汐博客</title>
+<title>SpringBoot与Mybatis-plus整合 | 凉汐博客</title>
 <meta name="description" content="但行前路  莫问西东">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -87,58 +87,143 @@
       <div class="sm-12 md-8 col">
         <div class="paper">
           <article class="article">
-            <h1>关于git使用时遇到的一些问题</h1>
+            <h1>SpringBoot与Mybatis-plus整合</h1>
             <p class="article-meta">
-              2022-03-07
+              2022-03-28
               
             </p>
             
             <div class="post-content">
-              <p><ul class="markdownIt-TOC">
-<li><a href="#git-%E8%A7%A3%E5%86%B3-error-failed-to-push-some-refs-to-httpsgithubcomxxxxgit">git 解决 error: failed to push some refs to 'https://github.com/xxxx.git'</a></li>
-<li><a href="#master%E6%97%81%E8%BE%B9%E6%9C%89merging">master旁边有MERGING</a></li>
+              <p>springboot+mybatis-plus实现一个模块基本的增删改查功能</p>
+<!-- more -->
+<p><ul class="markdownIt-TOC">
+<li><a href="#1-%E5%BC%95%E5%85%A5pom%E4%BE%9D%E8%B5%96">1. 引入pom依赖</a></li>
+<li><a href="#2-%E8%BF%9B%E8%A1%8C%E7%9B%B8%E5%85%B3%E9%85%8D%E7%BD%AE">2. 进行相关配置</a></li>
+<li><a href="#3%E6%95%B4%E4%BD%93%E8%AE%BE%E8%AE%A1">3.整体设计</a>
+<ul>
+<li><a href="#31-controller%E5%B1%82">3.1 controller层</a></li>
+<li><a href="#32service%E5%B1%82">3.2service层</a></li>
+<li><a href="#33-mapper%E5%B1%82">3.3 mapper层</a></li>
+</ul>
+</li>
 </ul>
 </p>
-<h1 id="git-解决-error-failed-to-push-some-refs-to-httpsgithubcomxxxxgit">git 解决 error: failed to push some refs to 'https://github.com/xxxx.git'</h1>
-<ul>
-<li>
-<p>描述</p>
-<pre><code class="language-git">To https://github.com/xuefeilong/test.git
-! [rejected]        master -&gt; master (non-fast-forward)
-error: failed to push some refs to 'https://github.com/xuefeilong/test.git'
-hint: Updates were rejected because the tip of your current branch is behind
-hint: its remote counterpart. Merge the remote changes (e.g. 'git pull')
-hint: before pushing again.
-hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+<h1 id="1-引入pom依赖">1. 引入pom依赖</h1>
+<pre><code class="language-xml">&lt;!--        web,lombok,mysql,mybatis-plus--&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+    &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;mysql&lt;/groupId&gt;
+    &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.baomidou&lt;/groupId&gt;
+    &lt;artifactId&gt;mybatis-plus-boot-starter&lt;/artifactId&gt;
+    &lt;version&gt;3.3.1.tmp&lt;/version&gt;
+&lt;/dependency&gt;
 </code></pre>
-</li>
-<li>
-<p>解决</p>
-<blockquote>
-<p>1: 进行push前先将远程仓库pull到本地仓库<br>
-$ git pull origin master    #git pull --rebase origin master<br>
-$ git push -u origin master</p>
-</blockquote>
-</li>
-</ul>
-<blockquote>
-<p>2: 强制push本地仓库到远程 (这种情况不会进行merge, 强制push后远程文件可能会丢失 不建议使用此方法)<br>
-$ git push -u origin master -f<br>
-3: 避开解决冲突, 将本地文件暂时提交到远程新建的分支中<br>
-$ git branch [name]<br>
-创建完branch后, 再进行push<br>
-$ git push -u origin [name]</p>
-</blockquote>
-<h1 id="master旁边有merging">master旁边有MERGING</h1>
-<ul>
-<li>解决</li>
-</ul>
-<pre><code class="language-git">(master|MERGING)
-$ git update-ref -d MERGE_HEAD
-(master)
-$ git push
-Everything up-to-date
+<h1 id="2-进行相关配置">2. 进行相关配置</h1>
+<pre><code class="language-yaml">spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/yeb?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=UTC
+    username: root
+    password: xxxx
+    
 
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/*Mapper.xml
+  type-aliases-package: com.yebProject.server.pojo
+  configuration:
+#    是否开启驼峰命名
+    map-underscore-to-camel-case: false
+</code></pre>
+<h1 id="3整体设计">3.整体设计</h1>
+<h2 id="31-controller层">3.1 controller层</h2>
+<pre><code class="language-java">@RestController
+@RequestMapping(&quot;/system/config/joblevel&quot;)
+public class JoblevelController {
+    @Autowired
+    private IJoblevelService joblevelService;
+
+    @ApiOperation(value = &quot;获取所有职称信息&quot;)
+    @GetMapping(&quot;/&quot;)
+    public List&lt;Joblevel&gt; getAllJobLevels(){
+        return joblevelService.list();
+    }
+
+    @ApiOperation(value = &quot;增加职称&quot;)
+    @PostMapping(&quot;/&quot;)
+    public RespBean addJobLevel(@RequestBody Joblevel joblevel){
+        if (joblevelService.save(joblevel)){
+            return RespBean.success(&quot;添加成功！&quot;);
+        }
+        return RespBean.error(&quot;添加失败！&quot;);
+    }
+
+    @ApiOperation(value = &quot;更新职称信息&quot;)
+    @PutMapping(&quot;/&quot;)
+    public RespBean updateJobLevel(@RequestBody Joblevel joblevel){
+        if (joblevelService.updateById(joblevel)){
+            return RespBean.success(&quot;更新成功！&quot;);
+        }
+        return RespBean.error(&quot;更新失败！&quot;);
+    }
+
+    @ApiOperation(value = &quot;删除职称&quot;)
+    @DeleteMapping(&quot;/{id}&quot;)
+    public RespBean deleteJobLevel(@PathVariable Integer id){
+        if (joblevelService.removeById(id)){
+            return RespBean.success(&quot;删除成功！&quot;);
+        }
+        return RespBean.error(&quot;删除失败！&quot;);
+    }
+
+    @ApiOperation(value = &quot;批量删除&quot;)
+    @DeleteMapping(&quot;/&quot;)
+    public RespBean deleteJobLevelsByIds(Integer[] ids){
+        if (joblevelService.removeByIds(Arrays.asList(ids))){
+            return RespBean.success(&quot;删除成功！&quot;);
+        }
+        return RespBean.error(&quot;删除失败！&quot;);
+    }
+}
+</code></pre>
+<h2 id="32service层">3.2service层</h2>
+<pre><code class="language-java">//接口
+public interface IJoblevelService extends IService&lt;Joblevel&gt; {}
+//实现
+@Service
+public class JoblevelServiceImpl extends ServiceImpl&lt;JoblevelMapper, Joblevel&gt; implements IJoblevelService {}
+</code></pre>
+<h2 id="33-mapper层">3.3 mapper层</h2>
+<pre><code class="language-java">//接口
+public interface JoblevelMapper extends BaseMapper&lt;Joblevel&gt; {}
+//xm文件
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE mapper PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot; &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;com.yebProject.server.mapper.JoblevelMapper&quot;&gt;
+
+    &lt;!-- 通用查询映射结果 --&gt;
+    &lt;resultMap id=&quot;BaseResultMap&quot; type=&quot;com.yebProject.server.pojo.Joblevel&quot;&gt;
+        &lt;id column=&quot;id&quot; property=&quot;id&quot;/&gt;
+        &lt;result column=&quot;name&quot; property=&quot;name&quot;/&gt;
+        &lt;result column=&quot;titleLevel&quot; property=&quot;titleLevel&quot;/&gt;
+        &lt;result column=&quot;createDate&quot; property=&quot;createDate&quot;/&gt;
+        &lt;result column=&quot;enabled&quot; property=&quot;enabled&quot;/&gt;
+    &lt;/resultMap&gt;
+
+    &lt;!-- 通用查询结果列 --&gt;
+    &lt;sql id=&quot;Base_Column_List&quot;&gt;
+        id, name, titleLevel, createDate, enabled
+    &lt;/sql&gt;
+&lt;/mapper&gt;
 </code></pre>
 
             </div>
@@ -150,9 +235,9 @@ Everything up-to-date
               <div class="next">
                 下一篇
               </div>
-              <a href="https://Liangxi2001.github.io/post/springboot2-ji-chu-ru-men/">
+              <a href="https://Liangxi2001.github.io/post/bu-tong-deng-lu-yong-hu-de-quan-xian/">
                 <h3 class="post-title">
-                  SpringBoot2基础入门
+                  不同登录用户的权限
                 </h3>
               </a>
             </div>
@@ -273,11 +358,11 @@ Everything up-to-date
     </div>
     <div class="row">
       
-        <a href="https://Liangxi2001.github.io/tag/springboot2/" class="badge secondary">
+        <a href="https://Liangxi2001.github.io/tag/springboot2/" class="badge warning">
           SpringBoot2
         </a>
       
-        <a href="https://Liangxi2001.github.io/tag/ssm-kuang-jia/" class="badge success">
+        <a href="https://Liangxi2001.github.io/tag/ssm-kuang-jia/" class="badge secondary">
           SSM框架
         </a>
       
