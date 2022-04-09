@@ -4,68 +4,175 @@
     <meta charset="utf-8" >
 
 <title>SpringBoot2 | 凉汐博客</title>
+<meta name="description" content="但行前路  莫问西东">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="https://Liangxi2001.github.io/favicon.ico?v=1649487401032">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://Liangxi2001.github.io/favicon.ico?v=1649487275269">
+<link rel="stylesheet" href="https://unpkg.com/papercss@1.6.1/dist/paper.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://Liangxi2001.github.io/styles/main.css">
 
 
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
 
 <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
 
-
-    <meta name="description" content="但行前路  莫问西东">
   </head>
   <body>
-    <div id="app" class="main">
-
-      <div class="sidebar" :class="{ 'full-height': menuVisible }">
-  <div class="top-container" data-aos="fade-right">
-    <div class="top-header-container">
-      <a class="site-title-container" href="https://Liangxi2001.github.io">
-        <img src="https://Liangxi2001.github.io/images/avatar.png?v=1649487275269" class="site-logo">
-        <h1 class="site-title">凉汐博客</h1>
-      </a>
-      <div class="menu-btn" @click="menuVisible = !menuVisible">
-        <div class="line"></div>
-      </div>
-    </div>
-    <div>
-      
+    <nav class="navbar border fixed split-nav">
+  <div class="nav-brand">
+    <h3><a href="https://Liangxi2001.github.io">凉汐博客</a></h3>
+  </div>
+  <div class="collapsible">
+    <input id="collapsible1" type="checkbox" name="collapsible1">
+    <button>
+      <label for="collapsible1">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+      </label>
+    </button>
+    <div class="collapsible-body">
+      <ul class="inline">
         
-          <a href="/" class="site-nav">
-            首页
-          </a>
+          <li>
+            
+              <a href="/" class="menu">
+                首页
+              </a>
+            
+          </li>
         
-      
+          <li>
+            
+              <a href="/archives" class="menu">
+                归档
+              </a>
+            
+          </li>
         
-          <a href="/archives" class="site-nav">
-            归档
-          </a>
+          <li>
+            
+              <a href="/tags" class="menu">
+                标签
+              </a>
+            
+          </li>
         
-      
+          <li>
+            
+              <a href="/post/about" class="menu">
+                关于
+              </a>
+            
+          </li>
         
-          <a href="/tags" class="site-nav">
-            标签
-          </a>
-        
-      
-        
-          <a href="/post/about" class="site-nav">
-            关于
-          </a>
-        
-      
+      </ul>
     </div>
   </div>
-  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+</nav>
+
+    <div id="top" class="row site">
+      <div class="sm-12 md-8 col">
+        <div class="paper">
+          <h2 class="current-tag">标签: SpringBoot2</h2>
+          
+  <article class="article">
+    <h2 class="article-title">
+      <a href="https://Liangxi2001.github.io/post/springboot-zhong-web-kai-fa-de-jian-dan-gong-neng/">SpringBoot中web开发的简单功能</a>
+    </h2>
+    <p class="article-meta">
+      2022-03-13
+      
+        <a href="https://Liangxi2001.github.io/tag/springboot2/" class="badge secondary">
+          SpringBoot2
+        </a>
+      
+    </p>
+    <p class="text-lead">
+      <p>SpringBoot开发web中关于静态资源访问，欢迎页以及Favicon的介绍。</p>
+
+    </p>
+    <div class="row">
+      <a href="https://Liangxi2001.github.io/post/springboot-zhong-web-kai-fa-de-jian-dan-gong-neng/" class="readmore-link">
+        <button>
+          Read More
+        </button>
+      </a>
+    </div>
+  </article>
+
+  <article class="article">
+    <h2 class="article-title">
+      <a href="https://Liangxi2001.github.io/post/yaml-jian-jie/">YAML简介</a>
+    </h2>
+    <p class="article-meta">
+      2022-03-11
+      
+        <a href="https://Liangxi2001.github.io/tag/springboot2/" class="badge secondary">
+          SpringBoot2
+        </a>
+      
+    </p>
+    <p class="text-lead">
+      
+    </p>
+    <div class="row">
+      <a href="https://Liangxi2001.github.io/post/yaml-jian-jie/" class="readmore-link">
+        <button>
+          Read More
+        </button>
+      </a>
+    </div>
+  </article>
+
+  <article class="article">
+    <h2 class="article-title">
+      <a href="https://Liangxi2001.github.io/post/springboot2-ji-chu-ru-men/">SpringBoot2基础入门</a>
+    </h2>
+    <p class="article-meta">
+      2022-02-27
+      
+        <a href="https://Liangxi2001.github.io/tag/springboot2/" class="badge secondary">
+          SpringBoot2
+        </a>
+      
+    </p>
+    <p class="text-lead">
+      
+    </p>
+    <div class="row">
+      <a href="https://Liangxi2001.github.io/post/springboot2-ji-chu-ru-men/" class="readmore-link">
+        <button>
+          Read More
+        </button>
+      </a>
+    </div>
+  </article>
+
+
+        </div>
+        <div class="row flex-edges">
+  
+  
+</div>
+
+      </div>
+      <div class="sm-12 md-4 col sidebar">
+  <div class="paper info-container">
+    <img src="https://Liangxi2001.github.io/images/avatar.png?v=1649487401032" class="no-responsive avatar">
+    <div class="text-muted">但行前路  莫问西东</div>
     <div class="social-container">
       
         
+          <a href="https://github.com/Liangxi2001" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
       
         
       
@@ -76,96 +183,117 @@
         
       
     </div>
-    <div class="site-description">
-      但行前路  莫问西东
+  </div>
+  <div class="paper">
+    <div class="sidebar-title">
+      最新文章
     </div>
-    <div class="site-footer">
-      Powered by  <a href="https://github.com/Liangxi2001/Liangxi2001.github.io" target="_blank">凉汐</a> | <a class="rss" href="https://Liangxi2001.github.io/atom.xml" target="_blank">RSS</a>
+    <div class="row">
+      <ul>
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/shi-yong-mybatis-plus-fen-ye-cha-jian/">使用Mybatis-plus分页插件</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/springboot-yu-mybatis-plus-zheng-he/">SpringBoot与Mybatis-plus整合</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/bu-tong-deng-lu-yong-hu-de-quan-xian/">不同登录用户的权限</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/sringsecurityjwt-shi-xian-deng-lu-mo-kuai/">SringSecurity+Jwt实现登录模块</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/springboot-zhong-web-kai-fa-de-jian-dan-gong-neng/">SpringBoot中web开发的简单功能</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/yaml-jian-jie/">YAML简介</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/guan-yu-git-shi-yong-shi-yu-dao-de-yi-xie-wen-ti/">关于git使用时遇到的一些问题</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/springboot2-ji-chu-ru-men/">SpringBoot2基础入门</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/ssm-kuang-jia-zheng-he/">SSM框架整合</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/spring-shi-wu-guan-li/">Spring事务管理</a>
+            </li>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      </ul>
     </div>
+  </div>
+  <div class="paper">
+    <div class="sidebar-title">
+      标签列表
+    </div>
+    <div class="row">
+      
+        <a href="https://Liangxi2001.github.io/tag/springboot2/" class="badge warning">
+          SpringBoot2
+        </a>
+      
+        <a href="https://Liangxi2001.github.io/tag/ssm-kuang-jia/" class="badge success">
+          SSM框架
+        </a>
+      
+    </div>
+  </div>
+  <div class="paper">
+    Powered by  <a href="https://github.com/Liangxi2001/Liangxi2001.github.io" target="_blank">凉汐</a> | <a class="rss" href="https://Liangxi2001.github.io/atom.xml" target="_blank">RSS</a>
   </div>
 </div>
 
-
-      <div class="main-container">
-        <div class="content-container" data-aos="fade-up">
-          <h2 class="current-tag">标签: SpringBoot2</h2>
-          
-            <article class="post-item">
-              <div class="left">
-                <a href="https://Liangxi2001.github.io/post/springboot-zhong-web-kai-fa-de-jian-dan-gong-neng/">
-                  <h2 class="post-title">SpringBoot中web开发的简单功能</h2>
-                </a>
-                <div class="post-date">
-                  2022-03-13
-                </div>
-                <div class="post-abstract">
-                  <p>SpringBoot开发web中关于静态资源访问，欢迎页以及Favicon的介绍。</p>
-
-                </div>
-              </div>
-              
-            </article>
-          
-            <article class="post-item">
-              <div class="left">
-                <a href="https://Liangxi2001.github.io/post/yaml-jian-jie/">
-                  <h2 class="post-title">YAML简介</h2>
-                </a>
-                <div class="post-date">
-                  2022-03-11
-                </div>
-                <div class="post-abstract">
-                  
-                </div>
-              </div>
-              
-            </article>
-          
-            <article class="post-item">
-              <div class="left">
-                <a href="https://Liangxi2001.github.io/post/springboot2-ji-chu-ru-men/">
-                  <h2 class="post-title">SpringBoot2基础入门</h2>
-                </a>
-                <div class="post-date">
-                  2022-02-27
-                </div>
-                <div class="post-abstract">
-                  
-                </div>
-              </div>
-              
-            </article>
-          
-
-          <div class="pagination-container">
-  
-  
-</div>
-
-        </div>
-      </div>
     </div>
 
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
 <script type="application/javascript">
 
 AOS.init();
 
-var app = new Vue({
-  el: '#app',
-  data: {
-    menuVisible: false,
-  },
-})
+hljs.initHighlightingOnLoad()
 
 </script>
-
-
-  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
-  <script>
-    hljs.initHighlightingOnLoad()
-  </script>
-
 
 
 
