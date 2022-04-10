@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>邮件传送(RabbitMQ消息队列) | 凉汐博客</title>
+<meta name="description" content="但行前路  莫问西东">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="https://Liangxi2001.github.io/favicon.ico?v=1649595197971">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://unpkg.com/papercss@1.6.1/dist/paper.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://Liangxi2001.github.io/styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+  </head>
+  <body>
+  
+    <nav class="navbar border fixed split-nav">
+  <div class="nav-brand">
+    <h3><a href="https://Liangxi2001.github.io">凉汐博客</a></h3>
+  </div>
+  <div class="collapsible">
+    <input id="collapsible1" type="checkbox" name="collapsible1">
+    <button>
+      <label for="collapsible1">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+      </label>
+    </button>
+    <div class="collapsible-body">
+      <ul class="inline">
+        
+          <li>
+            
+              <a href="/" class="menu">
+                首页
+              </a>
+            
+          </li>
+        
+          <li>
+            
+              <a href="/archives" class="menu">
+                归档
+              </a>
+            
+          </li>
+        
+          <li>
+            
+              <a href="/tags" class="menu">
+                标签
+              </a>
+            
+          </li>
+        
+          <li>
+            
+              <a href="/post/about" class="menu">
+                关于
+              </a>
+            
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div id="top" class="row site">
+      <div class="sm-12 md-8 col">
+        <div class="paper">
+          <article class="article">
+            <h1>邮件传送(RabbitMQ消息队列)</h1>
+            <p class="article-meta">
+              2022-04-10
+              
+            </p>
+            
+              <img src="https://Liangxi2001.github.io/post-images/you-jian-chuan-song.jpg" alt="邮件传送(RabbitMQ消息队列)">
+            
+            <div class="post-content">
+              <p>当新员工入职时，在将其信息保存到数据库的同时，给其发送入职欢迎邮件，并将此邮件也保存到数据库，当status为0时，表示正在发送；为1时，表示发送成功；如果重发次数大于3，status将变为2，表示发送失败，不再发送。</p>
+<!-- more -->
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#1-%E9%82%AE%E4%BB%B6%E5%8F%91%E9%80%81">1. 邮件发送</a>
+<ul>
+<li><a href="#1%E5%88%9B%E5%BB%BA%E9%82%AE%E4%BB%B6%E5%8F%91%E9%80%81%E6%9C%8D%E5%8A%A1%E5%99%A8">1.创建邮件发送服务器</a></li>
+<li><a href="#2-%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%8F%91%E5%87%BA%E9%82%AE%E4%BB%B6">2. 服务器发出邮件</a></li>
+<li><a href="#3-%E7%A1%AE%E8%AE%A4%E9%82%AE%E4%BB%B6%E5%8F%91%E9%80%81%E5%87%BA%E5%8E%BB">3. 确认邮件发送出去</a></li>
+</ul>
+</li>
+<li><a href="#2-%E7%A1%AE%E4%BF%9D%E5%8F%AF%E9%9D%A0%E6%80%A7%E5%AE%9E%E7%8E%B0%E9%87%8D%E4%BC%A0">2. 确保可靠性，实现重传</a>
+<ul>
+<li><a href="#1-%E5%87%86%E5%A4%87%E4%B8%80%E4%B8%AA%E5%B8%B8%E9%87%8F%E7%B1%BB">1. 准备一个常量类</a></li>
+<li><a href="#2%E9%82%AE%E4%BB%B6%E5%AE%9A%E6%97%B6%E9%87%8D%E4%BC%A0">2.邮件定时重传</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="1-邮件发送">1. 邮件发送</h2>
+<blockquote>
+<p>场景：在有新员工入职时，会自动给其发送入职欢迎邮件，使用RabbitMQ实现</p>
+</blockquote>
+<h3 id="1创建邮件发送服务器">1.创建邮件发送服务器</h3>
+<ol>
+<li>
+<p>创建一个子模块</p>
+<ul>
+<li>
+<p>pom依赖</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;parent&gt;
+        &lt;artifactId&gt;yeb&lt;/artifactId&gt;
+        &lt;groupId&gt;com.yebProject&lt;/groupId&gt;
+        &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+    &lt;/parent&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+    &lt;artifactId&gt;yeb-mail&lt;/artifactId&gt;
+
+    &lt;name&gt;yeb-mail&lt;/name&gt;
+    &lt;!-- FIXME change it to the project's website --&gt;
+    &lt;url&gt;http://www.example.com&lt;/url&gt;
+
+    &lt;properties&gt;
+        &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+        &lt;maven.compiler.source&gt;1.8&lt;/maven.compiler.source&gt;
+        &lt;maven.compiler.target&gt;1.8&lt;/maven.compiler.target&gt;
+    &lt;/properties&gt;
+
+    &lt;dependencies&gt;
+        &lt;!--    RabbitMQ依赖--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-amqp&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!--    mail依赖--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-mail&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!--        thymeleaf依赖--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+&lt;!--        server依赖--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.yebProject&lt;/groupId&gt;
+            &lt;artifactId&gt;yeb-server&lt;/artifactId&gt;
+            &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/project&gt;
+</code></pre>
+</li>
+<li>
+<p>项目结构：</p>
+</li>
+</ul>
+<figure data-type="image" tabindex="1"><a href="https://imgtu.com/i/LA1S0A"><img src="https://s1.ax1x.com/2022/04/10/LA1S0A.png" alt="LA1S0A.png" loading="lazy"></a></figure>
+<ul>
+<li>
+<p>配置文件</p>
+<pre><code class="language-yaml">#启动端口，使用邮件传输服务需要启动mail和server
+server:
+  port: 8082
+
+spring:
+  mail:
+#    邮件服务器地址
+    host: smtp.qq.com
+#    协议
+    protocol: smtp
+#    默认编码
+    default-encoding: utf-8
+#    授权码（开启smtp服务时获取）
+    password: orutrptlzytpdiec
+#    发送者邮件地址
+    username: 2373162039@qq.com
+#    端口
+    port: 25
+
+  rabbitmq:
+    username: guest
+    password: guest
+#    服务器地址
+    host: localhost
+#    端口
+    port: 5672
+</code></pre>
+</li>
+<li>
+<p>邮件模板</p>
+<p>邮件使用thymeleaf模板</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot; xmlns:th=&quot;http://www.thymeleaf.org&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;入职欢迎邮件&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    欢迎&lt;span th:text=&quot;${name}&quot;&gt;&lt;/span&gt;加入xxx大家庭，您的入职信息如下：
+&lt;table border=&quot;1&quot;&gt;
+    &lt;tr&gt;
+        &lt;td&gt;姓名&lt;/td&gt;
+        &lt;td th:text=&quot;${name}&quot;&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;职位&lt;/td&gt;
+        &lt;td th:text=&quot;${posName}&quot;&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;职称&lt;/td&gt;
+        &lt;td th:text=&quot;${joblevelName}&quot;&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;部门&lt;/td&gt;
+        &lt;td th:text=&quot;${departmentName}&quot;&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+&lt;p&gt;最后，再一次欢迎您加入我们！&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+</li>
+<li>
+<p>消息接收者</p>
+<pre><code class="language-java">/**
+ * 消息接收者
+ * @author 此间凉汐
+ * @date 2022/4/5 14:08
+ */
+@Component
+public class MailReceiver {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MailReceiver.class);
+    @Autowired
+    private JavaMailSender javaMailSender;
+    @Autowired
+    private MailProperties mailProperties;
+    @Autowired
+    private TemplateEngine templateEngine;
+
+    @RabbitListener(queues = MailConstants.MAIL_QUEUE_NAME)
+    public void handler(Employee employee){
+        MimeMessage msg = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(msg);
+        try {
+            helper.setFrom(mailProperties.getUsername());
+            helper.setTo(employee.getEmail());
+            helper.setSubject(&quot;入职欢迎邮件&quot;);
+            helper.setSentDate(new Date());
+            Context context = new Context();
+            context.setVariable(&quot;name&quot;,employee.getName());
+            context.setVariable(&quot;posName&quot;,employee.getPosition().getName());
+            context.setVariable(&quot;joblevelName&quot;,employee.getJoblevel().getName());
+            context.setVariable(&quot;departmentName&quot;,employee.getDepartment().getName());
+            //把context放入邮件模板中
+            String mail = templateEngine.process(&quot;mail&quot;, context);
+            helper.setText(mail,true);
+            javaMailSender.send(msg);
+        } catch (MessagingException e) {
+            LOGGER.error(&quot;邮件发送失败========&gt;{}&quot;,e.getMessage());
+        }
+    }
+}
+</code></pre>
+</li>
+<li>
+<p>启动类</p>
+<pre><code class="language-java">/**
+ * @author 此间凉汐
+ * @date 2022/4/5 13:19
+ */
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+public class MailApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(MailApplication.class,args);
+    }
+
+    @Bean
+    public  Queue queue(){
+        return new Queue(MailConstants.MAIL_QUEUE_NAME);
+    }
+}
+</code></pre>
+</li>
+</ul>
+<h3 id="2-服务器发出邮件">2. 服务器发出邮件</h3>
+<ul>
+<li>
+<p>server中相关配置</p>
+<pre><code class="language-yaml">  rabbitmq:
+#    rabbitmq默认的用户与密码
+    username: guest
+    password: guest
+    #    服务器地址
+    host: localhost
+    #    端口
+    port: 5672
+#    消息确认回调
+    publisher-confirm-type: correlated
+#    消息失败回调
+    publisher-returns: true
+</code></pre>
+</li>
+<li>
+<p>在server子项目的pom中导入RabbitMQ依赖</p>
+<pre><code class="language-xml">&lt;!--    RabbitMQ依赖--&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-amqp&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+</li>
+<li>
+<p>在添加员工的同时发送邮件</p>
+<pre><code class="language-java">/**
+ * @author liangxi
+ * @since 2022-03-22
+ */
+@Service
+public class EmployeeServiceImpl extends ServiceImpl&lt;EmployeeMapper, Employee&gt; implements IEmployeeService {
+
+    @Autowired
+    private EmployeeMapper employeeMapper;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+    @Autowired
+    private MailLogMapper mailLogMapper;
+
+    /**
+     * 获取所有员工（分页）
+     * @param current
+     * @param size
+     * @param employee
+     * @param beginDateScope
+     * @return
+     */
+    @Override
+    public RespPageBean getEmployeeByPage(Integer current, Integer size, Employee employee, LocalDate[] beginDateScope) {
+        //开启分页
+        Page&lt;Employee&gt; page = new Page&lt;&gt;(current, size);
+        IPage&lt;Employee&gt; employeeByPage = employeeMapper.getEmployeeByPage(page, employee, beginDateScope);
+        RespPageBean respPageBean = new RespPageBean(employeeByPage.getTotal(), employeeByPage.getRecords());
+        return respPageBean;
+    }
+
+    /**
+     * 获取工号
+     * @return
+     */
+    @Override
+    public RespBean maxWorkID() {
+        List&lt;Map&lt;String, Object&gt;&gt; maps = employeeMapper.selectMaps(new QueryWrapper&lt;Employee&gt;().select(&quot;max(workID)&quot;));
+        return RespBean.success(null, String.format(&quot;%08d&quot;,
+                Integer.parseInt(maps.get(0).get(&quot;max(workID)&quot;).toString()) + 1));
+    }
+
+    /**
+     * 添加员工,并发送入职邮件
+     * @param employee
+     * @return
+     */
+    @Override
+    public RespBean addEmp(Employee employee) {
+        LocalDate beginContract = employee.getBeginContract();
+        LocalDate endContract = employee.getEndContract();
+        long days = beginContract.until(endContract, ChronoUnit.DAYS);
+        DecimalFormat decimalFormat = new DecimalFormat(&quot;##.00&quot;);
+        employee.setContractTerm(Double.parseDouble(decimalFormat.format(days / 265.00)));
+        if (1 == employeeMapper.insert(employee)){
+            Employee emp = employeeMapper.getEmployee(employee.getId()).get(0);
+            //发送的消息入库
+            String msgId = UUID.randomUUID().toString();
+            MailLog mailLog = new MailLog();
+            mailLog.setMsgId(msgId);
+            mailLog.setEid(employee.getId());
+            mailLog.setStatus(0);
+            mailLog.setRouteKey(MailConstants.MAIL_ROUTING_KEY_NAME);
+            mailLog.setExchange(MailConstants.MAIL_EXCHANGE_NAME);
+            mailLog.setCount(0);
+            mailLog.setTryTime(LocalDateTime.now().plusMinutes(MailConstants.MSG_TIMEOUT));
+            mailLog.setCreateTime(LocalDateTime.now());
+            mailLog.setUpdateTime(LocalDateTime.now());
+            mailLogMapper.insert(mailLog);
+            //发送信息
+            rabbitTemplate.convertAndSend(MailConstants.MAIL_EXCHANGE_NAME,MailConstants.MAIL_ROUTING_KEY_NAME,
+                    emp,new CorrelationData(msgId));
+            return RespBean.success(&quot;添加成功！&quot;);
+        }
+        return RespBean.error(&quot;添加失败！&quot;);
+    }
+}
+</code></pre>
+</li>
+</ul>
+<h3 id="3-确认邮件发送出去">3. 确认邮件发送出去</h3>
+<pre><code class="language-java">/**
+ * RabbitMQ配置类
+ *
+ * @author 此间凉汐
+ * @date 2022/4/6 9:00
+ */
+@Configuration
+public class RabbitMQConfig {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RabbitMQConfig.class);
+    @Autowired
+    private CachingConnectionFactory cachingConnectionFactory;
+    @Autowired
+    private IMailLogService mailLogService;
+
+    @Bean
+    public RabbitTemplate rabbitTemplate() {
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(cachingConnectionFactory);
+
+        /**
+         * 消息确认回调，确认消息是否到达broker
+         * data：消息唯一标识
+         * ack：确认结果
+         * cause：失败原因
+         */
+        rabbitTemplate.setConfirmCallback((data, ack, cause) -&gt; {
+            String msgId = data.getId();
+            if (ack) {
+                LOGGER.info(&quot;{}===========&gt;消息发送成功&quot;, msgId);
+                mailLogService.update(new UpdateWrapper&lt;MailLog&gt;().set(&quot;status&quot;, 1).eq(&quot;msgId&quot;, msgId));
+            } else {
+                LOGGER.error(&quot;{}===========&gt;消息发送失败&quot;, msgId);
+            }
+        });
+
+        /**
+         * 消息失败回调
+         * msg:消息主题
+         * repCode:响应码
+         * repText:响应描述
+         * exchange:交换机
+         * routingKey:路由键
+         */
+        rabbitTemplate.setReturnCallback((msg, repCode, repText, exchange, routingKey) -&gt; {
+            LOGGER.error(&quot;{}===========&gt;消息发送queue时失败&quot;, msg.getBody());
+        });
+        return rabbitTemplate;
+    }
+
+    @Bean
+    public Queue queue() {
+        return new Queue(MailConstants.MAIL_QUEUE_NAME);
+    }
+
+    @Bean
+    public DirectExchange directExchange() {
+        return new DirectExchange(MailConstants.MAIL_EXCHANGE_NAME);
+    }
+
+    @Bean
+    public Binding binding() {
+        //消息队列和交换机通过路由键绑定在一起
+        return BindingBuilder.bind(queue()).to(directExchange()).with(MailConstants.MAIL_ROUTING_KEY_NAME);
+    }
+}
+</code></pre>
+<h2 id="2-确保可靠性实现重传">2. 确保可靠性，实现重传</h2>
+<h3 id="1-准备一个常量类">1. 准备一个常量类</h3>
+<pre><code class="language-java">package com.yebProject.server.pojo;
+
+/**
+ * 消息状态
+ * @author 此间凉汐
+ * @date 2022/4/6 8:41
+ */
+public class MailConstants {
+
+    //消息投递中
+    public static final Integer DELIVERING = 0;
+
+    //消息投递成功
+    public static final Integer SUCCESS = 1;
+
+    //消息投递失败
+    public static final Integer FAILURE = 2;
+
+    //最大重试次数
+    public static final Integer MAX_TRY_COUNT = 3;
+
+    //消息超时时间
+    public static final Integer MSG_TIMEOUT = 1;
+
+    //队列
+    public static final String MAIL_QUEUE_NAME = &quot;mail.queue&quot;;
+
+    //交换机
+    public static final String MAIL_EXCHANGE_NAME = &quot;mail.exchange&quot;;
+
+    //路由键
+    public static final String MAIL_ROUTING_KEY_NAME = &quot;mail.routing.key&quot;;
+}
+</code></pre>
+<h3 id="2邮件定时重传">2.邮件定时重传</h3>
+<pre><code class="language-java">/**
+ * 邮件定时重传
+ * @author 此间凉汐
+ * @date 2022/4/7 8:35
+ */
+@Component
+public class MailTask {
+    @Autowired
+    private IMailLogService mailLogService;
+    @Autowired
+    private IEmployeeService employeeService;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    /**
+     * 10秒执行一次
+     */
+    @Scheduled(cron = &quot;0/10 * * * * ?&quot;)
+    public void mailTask(){
+        List&lt;MailLog&gt; list = mailLogService.list(new QueryWrapper&lt;MailLog&gt;().eq(&quot;status&quot;, 0)
+                .lt(&quot;tryTime&quot;, LocalDateTime.now()));
+        list.forEach(mailLog -&gt; {
+            //如果重试次数大于2，更新状态为投递失败，不再重试
+            if (3&lt;=mailLog.getCount()){
+                mailLogService.update(new UpdateWrapper&lt;MailLog&gt;().set(&quot;status&quot;,2)
+                        .eq(&quot;msgId&quot;,mailLog.getMsgId()));
+            }
+            mailLogService.update(new UpdateWrapper&lt;MailLog&gt;().set(&quot;count&quot;,mailLog.getCount()+1)
+                    .set(&quot;updateTime&quot;,LocalDateTime.now())
+                    .set(&quot;tryTime&quot;,LocalDateTime.now().plusMinutes(MailConstants.MSG_TIMEOUT))
+                    .eq(&quot;msgId&quot;,mailLog.getMsgId()));
+            Employee emp = employeeService.getEmployee(mailLog.getEid()).get(0);
+            //发送消息
+            rabbitTemplate.convertAndSend(MailConstants.MAIL_EXCHANGE_NAME,MailConstants.MAIL_ROUTING_KEY_NAME
+            ,emp,new CorrelationData(mailLog.getMsgId()));
+        });
+    }
+}
+</code></pre>
+<p><em>记得开启启动类的定时任务</em></p>
+</li>
+</ol>
+<pre><code class="language-java">@SpringBootApplication
+@MapperScan(&quot;com.yebProject.server.mapper&quot;)
+//@EnableScheduling开启定时任务
+@EnableScheduling
+public class YebApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(YebApplication.class, args);
+    }
+}
+</code></pre>
+
+            </div>
+          </article>
+        </div>
+        <div class="paper" data-aos="fade-in">
+          
+            <div class="next-post">
+              <div class="next">
+                下一篇
+              </div>
+              <a href="https://Liangxi2001.github.io/post/shi-yong-mybatis-plus-fen-ye-cha-jian/">
+                <h3 class="post-title">
+                  使用Mybatis-plus分页插件
+                </h3>
+              </a>
+            </div>
+          
+        </div>
+        
+          
+            <div class="paper" data-aos="fade-in">
+              <div id="gitalk-container"></div>
+            </div>
+          
+
+          
+        
+      </div>
+
+      <div class="sm-12 md-4 col sidebar">
+  <div class="paper info-container">
+    <img src="https://Liangxi2001.github.io/images/avatar.png?v=1649595197971" class="no-responsive avatar">
+    <div class="text-muted">但行前路  莫问西东</div>
+    <div class="social-container">
+      
+        
+          <a href="https://github.com/Liangxi2001" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+  </div>
+  <div class="paper">
+    <div class="sidebar-title">
+      最新文章
+    </div>
+    <div class="row">
+      <ul>
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/you-jian-chuan-song/">邮件传送(RabbitMQ消息队列)</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/shi-yong-mybatis-plus-fen-ye-cha-jian/">使用Mybatis-plus分页插件</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/springboot-yu-mybatis-plus-zheng-he/">SpringBoot与Mybatis-plus整合</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/bu-tong-deng-lu-yong-hu-de-quan-xian/">不同登录用户的权限</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/sringsecurityjwt-shi-xian-deng-lu-mo-kuai/">SringSecurity+Jwt实现登录模块</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/springboot-zhong-web-kai-fa-de-jian-dan-gong-neng/">SpringBoot中web开发的简单功能</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/yaml-jian-jie/">YAML简介</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/guan-yu-git-shi-yong-shi-yu-dao-de-yi-xie-wen-ti/">关于git使用时遇到的一些问题</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/springboot2-ji-chu-ru-men/">SpringBoot2基础入门</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://Liangxi2001.github.io/post/ssm-kuang-jia-zheng-he/">SSM框架整合</a>
+            </li>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      </ul>
+    </div>
+  </div>
+  <div class="paper">
+    <div class="sidebar-title">
+      标签列表
+    </div>
+    <div class="row">
+      
+        <a href="https://Liangxi2001.github.io/tag/springboot2/" class="badge success">
+          SpringBoot2
+        </a>
+      
+        <a href="https://Liangxi2001.github.io/tag/ssm-kuang-jia/" class="badge success">
+          SSM框架
+        </a>
+      
+    </div>
+  </div>
+  <div class="paper">
+    Powered by  <a href="https://github.com/Liangxi2001/Liangxi2001.github.io" target="_blank">凉汐</a> | <a class="rss" href="https://Liangxi2001.github.io/atom.xml" target="_blank">RSS</a>
+  </div>
+</div>
+
+
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+</script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: '80e65e0628ad6f63ce37',
+        clientSecret: '2b9e05bec061b03c2143359c32c3b5d4f4e45df6',
+        repo: 'Liangxi2001.github.io',
+        owner: 'Liangxi2001',
+        admin: ['Liangxi2001'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>
