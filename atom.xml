@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://Liangxi2001.github.io</id>
     <title>凉汐博客</title>
-    <updated>2022-04-14T02:49:30.024Z</updated>
+    <updated>2022-04-14T02:50:00.276Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://Liangxi2001.github.io"/>
     <link rel="self" href="https://Liangxi2001.github.io/atom.xml"/>
@@ -10,6 +10,186 @@
     <logo>https://Liangxi2001.github.io/images/avatar.png</logo>
     <icon>https://Liangxi2001.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, 凉汐博客</rights>
+    <entry>
+        <title type="html"><![CDATA[ 使用WebSocket实现在线聊天(后端)]]></title>
+        <id>https://Liangxi2001.github.io/post/shi-yong-websocket-shi-xian-zai-xian-liao-tian-hou-duan/</id>
+        <link href="https://Liangxi2001.github.io/post/shi-yong-websocket-shi-xian-zai-xian-liao-tian-hou-duan/">
+        </link>
+        <updated>2022-04-11T01:16:38.000Z</updated>
+        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#1websocket">1.WebSocket</a></li>
+<li><a href="#2-java-websocket">2. java-websocket</a>
+<ul>
+<li><a href="#1-%E5%BC%95%E5%85%A5%E4%BE%9D%E8%B5%96">1. 引入依赖</a></li>
+<li><a href="#2-websocket%E9%85%8D%E7%BD%AE%E7%B1%BB">2. WebSocket配置类</a></li>
+<li><a href="#3-%E6%B6%88%E6%81%AF%E5%AE%9E%E4%BD%93%E7%B1%BB">3. 消息实体类</a></li>
+<li><a href="#4-websocket%E6%8E%A7%E5%88%B6%E5%99%A8">4. websocket控制器</a></li>
+<li><a href="#5-%E8%8E%B7%E5%8F%96%E8%81%8A%E5%A4%A9%E5%AF%B9%E8%B1%A1">5. 获取聊天对象</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<br>
+<em>后端使用websocket不需要太复杂的实现，而是起到中转站的效果，需配合前端使用。</em></p>
+<h2 id="1websocket">1.WebSocket</h2>
+<p>WebSocket 是 HTML5 开始提供的一种在单个 TCP 连接上进行全双工通讯的协议。</p>
+<p>WebSocket 使得客户端和服务器之间的数据交换变得更加简单，允许服务端主动向客户端推送数据。在 WebSocket API 中，浏览器和服务器只需要完成一次握手，两者之间就直接可以创建持久性的连接，并进行双向数据传输。</p>
+<p>在 WebSocket API 中，浏览器和服务器只需要做一个握手的动作，然后，浏览器和服务器之间就形成了一条快速通道。两者之间就直接可以数据互相传送。</p>
+<p>现在，很多网站为了实现推送技术，所用的技术都是 Ajax 轮询。轮询是在特定的的时间间隔（如每1秒），由浏览器对服务器发出HTTP请求，然后由服务器返回最新的数据给客户端的浏览器。这种传统的模式带来很明显的缺点，即浏览器需要不断的向服务器发出请求，然而HTTP请求可能包含较长的头部，其中真正有效的数据可能只是很小的一部分，显然这样会浪费很多的带宽等资源。</p>
+<p>HTML5 定义的 WebSocket 协议，能更好的节省服务器资源和带宽，并且能够更实时地进行通讯。</p>
+<figure data-type="image" tabindex="1"><a href="https://imgtu.com/i/LEKY4K"><img src="https://s1.ax1x.com/2022/04/11/LEKY4K.png" alt="LEKY4K.png" loading="lazy"></a></figure>
+<h2 id="2-java-websocket">2. java-websocket</h2>
+<h3 id="1-引入依赖">1. 引入依赖</h3>
+<pre><code class="language-xml">&lt;!--        websocket依赖--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-websocket&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+</code></pre>
+<h3 id="2-websocket配置类">2. WebSocket配置类</h3>
+<pre><code class="language-java">/**
+ * WebSocket配置类
+ * @author 此间凉汐
+ * @date 2022/4/8 11:39
+ */
+@Configuration
+@EnableWebSocketMessageBroker
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
+    @Value(&quot;${jwt.tokenHead}&quot;)
+    private String tokenHead;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    /**
+     * 1.将/ws/ep注册为stomp的端点，用户连接了这个端点就可以进行websocket通讯，支持socketJS
+     * 2.setAllowedOrigins(&quot;*&quot;):允许跨域
+     * 3.withSockJS():支持socketJS访问
+     *
+     * @param registry
+     */
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint(&quot;/ws/ep&quot;).setAllowedOrigins(&quot;*&quot;).withSockJS();
+    }
+
+    /**
+     * 输入管道参数，因为使用了jwt
+     * @param registration
+     */
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.interceptors(new ChannelInterceptor() {
+            @Override
+            public Message&lt;?&gt; preSend(Message&lt;?&gt; message, MessageChannel channel) {
+                StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+                //判断是否为连接，如果是，需要获取token，并且设置用户对象
+                if (StompCommand.CONNECT.equals(accessor.getCommand())) {
+                    String token = accessor.getFirstNativeHeader(&quot;Auth-Token&quot;);
+                    if (!StringUtils.isEmpty(token)) {
+                        String authToken = token.substring(tokenHead.length());
+                        String username = jwtTokenUtil.getUserNameFromToken(authToken);
+                        //token中存在用户名
+                        if (!StringUtils.isEmpty(username)) {
+                            //登录
+                            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                            //验证token是否有效，重新设置用户对象
+                            if (jwtTokenUtil.validateToken(authToken, userDetails)) {
+                                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                                accessor.setUser(authenticationToken);
+                            }
+                        }
+                    }
+                }
+                return message;
+            }
+        });
+    }
+
+    /**
+     * 配置消息代理
+     *
+     * @param registry
+     */
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        //配置代理域，可以配置多个，配置代理目的地前缀为/queue，可以在配置域上向客户端推送消息
+        registry.enableSimpleBroker(&quot;/queue&quot;);
+    }
+}
+</code></pre>
+<h3 id="3-消息实体类">3. 消息实体类</h3>
+<blockquote>
+<p>发送者，接收者，内容，发送时间，发送者昵称</p>
+</blockquote>
+<pre><code class="language-java">/**
+ * 消息
+ * @author 此间凉汐
+ * @date 2022/4/8 14:17
+ */
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+public class ChatMsg {
+
+    private String from;
+    private String to;
+    private String content;
+    private LocalDateTime date;
+    private String formNickName;
+}
+</code></pre>
+<h3 id="4-websocket控制器">4. websocket控制器</h3>
+<pre><code class="language-java">/**
+ * websocket
+ * @author 此间凉汐
+ * @date 2022/4/8 14:22
+ */
+@Controller
+public class WsController {
+
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
+    @MessageMapping(&quot;/ws/chat&quot;)
+    public void handleMsg(Authentication authentication, ChatMsg chatMsg){
+        Admin admin = (Admin) authentication.getPrincipal();
+        chatMsg.setFrom(admin.getUsername());
+        chatMsg.setFormNickName(admin.getName());
+        chatMsg.setDate(LocalDateTime.now());
+        simpMessagingTemplate.convertAndSendToUser(chatMsg.getTo(),&quot;/queue/chat&quot;,chatMsg);
+    }
+}
+</code></pre>
+<h3 id="5-获取聊天对象">5. 获取聊天对象</h3>
+<pre><code class="language-java">/**
+ * 在线聊天
+ * @author 此间凉汐
+ * @date 2022/4/8 14:30
+ */
+@RestController
+@RequestMapping(&quot;/chat&quot;)
+public class ChatController {
+
+    @Autowired
+    private IAdminService adminService;
+
+    @ApiOperation(value = &quot;获取所有操作员&quot;)
+    @GetMapping(&quot;/admin&quot;)
+    public List&lt;Admin&gt; getAllAdmins(String keywords){
+        return adminService.getAllAdmins(keywords);
+    }
+}
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[邮件传送(RabbitMQ消息队列)]]></title>
         <id>https://Liangxi2001.github.io/post/you-jian-chuan-song/</id>
@@ -819,527 +999,6 @@ public interface JoblevelMapper extends BaseMapper&lt;Joblevel&gt; {}
 <li>进行匹配</li>
 </ol>
 <!-- more -->
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[SringSecurity+Jwt实现登录模块]]></title>
-        <id>https://Liangxi2001.github.io/post/sringsecurityjwt-shi-xian-deng-lu-mo-kuai/</id>
-        <link href="https://Liangxi2001.github.io/post/sringsecurityjwt-shi-xian-deng-lu-mo-kuai/">
-        </link>
-        <updated>2022-03-23T08:47:06.000Z</updated>
-        <summary type="html"><![CDATA[<p>采用springsecurity和Jwt实现登录模块，其中使用jwt生成token，security进行相关整合。</p>
-]]></summary>
-        <content type="html"><![CDATA[<p>采用springsecurity和Jwt实现登录模块，其中使用jwt生成token，security进行相关整合。</p>
-<!-- more -->
-<p><ul class="markdownIt-TOC">
-<li><a href="#1-%E5%AF%BC%E5%85%A5%E7%9B%B8%E5%85%B3%E4%BE%9D%E8%B5%96">1. 导入相关依赖</a></li>
-<li><a href="#2-demo">2. demo</a>
-<ul>
-<li><a href="#21-%E5%87%86%E5%A4%87%E7%99%BB%E5%BD%95%E5%8F%82%E6%95%B0">2.1 准备登录参数</a></li>
-<li><a href="#22-%E8%87%AA%E9%A1%B6%E5%90%91%E4%B8%8B%E8%AE%BE%E8%AE%A1%E6%8E%A5%E4%B8%8B%E6%9D%A5%E8%AE%BE%E8%AE%A1controller%E5%B1%82">2.2 自顶向下设计，接下来设计controller层</a></li>
-<li><a href="#23-service%E5%B1%82">2.3 Service层</a></li>
-<li><a href="#24-mapper%E5%B1%82">2.4 Mapper层</a></li>
-</ul>
-</li>
-<li><a href="#3-%E4%BD%BF%E7%94%A8springsecurity%E5%92%8Cjwt">3. 使用springsecurity和jwt</a>
-<ul>
-<li><a href="#31-jwttoken%E5%B7%A5%E5%85%B7%E7%B1%BB">3.1 jwttoken工具类</a></li>
-<li><a href="#32-jwt%E7%99%BB%E5%BD%95%E6%8E%88%E6%9D%83%E8%BF%87%E6%BB%A4%E5%99%A8">3.2 JWT登录授权过滤器</a></li>
-<li><a href="#33-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BF%94%E5%9B%9E%E7%BB%93%E6%9E%9C">3.3 自定义返回结果</a></li>
-<li><a href="#34-%E6%95%B4%E5%90%88">3.4 整合</a></li>
-</ul>
-</li>
-<li><a href="#4-%E4%B8%80%E4%BA%9B%E9%85%8D%E7%BD%AE">4. 一些配置</a></li>
-</ul>
-</p>
-<h1 id="1-导入相关依赖">1. 导入相关依赖</h1>
-<pre><code class="language-xml&lt;dependencies&gt;">        &lt;!--        web,lombok,mysql,mybatis-plus--&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
-        &lt;/dependency&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
-            &lt;artifactId&gt;lombok&lt;/artifactId&gt;
-        &lt;/dependency&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;mysql&lt;/groupId&gt;
-            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
-        &lt;/dependency&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;com.baomidou&lt;/groupId&gt;
-            &lt;artifactId&gt;mybatis-plus-boot-starter&lt;/artifactId&gt;
-            &lt;version&gt;3.3.1.tmp&lt;/version&gt;
-        &lt;/dependency&gt;
-&lt;!--        swagger(生成接口文档)+第三方ui--&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;io.springfox&lt;/groupId&gt;
-            &lt;artifactId&gt;springfox-swagger2&lt;/artifactId&gt;
-            &lt;version&gt;2.7.0&lt;/version&gt;
-        &lt;/dependency&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;com.github.xiaoymin&lt;/groupId&gt;
-            &lt;artifactId&gt;swagger-bootstrap-ui&lt;/artifactId&gt;
-            &lt;version&gt;1.9.6&lt;/version&gt;
-        &lt;/dependency&gt;
-
-        &lt;!--        使用springsecurity + jwt实现登录相关功能--&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-            &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
-        &lt;/dependency&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;io.jsonwebtoken&lt;/groupId&gt;
-            &lt;artifactId&gt;jjwt&lt;/artifactId&gt;
-            &lt;version&gt;0.9.0&lt;/version&gt;
-        &lt;/dependency&gt;
-    &lt;/dependencies&gt;
-</code></pre>
-<h1 id="2-demo">2. demo</h1>
-<h2 id="21-准备登录参数">2.1 准备登录参数</h2>
-<pre><code class="language-java">/**
- * @author 此间凉汐
- * @date 2022/3/22 19:23
- */
-@Data
-@EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
-@ApiModel(value = &quot;adminLogin对象&quot;, description = &quot;&quot;)
-public class AdminLoginParam {
-    @ApiModelProperty(value = &quot;用户名&quot;, required = true)
-    private String username;
-    @ApiModelProperty(value = &quot;密码&quot;, required = true)
-    private String password;
-}
-</code></pre>
-<h2 id="22-自顶向下设计接下来设计controller层">2.2 自顶向下设计，接下来设计controller层</h2>
-<pre><code class="language-java">@Api(tags = &quot;loginController&quot;)
-@RestController
-public class LoginController {
-    @Autowired
-    private IAdminService adminService;
-    @ApiOperation(value = &quot;登录之后返回token&quot;)
-    @PostMapping(&quot;/login&quot;)
-    public RespBean login(@RequestBody AdminLoginParam adminLoginParam, HttpServletRequest request) {
-        return adminService.login(adminLoginParam.getUsername(), adminLoginParam.getPassword(), request);
-    }
-    @ApiOperation(value = &quot;获取当前登录用户的信息&quot;)
-    @GetMapping(&quot;/admin/info&quot;)
-    public Admin getAdminInfo(Principal principal) {
-        if (null == principal) {
-            return null;
-        }
-        String username = principal.getName();
-        Admin admin = adminService.getAdminByUserName(username);
-        admin.setPassword(null);
-        return admin;
-    }
-    @ApiOperation(value = &quot;退出登录&quot;)
-    @PostMapping(&quot;/logout&quot;)
-    public RespBean logout() {
-        return RespBean.success(&quot;注销成功！&quot;);
-    }
-}
-</code></pre>
-<h2 id="23-service层">2.3 Service层</h2>
-<p>在使用Mybatis-plus之后的接口</p>
-<pre><code class="language-java">public interface IAdminService extends IService&lt;Admin&gt; {
-    RespBean login(String username, String password, HttpServletRequest request);
-    Admin getAdminByUserName(String username);
-}
-</code></pre>
-<p>对应的实现类</p>
-<pre><code class="language-java">@Service
-public class AdminServiceImpl extends ServiceImpl&lt;AdminMapper, Admin&gt; implements IAdminService {
-    @Autowired
-    private AdminMapper adminMapper;
-    @Autowired
-    private UserDetailsService userDetailsService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
-    @Value(&quot;${jwt.tokenHead}&quot;)
-    private String tokenHead;
-
-    /**
-     * 登录之后返回token
-     * @param username
-     * @param password
-     * @return
-     */
-    @Override
-    public RespBean login(String username, String password,HttpServletRequest request) {
-//        登录
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        if (null == userDetails || !passwordEncoder.matches(password, userDetails.getPassword())) {
-            return RespBean.error(&quot;用户名或密码不正确&quot;);
-        }
-        if (!userDetails.isEnabled()) {
-            return RespBean.error(&quot;账号被禁用，请联系管理员！&quot;);
-        }
-//        更新登录用户对象
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails
-                , null, userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-//        生成token
-        String token = jwtTokenUtil.generateToken(userDetails);
-        Map&lt;String, String&gt; tokenMap = new HashMap&lt;&gt;();
-        tokenMap.put(&quot;token&quot;, token);
-        tokenMap.put(&quot;tokenHead&quot;, tokenHead);
-
-        return RespBean.success(&quot;登录成功&quot;, tokenMap);
-    }
-
-    /**
-     * 根据用户名获取用户
-     * @param username
-     * @return
-     */
-    @Override
-    public Admin getAdminByUserName(String username) {
-        return adminMapper.selectOne(new QueryWrapper&lt;Admin&gt;().eq(&quot;username&quot;, username)
-                .eq(&quot;enabled&quot;, true));
-    }
-}
-</code></pre>
-<h2 id="24-mapper层">2.4 Mapper层</h2>
-<p>同样是基于Mybatis-plus</p>
-<pre><code class="language-java">public interface AdminMapper extends BaseMapper&lt;Admin&gt; { }
-</code></pre>
-<h1 id="3-使用springsecurity和jwt">3. 使用springsecurity和jwt</h1>
-<h2 id="31-jwttoken工具类">3.1 jwttoken工具类</h2>
-<pre><code class="language-java">@Component
-public class JwtTokenUtil {
-    private static final String CLAIM_KEY_USERNAME = &quot;sub&quot;;
-    private static final String CLAIM_KEY_CREATED = &quot;created&quot;;
-
-    @Value(&quot;${jwt.secret}&quot;)
-    private String secret;
-    @Value(&quot;${jwt.expiration}&quot;)
-    private Long expiration;
-
-    /**
-     * 根据用户信息生成token
-     *
-     * @param userDetails
-     * @return
-     */
-    public String generateToken(UserDetails userDetails) {
-        Map&lt;String, Object&gt; claims = new HashMap&lt;&gt;();
-        claims.put(CLAIM_KEY_USERNAME, userDetails.getUsername());
-        claims.put(CLAIM_KEY_CREATED, new Date());
-        return generateToken(claims);
-    }
-
-    public String getUserNameFromToken(String token) {
-        String userName;
-        try {
-            Claims claims = getClaimsFormToken(token);
-            userName = claims.getSubject();
-        } catch (Exception e) {
-            userName = null;
-        }
-        return userName;
-    }
-
-    /**
-     * 验证token是否有效
-     *
-     * @param token
-     * @param userDetails
-     * @return
-     */
-    public boolean validateToken(String token, UserDetails userDetails) {
-        String userName = getUserNameFromToken(token);
-        return userName.equals(userDetails.getUsername()) &amp;&amp; !isTokenExpired(token);
-    }
-
-    private boolean isTokenExpired(String token) {
-        Date expiredDate = getExpiredDateFromToken(token);
-        return expiredDate.before(new Date());
-    }
-
-    private Date getExpiredDateFromToken(String token) {
-        Claims claims = getClaimsFormToken(token);
-        return claims.getExpiration();
-    }
-
-    public boolean canRefresh(String token) {
-        return !isTokenExpired(token);
-    }
-
-    public String refreshToken(String token) {
-        Claims claims = getClaimsFormToken(token);
-        claims.put(CLAIM_KEY_CREATED, new Date());
-        return generateToken(claims);
-    }
-
-
-    /**
-     * 从Token中获取荷载
-     *
-     * @param token
-     * @return
-     */
-    private Claims getClaimsFormToken(String token) {
-        Claims claims = null;
-        try {
-            claims = Jwts.parser()
-                    .setSigningKey(secret)
-                    .parseClaimsJws(token)
-                    .getBody();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return claims;
-    }
-
-    /**
-     * 根据荷载生成JWT Token
-     * @param claims
-     * @return
-     */
-    private String generateToken(Map&lt;String, Object&gt; claims) {
-        return Jwts.builder()
-                .setClaims(claims)
-                .setExpiration(generateExpirationDate())
-                .signWith(SignatureAlgorithm.HS512, secret)
-                .compact();
-    }
-    /**
-     * 生成的Token失效时间
-     * @return
-     */
-    private Date generateExpirationDate() {
-        return new Date(System.currentTimeMillis() + expiration * 1000);
-    }
-}
-</code></pre>
-<h2 id="32-jwt登录授权过滤器">3.2 JWT登录授权过滤器</h2>
-<pre><code class="language-java">public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
-    @Autowired
-    private UserDetailsService userDetailsService;
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
-
-    @Value(&quot;${jwt.tokenHeader}&quot;)
-    private String tokenHeader;
-    @Value(&quot;${jwt.tokenHead}&quot;)
-    private String tokenHead;
-
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authHeader = request.getHeader(tokenHeader);
-        //存在token
-        if (null != authHeader &amp;&amp; authHeader.startsWith(tokenHead)) {
-            String authToken = authHeader.substring(tokenHead.length());
-            String username = jwtTokenUtil.getUserNameFromToken(authToken);
-//            token中存在用户名但未登录
-            if (null != username &amp;&amp; null == SecurityContextHolder.getContext().getAuthentication()) {
-//                登录
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-//                验证token是否有效，重新设置用户对象
-                if (jwtTokenUtil.validateToken(authToken, userDetails)) {
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails,
-                            null, userDetails.getAuthorities());
-                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                }
-            }
-        }
-        filterChain.doFilter(request, response);
-    }
-}
-</code></pre>
-<h2 id="33-自定义返回结果">3.3 自定义返回结果</h2>
-<pre><code class="language-java">@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class RespBean {
-    private long code;
-    private String message;
-    private Object obj;
-
-    /**
-     * 成功返回结果
-     *
-     * @param message
-     * @return
-     */
-    public static RespBean success(String message) {
-        return new RespBean(200, message, null);
-    }
-
-    public static RespBean success(String message, Object obj) {
-        return new RespBean(200, message, obj);
-    }
-
-    /**
-     * 错误返回结果
-     *
-     * @param message
-     * @return
-     */
-    public static RespBean error(String message) {
-        return new RespBean(500, message, null);
-    }
-
-    public static RespBean error(String message, Object obj) {
-        return new RespBean(500, message, obj);
-    }
-}
-</code></pre>
-<pre><code class="language-java">@Component
-public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
-
-    @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        response.setCharacterEncoding(&quot;UTF-8&quot;);
-        response.setContentType(&quot;application/json&quot;);
-        PrintWriter out = response.getWriter();
-        RespBean bean = RespBean.error(&quot;尚未登录，请登录！&quot;);
-        bean.setCode(401);
-        out.write(new ObjectMapper().writeValueAsString(bean));
-        out.flush();
-        out.close();
-    }
-}
-</code></pre>
-<pre><code class="language-java">@Component
-public class RestfulAccessDeniedHandler implements AccessDeniedHandler {
-    @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        response.setCharacterEncoding(&quot;UTF-8&quot;);
-        response.setContentType(&quot;application/json&quot;);
-        PrintWriter out = response.getWriter();
-        RespBean bean = RespBean.error(&quot;权限不足，请联系管理员！&quot;);
-        bean.setCode(403);
-        out.write(new ObjectMapper().writeValueAsString(bean));
-        out.flush();
-        out.close();
-    }
-}
-</code></pre>
-<h2 id="34-整合">3.4 整合</h2>
-<pre><code class="language-java">@Configuration
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    @Autowired
-    private IAdminService adminService ;
-    @Autowired
-    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
-    @Autowired
-    private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-//        使用JWT，不需要csrf
-        http.csrf()
-                .disable()
-                //基于token，不需要session
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                //所有请求都要认证
-                .anyRequest()
-                .authenticated()
-                .and()
-                .headers()
-                .cacheControl();
-//        添加jwt，登录授权过滤器
-        http.addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-//        添加自定义未授权和未登录结果返回
-        http.exceptionHandling()
-                .accessDeniedHandler(restfulAccessDeniedHandler)
-                .authenticationEntryPoint(restAuthenticationEntryPoint);
-
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        //放行的请求
-        web.ignoring().antMatchers(
-                &quot;/login&quot;,
-                &quot;/logout&quot;,
-                &quot;/css/**&quot;,
-                &quot;/js/**&quot;,
-                &quot;/index.html&quot;,
-                &quot;favicon.ico&quot;,
-                &quot;/doc.html&quot;,
-                &quot;/webjars/**&quot;,
-                &quot;/swagger-resources/**&quot;,
-                &quot;/v2/api-docs/**&quot;
-        );
-    }
-
-    @Override
-    @Bean
-    public UserDetailsService userDetailsService() {
-        //获取登录用户信息
-        return username -&gt; {
-            Admin admin = adminService.getAdminByUserName(username);
-            if (null != admin) {
-                return admin;
-            }
-            return null;
-        };
-    }
-
-    @Bean
-    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter() {
-        return new JwtAuthenticationTokenFilter();
-    }
-}
-</code></pre>
-<h1 id="4-一些配置">4. 一些配置</h1>
-<pre><code class="language-yaml">server:
-  port: 8081
-
-spring:
-  datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/yeb?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=UTC
-    username: root
-    password: xxxx
-    hikari:
-      pool-name: DateHikariCP
-      minimum-idle: 5
-      idle-timeout: 180000
-      auto-commit: true
-      maximum-pool-size: 10
-      max-lifetime: 180000
-      connection-timeout: 30000
-      connection-test-query: SELECT 1
-
-
-mybatis-plus:
-  mapper-locations: classpath*:/mapper/*Mapper.xml
-  type-aliases-package: com.yebProject.server.pojo
-  configuration:
-    map-underscore-to-camel-case: false
-
-logging:
-  level:
-    com.yebProject.server.mapper: debug
-
-jwt:
-  tokenHeader: Authorization
-  secret: yeb-secret
-  expiration: 604800
-  tokenHead: Bearer
-</code></pre>
 ]]></content>
     </entry>
 </feed>
