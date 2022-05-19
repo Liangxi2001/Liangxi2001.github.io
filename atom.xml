@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://Liangxi2001.github.io</id>
     <title>凉汐博客</title>
-    <updated>2022-05-06T06:00:31.923Z</updated>
+    <updated>2022-05-19T08:38:59.812Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://Liangxi2001.github.io"/>
     <link rel="self" href="https://Liangxi2001.github.io/atom.xml"/>
@@ -10,6 +10,259 @@
     <logo>https://Liangxi2001.github.io/images/avatar.png</logo>
     <icon>https://Liangxi2001.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, 凉汐博客</rights>
+    <entry>
+        <title type="html"><![CDATA[Redis之持久化操作]]></title>
+        <id>https://Liangxi2001.github.io/post/redis-zhi-chi-jiu-hua-cao-zuo/</id>
+        <link href="https://Liangxi2001.github.io/post/redis-zhi-chi-jiu-hua-cao-zuo/">
+        </link>
+        <updated>2022-05-19T08:35:53.000Z</updated>
+        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#1-rdbredis-database">1. RDB(Redis DataBase)</a>
+<ul>
+<li><a href="#1-%E7%AE%80%E4%BB%8B%E4%B8%8E%E6%B5%81%E7%A8%8B">1. 简介与流程</a></li>
+<li><a href="#2-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">2. 配置文件</a></li>
+<li><a href="#3-%E4%BC%98%E5%8A%BF">3. 优势</a></li>
+<li><a href="#4-%E5%8A%A3%E5%8A%BF">4. 劣势</a></li>
+<li><a href="#5-%E5%A4%87%E4%BB%BD">5. 备份</a></li>
+</ul>
+</li>
+<li><a href="#2-aofappend-of-file">2. AOF(Append Of File)</a>
+<ul>
+<li><a href="#1-%E7%AE%80%E4%BB%8B%E4%B8%8E%E6%B5%81%E7%A8%8B-2">1. 简介与流程</a></li>
+<li><a href="#2-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-2">2. 配置文件</a></li>
+<li><a href="#3-aof%E5%90%AF%E5%8A%A8%E4%BF%AE%E5%A4%8D%E6%81%A2%E5%A4%8D">3. AOF启动/修复/恢复</a></li>
+<li><a href="#4-%E5%90%8C%E6%AD%A5%E9%A2%91%E7%8E%87%E8%AE%BE%E7%BD%AE">4. 同步频率设置</a></li>
+<li><a href="#5-rewrite%E9%87%8D%E5%86%99">5. Rewrite重写</a></li>
+<li><a href="#6-%E4%BC%98%E5%8A%BF%E4%B8%8E%E5%8A%A3%E5%8A%BF">6. 优势与劣势</a>
+<ul>
+<li><a href="#%E4%BC%98%E5%8A%BF">优势</a></li>
+<li><a href="#%E5%8A%A3%E5%8A%BF">劣势</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#3-%E6%80%BB%E7%BB%93">3. 总结</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<blockquote>
+<p>Redis是基于内存的数据库，但它也可以把数据持久化到硬盘上。持久化的方式有两种：RDB和AOF。</p>
+</blockquote>
+<h2 id="1-rdbredis-database">1. RDB(Redis DataBase)</h2>
+<h3 id="1-简介与流程">1. 简介与流程</h3>
+<blockquote>
+<p>RDB是什么？</p>
+</blockquote>
+<p><em>在指定的时间间隔内将内存中的数据集快照写入磁盘， 也就是行话讲的Snapshot快照，它恢复时是将快照文件直接读到内存里。</em></p>
+<blockquote>
+<p>如何备份数据？</p>
+</blockquote>
+<p>Redis会单独创建（fork）一个子进程来进行持久化，会先将数据写入到 一个临时文件中，待持久化过程都结束了，再用这个临时文件替换上次持久化好的文件。 整个过程中，主进程是不进行任何IO操作的，这就确保了极高的性能 如果需要进行大规模数据的恢复，且对于数据恢复的完整性不是非常敏感，那RDB方式要比AOF方式更加的高效。<strong>RDB</strong>的缺点是<strong>最后一次持久化后的数据可能丢失</strong>。</p>
+<figure data-type="image" tabindex="1"><a href="https://imgtu.com/i/O7IunS"><img src="https://s1.ax1x.com/2022/05/19/O7IunS.png" alt="O7IunS.png" loading="lazy"></a></figure>
+<ul>
+<li>
+<p>Fork的作用是复制一个与当前进程一样的进程。新进程的所有数据（变量、环境变量、程序计数器等） 数值都和原进程一致，但是是一个全新的进程，并作为原进程的子进程</p>
+</li>
+<li>
+<p>在Linux程序中，fork()会产生一个和父进程完全相同的子进程，但子进程在此后多会exec系统调用，出于效率考虑，Linux中引入了“<strong>写时复制技术</strong>”</p>
+</li>
+<li>
+<p><strong>一般情况父进程和子进程会共用同一段物理内存</strong>，只有进程空间的各段的内容要发生变化时，才会将父进程的内容复制一份给子进程。</p>
+</li>
+</ul>
+<h3 id="2-配置文件">2. 配置文件</h3>
+<p>在**/etc/redis.conf**中。</p>
+<ol>
+<li>
+<p>dbfilename：设置备份文件的文件名</p>
+</li>
+<li>
+<p>dir：rdb文件的保存路径，也可以修改。默认为Redis启动时命令行所在的目录下</p>
+</li>
+<li>
+<p>save：save时只管保存，其它不管，全部阻塞。手动保存。不建议</p>
+<p>save 秒钟 主键变化的次数：在n秒内有至少x个主键的值发生变化，那么进行备份</p>
+</li>
+<li>
+<p>bgsave：Redis会在后台异步进行快照操作，快照同时还可以响应客户端请求。可以通过lastsave 命令<strong>获取最后一次成功执行快照的时间</strong></p>
+</li>
+<li>
+<p>stop-writes-on-bgsave-error：当Redis无法写入磁盘的话，直接关掉Redis的写操作。推荐yes.</p>
+</li>
+<li>
+<p>rdbcompression：对于存储到磁盘中的快照，可以设置是否进行压缩存储。如果是的话，redis会采用LZF算法进行压缩。</p>
+<p>如果你不想消耗CPU来进行压缩的话，可以设置为关闭此功能。推荐yes.</p>
+</li>
+<li>
+<p>rdbchecksum：在存储快照后，还可以让redis使用CRC64算法来进行<strong>数据校验</strong>，</p>
+<p>但是这样做会增加大约10%的性能消耗，如果希望获取到最大的性能提升，可以关闭此功能</p>
+<p>推荐yes.</p>
+</li>
+</ol>
+<h3 id="3-优势">3. 优势</h3>
+<ul>
+<li>
+<p>适合大规模的数据恢复</p>
+</li>
+<li>
+<p>对数据完整性和一致性要求不高更适合使用</p>
+</li>
+<li>
+<p>节省磁盘空间</p>
+</li>
+<li>
+<p>恢复速度快</p>
+</li>
+</ul>
+<h3 id="4-劣势">4. 劣势</h3>
+<ul>
+<li>
+<p>Fork的时候，内存中的数据被克隆了一份，大致2倍的膨胀性需要考虑</p>
+</li>
+<li>
+<p>虽然Redis在fork时使用了<strong>写时拷贝技术</strong>,但是如果数据庞大时还是比较消耗性能。</p>
+</li>
+<li>
+<p>在备份周期在一定间隔时间做一次备份，所以如果Redis意外down掉的话，就会丢失最后一次快照后的所有修改。</p>
+</li>
+</ul>
+<blockquote>
+<p>如何停止？</p>
+<p>动态停止RDB：redis-cli config set save &quot;&quot;#save后给空值，表示禁用保存策略</p>
+</blockquote>
+<figure data-type="image" tabindex="2"><a href="https://imgtu.com/i/O7oGUH"><img src="https://s1.ax1x.com/2022/05/19/O7oGUH.jpg" alt="O7oGUH.jpg" loading="lazy"></a></figure>
+<h3 id="5-备份">5. 备份</h3>
+<ol>
+<li>复制dump.rdb文件，设为d.rdb；</li>
+<li>在不注意删除dump.rdb文件后，只需要把d.rdb文件名改为dump.rdb即可。</li>
+</ol>
+<h2 id="2-aofappend-of-file">2. AOF(Append Of File)</h2>
+<h3 id="1-简介与流程-2">1. 简介与流程</h3>
+<blockquote>
+<p>AOF是什么？</p>
+</blockquote>
+<p>以<strong>日志</strong>的形式来记录每个写操作（增量保存），将Redis执行过的所有写指令记录下来(<strong>读操作不记录</strong>)， <strong>只许追加文件但不可以改写文件</strong>，redis启动之初会读取该文件重新构建数据，换言之，redis 重启的话就根据日志文件的内容将写指令从前到后执行一次以完成数据的恢复工作。</p>
+<blockquote>
+<p>流程是怎样的？</p>
+</blockquote>
+<ol>
+<li>
+<p>客户端的请求写命令会被append追加到AOF缓冲区内；</p>
+</li>
+<li>
+<p>AOF缓冲区根据AOF持久化策略[always,everysec,no]将操作sync同步到磁盘的AOF文件中；</p>
+</li>
+<li>
+<p>AOF文件大小超过重写策略或手动重写时，会对AOF文件rewrite重写，压缩AOF文件容量；</p>
+</li>
+<li>
+<p>Redis服务重启时，会重新load加载AOF文件中的写操作达到数据恢复的目的；</p>
+</li>
+</ol>
+<figure data-type="image" tabindex="3"><a href="https://imgtu.com/i/O7vNT0"><img src="https://s1.ax1x.com/2022/05/19/O7vNT0.png" alt="O7vNT0.png" loading="lazy"></a></figure>
+<h3 id="2-配置文件-2">2. 配置文件</h3>
+<p><strong>AOF默认不开启</strong></p>
+<p>可以在redis.conf中配置文件名称，默认为 appendonly.aof</p>
+<p>AOF文件的保存路径，同RDB的路径一致。</p>
+<blockquote>
+<p>AOF和RDB同时开启时，redis听谁的？</p>
+</blockquote>
+<p>AOF和RDB同时开启，系统默认取AOF的数据（数据不会存在丢失）</p>
+<h3 id="3-aof启动修复恢复">3. AOF启动/修复/恢复</h3>
+<ul>
+<li>
+<p>l AOF的备份机制和性能虽然和RDB不同, 但是备份和恢复的操作同RDB一样，都是拷贝备份文件，需要恢复时再拷贝到Redis工作目录下，启动系统即加载。</p>
+</li>
+<li>
+<p>正常恢复</p>
+<ul>
+<li>
+<p>修改默认的appendonly no，改为yes</p>
+</li>
+<li>
+<p>将有数据的aof文件复制一份保存到对应目录(查看目录：config get dir)</p>
+</li>
+<li>
+<p>恢复：重启redis然后重新加载</p>
+</li>
+</ul>
+</li>
+<li>
+<p>异常恢复</p>
+<ul>
+<li>
+<p>修改默认的appendonly no，改为yes</p>
+</li>
+<li>
+<p>如遇到<strong>AOF****文件损坏</strong>，通过/usr/local/bin/<strong>redis-check-aof--fix appendonly.aof</strong>进行恢复</p>
+</li>
+<li>
+<p>备份被写坏的AOF文件</p>
+</li>
+<li>
+<p>恢复：重启redis，然后重新加载</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-同步频率设置">4. 同步频率设置</h3>
+<ol>
+<li>appendfsync always</li>
+</ol>
+<p>始终同步，每次Redis的写入都会立刻记入日志；性能较差但数据完整性比较好</p>
+<ol start="2">
+<li>appendfsync everysec</li>
+</ol>
+<p>每秒同步，每秒记入日志一次，如果宕机，本秒的数据可能丢失。</p>
+<ol start="3">
+<li>appendfsync no</li>
+</ol>
+<p>redis不主动进行同步，把同步时机交给操作系统。</p>
+<h3 id="5-rewrite重写">5. Rewrite重写</h3>
+<blockquote>
+<p>Rewrite是什么？</p>
+</blockquote>
+<p>AOF采用文件追加方式，文件会越来越大为避免出现此种情况，新增了重写机制, 当AOF文件的大小超过所设定的阈值时，Redis就会启动AOF文件的内容压缩， 只保留可以恢复数据的最小指令集.可以使用命令<strong>bgrewriteaof</strong>。</p>
+<blockquote>
+<p>原理是什么？</p>
+</blockquote>
+<p>AOF文件持续增长而过大时，会fork出一条新进程来将文件重写(也是先写临时文件最后再rename)，redis4.0版本后的重写，是指上就是把rdb 的快照，以二级制的形式附在新的aof头部，作为已有的历史数据，替换掉原来的流水账操作。</p>
+<p>Redis会记录上次重写时的AOF大小，默认配置是当AOF文件大小是上次rewrite后大小的一倍且文件大于64M时触发，例如：当阈值设置为64MB时，文件大小超过128MB，开启重写机制。</p>
+<h3 id="6-优势与劣势">6. 优势与劣势</h3>
+<h4 id="优势">优势</h4>
+<ol>
+<li>
+<p>备份机制更稳健，丢失数据概率更低。</p>
+</li>
+<li>
+<p>可读的日志文本，通过操作AOF稳健，可以处理误操作。</p>
+</li>
+</ol>
+<h4 id="劣势">劣势</h4>
+<ol>
+<li>
+<p>比起RDB占用更多的磁盘空间。</p>
+</li>
+<li>
+<p>恢复备份速度要慢。</p>
+</li>
+<li>
+<p>每次读写都同步的话，有一定的性能压力。</p>
+</li>
+<li>
+<p>存在个别Bug，造成恢复不能。</p>
+</li>
+</ol>
+<h2 id="3-总结">3. 总结</h2>
+<p>官方推荐两个都启用。</p>
+<p>如果对数据不敏感，可以选单独用RDB。</p>
+<p>不建议单独用 AOF，因为可能会出现Bug。</p>
+<p>如果只是做纯内存缓存，可以都不用。</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[SpringBoot整合Redis]]></title>
         <id>https://Liangxi2001.github.io/post/springboot-zheng-he-redis/</id>
@@ -955,147 +1208,6 @@ public class EmployeeServiceImpl extends ServiceImpl&lt;EmployeeMapper, Employee
             &lt;/if&gt;
             order by e.id
         &lt;/select&gt;
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[SpringBoot与Mybatis-plus整合]]></title>
-        <id>https://Liangxi2001.github.io/post/springboot-yu-mybatis-plus-zheng-he/</id>
-        <link href="https://Liangxi2001.github.io/post/springboot-yu-mybatis-plus-zheng-he/">
-        </link>
-        <updated>2022-03-28T01:27:23.000Z</updated>
-        <summary type="html"><![CDATA[<p>springboot+mybatis-plus实现一个模块基本的增删改查功能</p>
-]]></summary>
-        <content type="html"><![CDATA[<p>springboot+mybatis-plus实现一个模块基本的增删改查功能</p>
-<!-- more -->
-<p><ul class="markdownIt-TOC">
-<li><a href="#1-%E5%BC%95%E5%85%A5pom%E4%BE%9D%E8%B5%96">1. 引入pom依赖</a></li>
-<li><a href="#2-%E8%BF%9B%E8%A1%8C%E7%9B%B8%E5%85%B3%E9%85%8D%E7%BD%AE">2. 进行相关配置</a></li>
-<li><a href="#3%E6%95%B4%E4%BD%93%E8%AE%BE%E8%AE%A1">3.整体设计</a>
-<ul>
-<li><a href="#31-controller%E5%B1%82">3.1 controller层</a></li>
-<li><a href="#32service%E5%B1%82">3.2service层</a></li>
-<li><a href="#33-mapper%E5%B1%82">3.3 mapper层</a></li>
-</ul>
-</li>
-</ul>
-</p>
-<h1 id="1-引入pom依赖">1. 引入pom依赖</h1>
-<pre><code class="language-xml">&lt;!--        web,lombok,mysql,mybatis-plus--&gt;
-&lt;dependency&gt;
-    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-    &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
-    &lt;artifactId&gt;lombok&lt;/artifactId&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-    &lt;groupId&gt;mysql&lt;/groupId&gt;
-    &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-    &lt;groupId&gt;com.baomidou&lt;/groupId&gt;
-    &lt;artifactId&gt;mybatis-plus-boot-starter&lt;/artifactId&gt;
-    &lt;version&gt;3.3.1.tmp&lt;/version&gt;
-&lt;/dependency&gt;
-</code></pre>
-<h1 id="2-进行相关配置">2. 进行相关配置</h1>
-<pre><code class="language-yaml">spring:
-  datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/yeb?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=UTC
-    username: root
-    password: xxxx
-    
-
-mybatis-plus:
-  mapper-locations: classpath*:/mapper/*Mapper.xml
-  type-aliases-package: com.yebProject.server.pojo
-  configuration:
-#    是否开启驼峰命名
-    map-underscore-to-camel-case: false
-</code></pre>
-<h1 id="3整体设计">3.整体设计</h1>
-<h2 id="31-controller层">3.1 controller层</h2>
-<pre><code class="language-java">@RestController
-@RequestMapping(&quot;/system/config/joblevel&quot;)
-public class JoblevelController {
-    @Autowired
-    private IJoblevelService joblevelService;
-
-    @ApiOperation(value = &quot;获取所有职称信息&quot;)
-    @GetMapping(&quot;/&quot;)
-    public List&lt;Joblevel&gt; getAllJobLevels(){
-        return joblevelService.list();
-    }
-
-    @ApiOperation(value = &quot;增加职称&quot;)
-    @PostMapping(&quot;/&quot;)
-    public RespBean addJobLevel(@RequestBody Joblevel joblevel){
-        if (joblevelService.save(joblevel)){
-            return RespBean.success(&quot;添加成功！&quot;);
-        }
-        return RespBean.error(&quot;添加失败！&quot;);
-    }
-
-    @ApiOperation(value = &quot;更新职称信息&quot;)
-    @PutMapping(&quot;/&quot;)
-    public RespBean updateJobLevel(@RequestBody Joblevel joblevel){
-        if (joblevelService.updateById(joblevel)){
-            return RespBean.success(&quot;更新成功！&quot;);
-        }
-        return RespBean.error(&quot;更新失败！&quot;);
-    }
-
-    @ApiOperation(value = &quot;删除职称&quot;)
-    @DeleteMapping(&quot;/{id}&quot;)
-    public RespBean deleteJobLevel(@PathVariable Integer id){
-        if (joblevelService.removeById(id)){
-            return RespBean.success(&quot;删除成功！&quot;);
-        }
-        return RespBean.error(&quot;删除失败！&quot;);
-    }
-
-    @ApiOperation(value = &quot;批量删除&quot;)
-    @DeleteMapping(&quot;/&quot;)
-    public RespBean deleteJobLevelsByIds(Integer[] ids){
-        if (joblevelService.removeByIds(Arrays.asList(ids))){
-            return RespBean.success(&quot;删除成功！&quot;);
-        }
-        return RespBean.error(&quot;删除失败！&quot;);
-    }
-}
-</code></pre>
-<h2 id="32service层">3.2service层</h2>
-<pre><code class="language-java">//接口
-public interface IJoblevelService extends IService&lt;Joblevel&gt; {}
-//实现
-@Service
-public class JoblevelServiceImpl extends ServiceImpl&lt;JoblevelMapper, Joblevel&gt; implements IJoblevelService {}
-</code></pre>
-<h2 id="33-mapper层">3.3 mapper层</h2>
-<pre><code class="language-java">//接口
-public interface JoblevelMapper extends BaseMapper&lt;Joblevel&gt; {}
-//xm文件
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;!DOCTYPE mapper PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot; &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
-&lt;mapper namespace=&quot;com.yebProject.server.mapper.JoblevelMapper&quot;&gt;
-
-    &lt;!-- 通用查询映射结果 --&gt;
-    &lt;resultMap id=&quot;BaseResultMap&quot; type=&quot;com.yebProject.server.pojo.Joblevel&quot;&gt;
-        &lt;id column=&quot;id&quot; property=&quot;id&quot;/&gt;
-        &lt;result column=&quot;name&quot; property=&quot;name&quot;/&gt;
-        &lt;result column=&quot;titleLevel&quot; property=&quot;titleLevel&quot;/&gt;
-        &lt;result column=&quot;createDate&quot; property=&quot;createDate&quot;/&gt;
-        &lt;result column=&quot;enabled&quot; property=&quot;enabled&quot;/&gt;
-    &lt;/resultMap&gt;
-
-    &lt;!-- 通用查询结果列 --&gt;
-    &lt;sql id=&quot;Base_Column_List&quot;&gt;
-        id, name, titleLevel, createDate, enabled
-    &lt;/sql&gt;
-&lt;/mapper&gt;
 </code></pre>
 ]]></content>
     </entry>
