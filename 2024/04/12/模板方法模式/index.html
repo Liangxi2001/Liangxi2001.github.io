@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <link rel="icon" href="https://github.com/Liangxi2001/Pictures/blob/main/resource/site_logo.png?raw=true">
   
-  <title>建站过程 | 凉汐</title>
+  <title>模板方法模式 | 凉汐</title>
   
   <meta name="author" content="liangxi" />
   <meta http-equiv="Cache-Control" content="no-transform" />
@@ -15,20 +15,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <meta name="format-detection" content="telphone=no, email=no" />
   
-    <meta name="keywords" content="日常记录" />
+    <meta name="keywords" content="C++, 设计模式" />
   
-  <meta name="description" content="个人博客建站过程本站使用GitHub Pages + Hexo搭建，前情请申请git账号，安装git，node.js，hexo-cli等等，这里可以详见以下网址: Hexo官网 知乎专栏 本地建站跟着Hexo官网走： 123hexo init &lt;folder&gt;cd &lt;folder&gt;npm install  这样，本地站点的初始化就完成了，下面可以在本地测试一下： 12hex">
+  <meta name="description" content="从一般开始星巴霖饮料店今天开业了!!!小店初开，提供咖啡和茶两种饮品，这是我们的独家配方法，下面是星巴霖咖啡的冲泡法：  把水煮沸； 用沸水冲泡咖啡； 把咖啡倒进杯子； 加糖和牛奶。  然后是星巴霖茶的冲泡法：  把水煮沸； 用沸水浸泡茶叶； 把茶倒进杯子； 加柠檬。  下面让我们来实现咖啡和茶，代码见目录SimpleBarista。 进一步复用代码很简单，观察后发现boilWater()和pou">
 <meta property="og:type" content="article">
-<meta property="og:title" content="建站过程">
-<meta property="og:url" content="https://liangxi2001.github.io/2024/01/16/%E5%BB%BA%E7%AB%99%E8%BF%87%E7%A8%8B/index.html">
+<meta property="og:title" content="模板方法模式">
+<meta property="og:url" content="https://liangxi2001.github.io/2024/04/12/%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F/index.html">
 <meta property="og:site_name" content="凉汐">
-<meta property="og:description" content="个人博客建站过程本站使用GitHub Pages + Hexo搭建，前情请申请git账号，安装git，node.js，hexo-cli等等，这里可以详见以下网址: Hexo官网 知乎专栏 本地建站跟着Hexo官网走： 123hexo init &lt;folder&gt;cd &lt;folder&gt;npm install  这样，本地站点的初始化就完成了，下面可以在本地测试一下： 12hex">
+<meta property="og:description" content="从一般开始星巴霖饮料店今天开业了!!!小店初开，提供咖啡和茶两种饮品，这是我们的独家配方法，下面是星巴霖咖啡的冲泡法：  把水煮沸； 用沸水冲泡咖啡； 把咖啡倒进杯子； 加糖和牛奶。  然后是星巴霖茶的冲泡法：  把水煮沸； 用沸水浸泡茶叶； 把茶倒进杯子； 加柠檬。  下面让我们来实现咖啡和茶，代码见目录SimpleBarista。 进一步复用代码很简单，观察后发现boilWater()和pou">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://github.com/Liangxi2001/Pictures/blob/main/resource/site_logo.png?raw=true">
-<meta property="article:published_time" content="2024-01-16T11:56:14.000Z">
-<meta property="article:modified_time" content="2024-01-16T12:42:01.274Z">
+<meta property="article:published_time" content="2024-04-12T11:05:36.000Z">
+<meta property="article:modified_time" content="2024-04-16T12:39:37.463Z">
 <meta property="article:author" content="liangxi">
-<meta property="article:tag" content="日常记录">
+<meta property="article:tag" content="设计模式">
+<meta property="article:tag" content="C++">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://github.com/Liangxi2001/Pictures/blob/main/resource/site_logo.png?raw=true">
   
@@ -124,15 +125,15 @@
 
             <article itemscope itemtype="https://schema.org/Article">
     
-    <link itemprop="mainEntityOfPage" href="https://liangxi2001.github.io/2024/01/16/%E5%BB%BA%E7%AB%99%E8%BF%87%E7%A8%8B/">
+    <link itemprop="mainEntityOfPage" href="https://liangxi2001.github.io/2024/04/12/%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F/">
     <div class="kratos-hentry kratos-post-inner clearfix">
         <header class="kratos-entry-header">
             
-                <h1 class="kratos-entry-title text-center" itemprop="name headline">建站过程</h1>
+                <h1 class="kratos-entry-title text-center" itemprop="name headline">模板方法模式</h1>
             
             
             <ul class="kratos-post-meta text-center">
-                <li><time datetime="2024-01-16T11:56:14.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-01-16</time></li>
+                <li><time datetime="2024-04-12T11:05:36.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-04-12</time></li>
                 <li itemprop="author" itemscope itemtype="https://schema.org/Person">
                     <i class="fa fa-user"></i> 作者 <span itemprop="name">liangxi</span>
                 </li>
@@ -141,7 +142,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~1.91K
+                            ~2.61K
                         
                         字
                     </li>
@@ -153,82 +154,73 @@
             
             <div id="expire-alert" class="alert alert-warning hidden" role="alert">
                 <div class="icon"><i class="fa fa-warning"></i></div>
-                <div class="text"><p>本文最后编辑于 <time datetime="1705408921274"></time> 前，其中的内容可能需要更新。</p></div>
+                <div class="text"><p>本文最后编辑于 <time datetime="1713271177463"></time> 前，其中的内容可能需要更新。</p></div>
             </div>
             
             
             
             <hr />
-            <div itemprop="articleBody"><h1 id="个人博客建站过程"><a href="#个人博客建站过程" class="headerlink" title="个人博客建站过程"></a>个人博客建站过程</h1><p>本站使用GitHub Pages + Hexo搭建，前情请申请git账号，安装git，node.js，hexo-cli等等，这里可以详见以下网址:</p>
-<p><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/index.html">Hexo官网</a></p>
-<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/91652100">知乎专栏</a></p>
-<h2 id="本地建站"><a href="#本地建站" class="headerlink" title="本地建站"></a>本地建站</h2><p>跟着Hexo官网走：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo init &lt;folder&gt;</span><br><span class="line"><span class="built_in">cd</span> &lt;folder&gt;</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure>
-
-<p>这样，本地站点的初始化就完成了，下面可以在本地测试一下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo g  //生成静态文件</span><br><span class="line">hexo s  //启动本地服务器 一般在http://localhost:4000/查看</span><br></pre></td></tr></table></figure>
-
-<p>这样的话，本地站点就搭建好了，下面就是本文重点，将本地站点部署到GitHub上。</p>
-<h2 id="部署到GitHub"><a href="#部署到GitHub" class="headerlink" title="部署到GitHub"></a>部署到GitHub</h2><p>部署是很简单的，在Hexo上面有着明确操作：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>就可以完成远程，但一些配置还是会显得复杂。<br>首先，需要在yml文件中准备部署的相关字段:</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> </span><br><span class="line">  <span class="comment"># example, https://github.com/hexojs/hexojs.github.io</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">master</span></span><br><span class="line">  <span class="attr">token:</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line">  <span class="attr">message:</span> </span><br></pre></td></tr></table></figure>
-
-<p>如上，需要填写repo，branch，token，message字段。其中repo有几种方式，比如Https,SSH连接等等。但我使用Https出现连接超时的情况，所以后续都会使用SSH连接。</p>
-<h3 id="repo"><a href="#repo" class="headerlink" title="repo"></a>repo</h3><p>这个很简单，找到创建的仓库，点击Code，复制SSH连接即可。</p>
-<h3 id="token"><a href="#token" class="headerlink" title="token"></a>token</h3><ol>
-<li>登录到您的 GitHub 帐户。</li>
-<li>转到 GitHub 的 Settings（设置）页面。</li>
-<li>在左侧导航栏中，选择 “Developer settings”（开发者设置）。</li>
-<li>选择 “Personal access tokens”（个人访问令牌）。</li>
-<li>点击 “Generate token”（生成令牌）。</li>
-<li>提供一个描述，选择需要的权限。确保为 GitHub Pages 或相关存储库选择适当的权限。</li>
-<li>点击 “Generate token” 完成生成。</li>
-</ol>
-<p>以上来自chatGPT(笑)。<br>对于权限，确保以下两点一般够用：</p>
+            <div itemprop="articleBody"><h1 id="从一般开始"><a href="#从一般开始" class="headerlink" title="从一般开始"></a>从一般开始</h1><p>星巴霖饮料店今天开业了!!!小店初开，提供咖啡和茶两种饮品，这是我们的独家配方法，<br>下面是星巴霖咖啡的冲泡法：</p>
 <ol>
-<li>repo：这是一个组合权限，包括了对存储库的读写访问权限。</li>
-<li>delete_repo：确保不选择此权限，以防止删除存储库的权限。</li>
+<li>把水煮沸；</li>
+<li>用沸水冲泡咖啡；</li>
+<li>把咖啡倒进杯子；</li>
+<li>加糖和牛奶。</li>
 </ol>
-<h3 id="设置SSH"><a href="#设置SSH" class="headerlink" title="设置SSH"></a>设置SSH</h3><p>接下来需要准备SSH，这里需要注意的是，如果你的电脑上已经有了SSH，那么就不需要再次生成，直接将公钥添加到GitHub即可。如果没有，那么就需要生成SSH。</p>
+<p>然后是星巴霖茶的冲泡法：</p>
 <ol>
-<li>生成 SSH 密钥： 如果您还没有 SSH 密钥对，请在终端中运行以下命令生成一个新的 SSH 密钥。确保您将您的电子邮件替换为您的 GitHub 邮箱地址。按照提示，选择默认位置保存密钥，并设置一个密码以增加安全性。</li>
+<li>把水煮沸；</li>
+<li>用沸水浸泡茶叶；</li>
+<li>把茶倒进杯子；</li>
+<li>加柠檬。</li>
 </ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -b 4096 -C <span class="string">&quot;&lt;your_email@example.com&gt;&quot;</span></span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>添加 SSH 密钥到 SSH 代理： 在生成 SSH 密钥后，您需要将其添加到 SSH 代理。运行以下命令：</li>
+<p>下面让我们来实现咖啡和茶，代码见目录<code>SimpleBarista</code>。</p>
+<h1 id="进一步复用"><a href="#进一步复用" class="headerlink" title="进一步复用"></a>进一步复用</h1><p>代码很简单，观察后发现<code>boilWater()</code>和<code>pourInCup()</code>是相同的，我们可以将其抽象出来，见类图：</p>
+<p><img src="https://github.com/Liangxi2001/Pictures/blob/main/resource/2024/%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F/class.png?raw=true" alt="类图"></p>
+<p>我们已经对茶和咖啡进行了一些抽象了，还有没有其它的东西可以抽象呢？回顾它们的冲泡方法：</p>
+<ol>
+<li>把水煮沸；</li>
+<li>用热水包咖啡或茶；</li>
+<li>把饮料倒进杯子；</li>
+<li>在饮料中加入适当的调料；</li>
 </ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">eval</span> <span class="string">&quot;<span class="subst">$(ssh-agent -s)</span>&quot;</span></span><br><span class="line">ssh-add ~/.ssh/id_rsa</span><br></pre></td></tr></table></figure>
+<p>那么，现在可以尝试将<code>prepareRecipe()</code>抽象化：</p>
+<p>咖啡的<code>prepareRecipe()</code>：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Coffee::prepareRecipe</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">boilWater</span>();</span><br><span class="line">    <span class="built_in">brewCoffeeGrinds</span>();<span class="comment">//第2步</span></span><br><span class="line">    <span class="built_in">pourInCup</span>();</span><br><span class="line">    <span class="built_in">addSugarAndMilk</span>();<span class="comment">//第4步</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<ol start="3">
-<li><p>添加 SSH 公钥到 GitHub： 打开生成的公钥文件（默认为 ~&#x2F;.ssh&#x2F;id_rsa.pub），并将其内容复制(<em>很长一串，可以作为文本文件打开，全部复制</em>)到您的 GitHub 帐户的 SSH 密钥设置中。这可以在 GitHub Settings -&gt; SSH and GPG keys 中找到。</p>
+<p>茶的<code>prepareRecipe()</code>：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Tea::prepareRecipe</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">boilWater</span>();</span><br><span class="line">    <span class="built_in">steepTeaBag</span>();<span class="comment">//第2步</span></span><br><span class="line">    <span class="built_in">pourInCup</span>();</span><br><span class="line">    <span class="built_in">addLemon</span>();<span class="comment">//第4步</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>两者的第2步操作，冲泡和浸泡，差异其实不大，将第2步抽象出来，比如说<code>brew()</code><br>。加糖和牛奶与加柠檬本质上都属于加调料，可以抽象成<code>addCondiments()</code>。那么，我们可以将<code>prepareRecipe()</code><br>方法修改，现在，新的<code>prepareRecipe()</code>方法如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">prepareRecipe</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">boilWater</span>();</span><br><span class="line">    <span class="built_in">brew</span>();<span class="comment">//第2步</span></span><br><span class="line">    <span class="built_in">pourInCup</span>();</span><br><span class="line">    <span class="built_in">addCondiments</span>();<span class="comment">//第4步</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样一来，<code>prepareRecipe()</code>就成了一个模板方法，因为：</p>
+<ol>
+<li>它是一个方法；</li>
+<li>它是一个模板，因为它的算法是固定的，但是具体的实现是不固定的，比如说，咖啡和茶的冲泡方法就不一样。</li>
+</ol>
+<p>代码见目录<code>Barista</code>。</p>
+<h1 id="模板方法模式"><a href="#模板方法模式" class="headerlink" title="模板方法模式"></a>模板方法模式</h1><p>模板方法模式在一个方法中定义了一个算法的骨架，而将一些步骤延迟的子类中。模板方法是的子类可以在不改变算法结构的情况下，重新定义算法中的某些步骤；</p>
+<p>模板方法的主要在于需要进行的抽象。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">AbstractClass</span> &#123;   <span class="comment">//这是一个抽象类，被用作基类，子类需要实现其操作</span></span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">templateMethod</span><span class="params">()</span> <span class="keyword">final</span> </span>&#123; <span class="comment">//模板方法，被声明为final，防止子类覆盖</span></span><br><span class="line">        <span class="comment">//模板方法定义了一连步骤，每个步骤由一个方法代表</span></span><br><span class="line">        <span class="built_in">primitiveOperation1</span>();</span><br><span class="line">        <span class="built_in">primitiveOperation2</span>();</span><br><span class="line">        <span class="built_in">concreteOperation</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//子类需要有自己的实现</span></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">primitiveOperation1</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">primitiveOperation2</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//在子类中相同的代码</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">concreteOperation</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//do something</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h1 id="钩子"><a href="#钩子" class="headerlink" title="钩子"></a>钩子</h1><p>钩子是一种被声明在基类中的方法，但只有空的或者默认的实现。钩子的存在，可以让子类有能力对算法的不同点进行挂钩。要不要挂钩，由子类自行决定。</p>
+<p>当顾客点咖啡的时候，我们如何得知顾客是否想要加调料呢？</p>
+<p>答案就是，开口问！</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">CaffeineBeverageWithHook</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">prepareRecipe</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//同上</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">customerWantsCondiments</span>()) &#123;</span><br><span class="line">            <span class="built_in">addCondiments</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">virtual</span> ~<span class="built_in">CaffeineBeverageWithHook</span>() = <span class="keyword">default</span>;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">brew</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">addCondiments</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">boilWater</span><span class="params">()</span> </span>&#123; std::cout &lt;&lt; <span class="string">&quot;Boiling water&quot;</span> &lt;&lt; std::endl; &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">pourInCup</span><span class="params">()</span> </span>&#123; std::cout &lt;&lt; <span class="string">&quot;Pouring into cup&quot;</span> &lt;&lt; std::endl; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//在本例中，该方法就是钩子 可以让子类有能力决定算法是否执行一些可选操作</span></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">bool</span> <span class="title">customerWantsCondiments</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h1 id="设计原则"><a href="#设计原则" class="headerlink" title="设计原则"></a>设计原则</h1><ol>
+<li><p>好莱坞原则</p>
+<p>别调用我们，我们会调用你。这是一种反转控制，也就是说，高层组件对待底层组件的方式是“别调用我们，我们会调用你”。</p>
 </li>
-<li><p>测试SSH连接，运行以下命令：</p>
-</li>
 </ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh -T git@github.com</span><br><span class="line">//如果一切正常，您应该看到一条欢迎消息，表明连接成功</span><br></pre></td></tr></table></figure>
-
-<ol start="5">
-<li>部署到GitHub，运行以下命令：</li>
+<h1 id="策略模式与模板方法模式"><a href="#策略模式与模板方法模式" class="headerlink" title="策略模式与模板方法模式"></a>策略模式与模板方法模式</h1><p>策略模式和模板方法模式都封装算法，一个用组合，一个用继承。两者的区别在于：</p>
+<ol>
+<li>策略模式：封装可互换的行为，然后使用委托来决定使用哪一个行为；</li>
+<li>模板方法模式：封装算法的骨架，而将一些步骤延迟到子类中；</li>
 </ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo deploy</span><br></pre></td></tr></table></figure>
-
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><h3 id="测试SSH连接失败"><a href="#测试SSH连接失败" class="headerlink" title="测试SSH连接失败"></a>测试SSH连接失败</h3><ol>
-<li>先测试可用性</li>
-</ol>
-<p><code>ssh -T -p 443 git@ssh.github.com</code></p>
-<p>如果是以Hi开头，说明可用；</p>
-<ol start="2">
-<li>编辑<code>~/.ssh/config</code>文件</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Host github.com</span><br><span class="line">Hostname ssh.github.com</span><br><span class="line">Port 443</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>再次测试</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh -T git@github.com</span><br><span class="line">//回复 Hi *****! You<span class="string">&#x27;ve successfully authenticated, but GitHub does not provide shell access.</span></span><br></pre></td></tr></table></figure>
+<p>可以延迟到子类中实现的步骤，视为可互换的行为（比如<code>brew()</code>），这样就又可以采用策略模式对不同的步骤进行封装，便于灵活替换；</p>
+<p><em>完整示例代码详见：<a target="_blank" rel="noopener" href="https://gitee.com/liangxi1125/designpatterns/tree/master/Src/TemplateMethod">代码链接</a></em></p>
 </div>
         </div>
         
@@ -282,7 +274,7 @@
     <script type="text/javascript">
         $(()=>{
             new QRCode("wechat-qr", {
-                text: "https://liangxi2001.github.io/2024/01/16/%E5%BB%BA%E7%AB%99%E8%BF%87%E7%A8%8B/",
+                text: "https://liangxi2001.github.io/2024/04/12/%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F/",
                 width: 150,
                 height: 150,
                 correctLevel : QRCode.CorrectLevel.H
@@ -294,13 +286,19 @@
             const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
             const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
             const twitterBase   = "https://twitter.com/intent/tweet?";
-            const hostUrl       = "https://liangxi2001.github.io/2024/01/16/%E5%BB%BA%E7%AB%99%E8%BF%87%E7%A8%8B/";
-            const title         = "「建站过程」";
-            const excerpt       = `个人博客建站过程本站使用GitHub Pages + Hexo搭建，前情请申请git账号，安装git，node.js，hexo-cli等等，这里可以详见以下网址:
-Hexo官网
-知乎专栏
-本地建站跟着Hexo官网走：
-123hexo ...`;
+            const hostUrl       = "https://liangxi2001.github.io/2024/04/12/%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F/";
+            const title         = "「模板方法模式」";
+            const excerpt       = `从一般开始星巴霖饮料店今天开业了!!!小店初开，提供咖啡和茶两种饮品，这是我们的独家配方法，下面是星巴霖咖啡的冲泡法：
+
+把水煮沸；
+用沸水冲泡咖啡；
+把咖啡倒进杯子；
+加糖和牛奶。
+
+然后是星巴霖茶的冲泡法：
+
+把水煮沸；
+用沸水浸...`;
             let _URL;
             switch (dest) {
                 case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
@@ -319,10 +317,10 @@ Hexo官网
             <div class="footer-tag clearfix">
                 <div class="pull-left">
                 <i class="fa fa-tags"></i>
-                    <a class="tag-none-link" href="/tags/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/" rel="tag">日常记录</a>
+                    <a class="tag-none-link" href="/tags/C/" rel="tag">C++</a>, <a class="tag-none-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a>
                 </div>
                 <div class="pull-date">
-                    <time datetime="2024-01-16T12:42:01.274Z" itemprop="dateModified">最后编辑：2024-01-16</time>
+                    <time datetime="2024-04-16T12:39:37.463Z" itemprop="dateModified">最后编辑：2024-04-16</time>
                 </div>
             </div>
         </footer>
@@ -331,13 +329,9 @@ Hexo官网
         <nav class="navigation post-navigation clearfix" role="navigation">
             
             <div class="nav-previous clearfix">
-                <a title=" Hello World" href="/2024/01/16/hello-world/">&lt; 上一篇</a>
+                <a title=" cmake实现自动扫描源文件" href="/2024/04/11/cmake实现自动扫描源文件/">&lt; 上一篇</a>
             </div>
             
-            
-            <div class="nav-next clearfix">
-                <a title=" 1.27随笔" href="/2024/01/27/生活随笔/2024/1月27日随笔/">下一篇 &gt;</a>
-            </div>
             
         </nav>
     
