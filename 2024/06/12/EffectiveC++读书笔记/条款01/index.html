@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <link rel="icon" href="https://github.com/Liangxi2001/Pictures/blob/main/resource/site_logo.png?raw=true">
   
-  <title>cmake实现自动扫描源文件 | 凉汐</title>
+  <title>条款01：视C++为一个语言联邦 | 凉汐</title>
   
   <meta name="author" content="liangxi" />
   <meta http-equiv="Cache-Control" content="no-transform" />
@@ -15,20 +15,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <meta name="format-detection" content="telphone=no, email=no" />
   
-    <meta name="keywords" content="cmake" />
+    <meta name="keywords" content="EffectiveC++, 读书笔记" />
   
-  <meta name="description" content="在使用cmake工具构建项目时，需要向target中添加源文件，比如：add_executable (DesignPattern main.cpp)。这样会产生一个问题，当文件少的时候可以维护，但是，当文件有成百上千时，想要维护就会变得很麻烦。虽然出问题时解决起来应该不算复杂，但如果有自动扫描的方式还是会好很多。下面是一个可以实现自动扫描的例子: 1234567891011121314151617">
+  <meta name="description" content="C++最初只是在C的基础上添加一些面向对象特性，即C with Classes。但是随着时间的推移，C++开始接受各种观念，特性和编程战略。Exceptions对函数的结构化带来不同的做法(条款29)，templates带来新的设计思考方式(条款41)，STL定义了一个前所未见的伸展性做法。 今天的C++已经是个多重范型编程语言，一个同时支持过程形式，面向对象形式，函数形式，泛型形式，元编程形式的">
 <meta property="og:type" content="article">
-<meta property="og:title" content="cmake实现自动扫描源文件">
-<meta property="og:url" content="https://liangxi2001.github.io/2024/04/11/cmake%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E6%89%AB%E6%8F%8F%E6%BA%90%E6%96%87%E4%BB%B6/index.html">
+<meta property="og:title" content="条款01：视C++为一个语言联邦">
+<meta property="og:url" content="https://liangxi2001.github.io/2024/06/12/EffectiveC++%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E6%9D%A1%E6%AC%BE01/index.html">
 <meta property="og:site_name" content="凉汐">
-<meta property="og:description" content="在使用cmake工具构建项目时，需要向target中添加源文件，比如：add_executable (DesignPattern main.cpp)。这样会产生一个问题，当文件少的时候可以维护，但是，当文件有成百上千时，想要维护就会变得很麻烦。虽然出问题时解决起来应该不算复杂，但如果有自动扫描的方式还是会好很多。下面是一个可以实现自动扫描的例子: 1234567891011121314151617">
+<meta property="og:description" content="C++最初只是在C的基础上添加一些面向对象特性，即C with Classes。但是随着时间的推移，C++开始接受各种观念，特性和编程战略。Exceptions对函数的结构化带来不同的做法(条款29)，templates带来新的设计思考方式(条款41)，STL定义了一个前所未见的伸展性做法。 今天的C++已经是个多重范型编程语言，一个同时支持过程形式，面向对象形式，函数形式，泛型形式，元编程形式的">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://github.com/Liangxi2001/Pictures/blob/main/resource/site_logo.png?raw=true">
-<meta property="article:published_time" content="2024-04-11T11:21:45.000Z">
-<meta property="article:modified_time" content="2024-05-02T08:32:22.048Z">
+<meta property="article:published_time" content="2024-06-12T12:25:30.000Z">
+<meta property="article:modified_time" content="2024-06-12T12:46:35.811Z">
 <meta property="article:author" content="liangxi">
-<meta property="article:tag" content="cmake">
+<meta property="article:tag" content="读书笔记">
+<meta property="article:tag" content="EffectiveC++">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://github.com/Liangxi2001/Pictures/blob/main/resource/site_logo.png?raw=true">
   
@@ -124,15 +125,15 @@
 
             <article itemscope itemtype="https://schema.org/Article">
     
-    <link itemprop="mainEntityOfPage" href="https://liangxi2001.github.io/2024/04/11/cmake%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E6%89%AB%E6%8F%8F%E6%BA%90%E6%96%87%E4%BB%B6/">
+    <link itemprop="mainEntityOfPage" href="https://liangxi2001.github.io/2024/06/12/EffectiveC++%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E6%9D%A1%E6%AC%BE01/">
     <div class="kratos-hentry kratos-post-inner clearfix">
         <header class="kratos-entry-header">
             
-                <h1 class="kratos-entry-title text-center" itemprop="name headline">cmake实现自动扫描源文件</h1>
+                <h1 class="kratos-entry-title text-center" itemprop="name headline">条款01：视C++为一个语言联邦</h1>
             
             
             <ul class="kratos-post-meta text-center">
-                <li><time datetime="2024-04-11T11:21:45.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-04-11</time></li>
+                <li><time datetime="2024-06-12T12:25:30.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-06-12</time></li>
                 <li itemprop="author" itemscope itemtype="https://schema.org/Person">
                     <i class="fa fa-user"></i> 作者 <span itemprop="name">liangxi</span>
                 </li>
@@ -141,7 +142,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~1.95K
+                            1221
                         
                         字
                     </li>
@@ -153,17 +154,23 @@
             
             <div id="expire-alert" class="alert alert-warning hidden" role="alert">
                 <div class="icon"><i class="fa fa-warning"></i></div>
-                <div class="text"><p>本文最后编辑于 <time datetime="1714638742048"></time> 前，其中的内容可能需要更新。</p></div>
+                <div class="text"><p>本文最后编辑于 <time datetime="1718196395811"></time> 前，其中的内容可能需要更新。</p></div>
             </div>
             
             
             
             <hr />
-            <div itemprop="articleBody"><p>在使用cmake工具构建项目时，需要向target中添加源文件，比如：<code>add_executable (DesignPattern main.cpp)</code>。这样会产生一个问题，当文件少的时候可以维护，但是，当文件有成百上千时，想要维护就会变得很麻烦。虽然出问题时解决起来应该不算复杂，但如果有自动扫描的方式还是会好很多。下面是一个可以实现自动扫描的例子:</p>
-<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义一个全局的list变量 一定要是一个全局变量</span></span><br><span class="line"><span class="keyword">set</span>(GLOBAL_LIST <span class="string">&quot;&quot;</span> CACHE INTERNAL <span class="string">&quot;Global list&quot;</span>)</span><br><span class="line"><span class="comment"># 添加元素到全局list</span></span><br><span class="line"><span class="keyword">function</span>(append_to_global_list value)</span><br><span class="line">    <span class="keyword">set</span>(GLOBAL_LIST <span class="string">&quot;$&#123;GLOBAL_LIST&#125;&quot;</span> <span class="variable">$&#123;value&#125;</span> CACHE INTERNAL <span class="string">&quot;Global list&quot;</span> FORCE)</span><br><span class="line"><span class="keyword">endfunction</span>()</span><br><span class="line"></span><br><span class="line"><span class="comment">#findSrc 函数名  通过深度优先的方式，将给定路径中的所有源文件找到</span></span><br><span class="line"><span class="comment">#dirPath 参数</span></span><br><span class="line"><span class="keyword">function</span>(findSrc dirPath)</span><br><span class="line">    <span class="comment"># 设定要遍历的目录，保存到 VAC_INCLUDE_DIR 变量</span></span><br><span class="line">    <span class="keyword">set</span>(VAC_INCLUDE_DIR <span class="variable">$&#123;dirPath&#125;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取指定目录下的所有内容，并将获取到的内容保存到变量 ALL_ITEMS</span></span><br><span class="line">    <span class="keyword">file</span>(GLOB ALL_ITEMS <span class="variable">$&#123;VAC_INCLUDE_DIR&#125;</span>/*)</span><br><span class="line">    <span class="keyword">foreach</span> (ITEM <span class="variable">$&#123;ALL_ITEMS&#125;</span>)</span><br><span class="line">        <span class="comment"># 找出.cpp或者.h文件</span></span><br><span class="line">        <span class="keyword">STRING</span>(FIND <span class="variable">$&#123;ITEM&#125;</span> <span class="string">&quot;.cpp&quot;</span> pos1)</span><br><span class="line">        <span class="keyword">STRING</span>(FIND <span class="variable">$&#123;ITEM&#125;</span> <span class="string">&quot;.h&quot;</span> pos2)</span><br><span class="line">        <span class="keyword">if</span> (pos1 <span class="keyword">GREATER</span> -<span class="number">1</span> <span class="keyword">OR</span> pos2 <span class="keyword">GREATER</span> -<span class="number">1</span>)</span><br><span class="line">            append_to_global_list(<span class="variable">$&#123;ITEM&#125;</span>)</span><br><span class="line">        <span class="keyword">endif</span> ()</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">IS_DIRECTORY</span> <span class="variable">$&#123;ITEM&#125;</span>)</span><br><span class="line">            findSrc(<span class="variable">$&#123;ITEM&#125;</span>)</span><br><span class="line">        <span class="keyword">endif</span> ()</span><br><span class="line">    <span class="keyword">endforeach</span> ()</span><br><span class="line"><span class="keyword">endfunction</span>()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 调用函数</span></span><br><span class="line">findSrc(<span class="variable">$&#123;CMAKE_SOURCE_DIR&#125;</span>/Src)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 在其他地方通过以下命令获取这个list</span></span><br><span class="line"><span class="keyword">set</span>(GLOBAL_LIST <span class="string">&quot;$&#123;GLOBAL_LIST&#125;&quot;</span> CACHE INTERNAL <span class="string">&quot;Global list&quot;</span> FORCE)</span><br><span class="line"></span><br><span class="line"><span class="comment"># target 你的工程名称</span></span><br><span class="line"><span class="keyword">add_executable</span> (<span class="keyword">target</span> <span class="variable">$&#123;GLOBAL_LIST&#125;</span>)</span><br></pre></td></tr></table></figure>
-
-<p><em>注意，当增加或者删除文件时，需要重新运行cmake文件</em>。</p>
-<p>完整文件链接：<a target="_blank" rel="noopener" href="https://gitee.com/liangxi1125/designpatterns/blob/master/CMakeLists.txt">https://gitee.com/liangxi1125/designpatterns/blob/master/CMakeLists.txt</a></p>
+            <div itemprop="articleBody"><p>C++最初只是在C的基础上添加一些面向对象特性，即<em>C with Classes</em>。但是随着时间的推移，C++开始接受各种观念，特性和编程战略。Exceptions对函数的结构化带来不同的做法(条款29)，templates带来新的设计思考方式(条款41)，STL定义了一个前所未见的伸展性做法。</p>
+<p>今天的C++已经是个多重范型编程语言，一个同时支持过程形式，面向对象形式，函数形式，泛型形式，元编程形式的语言。这些使得C++成为一个无可匹敌的工具，但也会让它显得臃肿，无法理解，甚至不知道该做什么。</p>
+<p>简单的做法是将C++视为一个语言联邦，在其某个次语言(sublanguage)中，都有其守则与通例。当从一个次语言变到另一个次语言时，守则可能改变。幸运的是，C++的主要次语言有四个：</p>
+<ul>
+<li>C。C++终究是以C为基础。区块，语句，预处理器，内置数据类型，数组，指针等统统来自C。许多时候C++对问题的解法其实不过是较高级的C解法(例如用对象管理资源)，但是以C部分工作时，将体现出C的局限：没有模板，没有异常，没有重载…</li>
+<li>Object-Oriented C++。这部分就是C with Classes需要的：classes，封装，继承，多态，动态绑定等等。</li>
+<li>Template C++。这是C++中泛型编程的部分。由于templates威力强大，它们带来了崭新的编程范型，也就是所谓的template metaprogramming(TMP，模板元编程)。</li>
+<li>STL。STL是个template程序库。它对容器，迭代器，算法以及函数对象的规约有极佳的配合与协调。</li>
+</ul>
+<p>因为这些次语言，当从某个此语言切换到另一个，导致高效编程守则要求改变策略时，不要感到惊讶。例如对内置类型而言<em>pass-by-value</em>通常比<em>pass-by-reference</em>高效。</p>
+<p>因此，C++高效编程守则视状况而变化，这取决于使用C++的哪一部分。</p>
 
 <div id="gitalk-container"></div>
 <script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
@@ -226,7 +233,7 @@
     <script type="text/javascript">
         $(()=>{
             new QRCode("wechat-qr", {
-                text: "https://liangxi2001.github.io/2024/04/11/cmake%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E6%89%AB%E6%8F%8F%E6%BA%90%E6%96%87%E4%BB%B6/",
+                text: "https://liangxi2001.github.io/2024/06/12/EffectiveC++%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E6%9D%A1%E6%AC%BE01/",
                 width: 150,
                 height: 150,
                 correctLevel : QRCode.CorrectLevel.H
@@ -238,9 +245,9 @@
             const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
             const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
             const twitterBase   = "https://twitter.com/intent/tweet?";
-            const hostUrl       = "https://liangxi2001.github.io/2024/04/11/cmake%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E6%89%AB%E6%8F%8F%E6%BA%90%E6%96%87%E4%BB%B6/";
-            const title         = "「cmake实现自动扫描源文件」";
-            const excerpt       = `在使用cmake工具构建项目时，需要向target中添加源文件，比如：add_executable (DesignPattern main.cpp)。这样会产生一个问题，当文件少的时候可以维护，但是，当文件有成百上千时，想要维护就会变...`;
+            const hostUrl       = "https://liangxi2001.github.io/2024/06/12/EffectiveC++%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E6%9D%A1%E6%AC%BE01/";
+            const title         = "「条款01：视C++为一个语言联邦」";
+            const excerpt       = `C++最初只是在C的基础上添加一些面向对象特性，即C with Classes。但是随着时间的推移，C++开始接受各种观念，特性和编程战略。Exceptions对函数的结构化带来不同的做法(条款29)，templates带来新的设计思...`;
             let _URL;
             switch (dest) {
                 case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
@@ -259,10 +266,10 @@
             <div class="footer-tag clearfix">
                 <div class="pull-left">
                 <i class="fa fa-tags"></i>
-                    <a class="tag-none-link" href="/tags/cmake/" rel="tag">cmake</a>
+                    <a class="tag-none-link" href="/tags/EffectiveC/" rel="tag">EffectiveC++</a>, <a class="tag-none-link" href="/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" rel="tag">读书笔记</a>
                 </div>
                 <div class="pull-date">
-                    <time datetime="2024-05-02T08:32:22.048Z" itemprop="dateModified">最后编辑：2024-05-02</time>
+                    <time datetime="2024-06-12T12:46:35.811Z" itemprop="dateModified">最后编辑：2024-06-12</time>
                 </div>
             </div>
         </footer>
@@ -271,12 +278,12 @@
         <nav class="navigation post-navigation clearfix" role="navigation">
             
             <div class="nav-previous clearfix">
-                <a title=" 1.27随笔" href="/2024/01/27/生活随笔/2024/1月27日随笔/">&lt; 上一篇</a>
+                <a title=" Linux学习笔记" href="/2024/05/02/Linux学习笔记/">&lt; 上一篇</a>
             </div>
             
             
             <div class="nav-next clearfix">
-                <a title=" 模板方法模式" href="/2024/04/12/模板方法模式/">下一篇 &gt;</a>
+                <a title=" 条款02：尽量以const,enum,inline替换#define" href="/2024/06/12/EffectiveC++读书笔记/条款02/">下一篇 &gt;</a>
             </div>
             
         </nav>
