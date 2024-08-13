@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <link rel="icon" href="https://github.com/Liangxi2001/Pictures/blob/main/resource/site_logo.png?raw=true">
   
-  <title>条款04：确定对象被使用前已被初始化 | 凉汐</title>
+  <title>Qt自定义消息处理函数 | 凉汐</title>
   
   <meta name="author" content="liangxi" />
   <meta http-equiv="Cache-Control" content="no-transform" />
@@ -15,21 +15,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <meta name="format-detection" content="telphone=no, email=no" />
   
-    <meta name="keywords" content="EffectiveC++, 读书笔记" />
+    <meta name="keywords" content="QT" />
   
-  <meta name="description" content="为什么要确保对象在使用前已经被初始化？因为在对于“将对象初始化”这件事上，C++似乎反复无常。比如 1int x;  在某些预警下x被初始化(为0),但在其它语境中却不保证。比如： 12345class Point&amp;#123;    int x,y;&amp;#125;;Point p;  p的成员变量有时候被初始化(为0)，有时候不会。读取未初始化的值会导致不明确的行为，不可知的行为或者程序终止运行。最">
+  <meta name="description" content="Qt支持自定义消息处理函数。通过qInstallMessageHandler方法可以安装自定义消息处理函数。该方法的返回值是一个指向之前消息处理函数的指针。Qt 库（调试模式）包含数百条警告信息，当出现内部错误（通常是函数参数无效）时，就会打印这些信息。除非在编译过程中设置了 QT_NO_WARNING_OUTPUT 或QT_NO_DEBUG_OUTPUT，否则以 release 模式构建的 Qt">
 <meta property="og:type" content="article">
-<meta property="og:title" content="条款04：确定对象被使用前已被初始化">
-<meta property="og:url" content="https://liangxi2001.github.io/2024/06/12/EffectiveC++%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E6%9D%A1%E6%AC%BE04/index.html">
+<meta property="og:title" content="Qt自定义消息处理函数">
+<meta property="og:url" content="https://liangxi2001.github.io/2024/08/13/Qt%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0/index.html">
 <meta property="og:site_name" content="凉汐">
-<meta property="og:description" content="为什么要确保对象在使用前已经被初始化？因为在对于“将对象初始化”这件事上，C++似乎反复无常。比如 1int x;  在某些预警下x被初始化(为0),但在其它语境中却不保证。比如： 12345class Point&amp;#123;    int x,y;&amp;#125;;Point p;  p的成员变量有时候被初始化(为0)，有时候不会。读取未初始化的值会导致不明确的行为，不可知的行为或者程序终止运行。最">
+<meta property="og:description" content="Qt支持自定义消息处理函数。通过qInstallMessageHandler方法可以安装自定义消息处理函数。该方法的返回值是一个指向之前消息处理函数的指针。Qt 库（调试模式）包含数百条警告信息，当出现内部错误（通常是函数参数无效）时，就会打印这些信息。除非在编译过程中设置了 QT_NO_WARNING_OUTPUT 或QT_NO_DEBUG_OUTPUT，否则以 release 模式构建的 Qt">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://github.com/Liangxi2001/Pictures/blob/main/resource/site_logo.png?raw=true">
-<meta property="article:published_time" content="2024-06-12T12:25:47.000Z">
-<meta property="article:modified_time" content="2024-06-12T12:43:36.342Z">
+<meta property="article:published_time" content="2024-08-13T14:13:41.000Z">
+<meta property="article:modified_time" content="2024-08-13T14:15:33.402Z">
 <meta property="article:author" content="liangxi">
-<meta property="article:tag" content="读书笔记">
-<meta property="article:tag" content="EffectiveC++">
+<meta property="article:tag" content="QT">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://github.com/Liangxi2001/Pictures/blob/main/resource/site_logo.png?raw=true">
   
@@ -125,15 +124,15 @@
 
             <article itemscope itemtype="https://schema.org/Article">
     
-    <link itemprop="mainEntityOfPage" href="https://liangxi2001.github.io/2024/06/12/EffectiveC++%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E6%9D%A1%E6%AC%BE04/">
+    <link itemprop="mainEntityOfPage" href="https://liangxi2001.github.io/2024/08/13/Qt%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0/">
     <div class="kratos-hentry kratos-post-inner clearfix">
         <header class="kratos-entry-header">
             
-                <h1 class="kratos-entry-title text-center" itemprop="name headline">条款04：确定对象被使用前已被初始化</h1>
+                <h1 class="kratos-entry-title text-center" itemprop="name headline">Qt自定义消息处理函数</h1>
             
             
             <ul class="kratos-post-meta text-center">
-                <li><time datetime="2024-06-12T12:25:47.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-06-12</time></li>
+                <li><time datetime="2024-08-13T14:13:41.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-08-13</time></li>
                 <li itemprop="author" itemscope itemtype="https://schema.org/Person">
                     <i class="fa fa-user"></i> 作者 <span itemprop="name">liangxi</span>
                 </li>
@@ -142,7 +141,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~3.04K
+                            ~2.05K
                         
                         字
                     </li>
@@ -154,49 +153,16 @@
             
             <div id="expire-alert" class="alert alert-warning hidden" role="alert">
                 <div class="icon"><i class="fa fa-warning"></i></div>
-                <div class="text"><p>本文最后编辑于 <time datetime="1718196216342"></time> 前，其中的内容可能需要更新。</p></div>
+                <div class="text"><p>本文最后编辑于 <time datetime="1723558533402"></time> 前，其中的内容可能需要更新。</p></div>
             </div>
             
             
             
             <hr />
-            <div itemprop="articleBody"><p>为什么要确保对象在使用前已经被初始化？因为在对于“将对象初始化”这件事上，C++似乎反复无常。比如</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> x;</span><br></pre></td></tr></table></figure>
-
-<p>在某些预警下x被初始化(为0),但在其它语境中却不保证。比如：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Point</span>&#123;</span><br><span class="line">    <span class="type">int</span> x,y;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Point p;</span><br></pre></td></tr></table></figure>
-
-<p>p的成员变量有时候被初始化(为0)，有时候不会。读取未初始化的值会导致不明确的行为，不可知的行为或者程序终止运行。<br>最佳处理办法是：永远在使用对象之前先将它初始化。</p>
-<p>对于内置类型，必须手工完成此事：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> x = <span class="number">0</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">char</span>* text = <span class="string">&quot;A C-Style string&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">double</span> d;</span><br><span class="line">std::cin &gt;&gt; d;</span><br></pre></td></tr></table></figure>
-
-<p>对于内置类型以外的任何其他东西，初始化责任在构造函数身上。规则很简单：确保每一个构造函数都将对象的每一个成员初始化。</p>
-<p>这个规则很容易奉行，重要的是别混淆了赋值(assignment)和初始化(initialization)。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Person</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Person</span>(<span class="type">const</span> std::string &amp;name, <span class="type">int</span> age);</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::string name;</span><br><span class="line">    <span class="type">int</span> age;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Person::<span class="built_in">Person</span>(<span class="type">const</span> std::string &amp;name, <span class="type">int</span> age) &#123;</span><br><span class="line">    <span class="keyword">this</span>-&gt;name = name;  <span class="comment">//这些都是赋值操作 而非初始化</span></span><br><span class="line">    <span class="keyword">this</span>-&gt;age = age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这样创建的Person对象会有预期的值，但不是最佳做法。<em><strong>C++规定，对象的成员变量初始化动作发生在进入构造函数本体之前。</strong></em>所以name并不是初始化，而是被赋值。初始化的发生时间更早，发生于这些成员的default构造函数被自动调用之时。但这对age不为真，因为它属于内置类型，不保证一定在看到的那个赋值动作的时间点之前获得初值。</p>
-<p>更好的写法是使用所谓的member initialization list(成员初始化列表)替换赋值动作:</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Person::<span class="built_in">Person</span>(<span class="type">const</span> std::string &amp;name, <span class="type">int</span> age) : <span class="built_in">name</span>(name), <span class="built_in">age</span>(age) &#123;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这个构造函数和上一个版本最终结果相同，但效率较高。在第一个版本中，首先调用default构造函数为name设初值，然后<br>立刻在对它们赋予新值。default构造函数的一切因此浪费了。第二个版本中，参数被用作各个成员变量的构造函数的实参。<br>本例中，以name为初值，对name进行copy构造。如果不想指定任何参数，也可以：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Person::<span class="built_in">Person</span>() :<span class="built_in">name</span>(),<span class="built_in">age</span>(<span class="number">0</span>)&#123;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>C+＋有着十分固定的“成员初始化次序”。是的，次序总是相同： base classes 更早于其 derived classes 被初始<br>化（见条款 12) ，而 class 的成员变量总是以其声明次序被初始化。所以，<em><strong>为避免错误，在成员初值列中条列各个<br>成员时，最好总是以其声明次序为次序</strong></em>。在Person中，name永远是最先被初始化的，然后才是age。</p>
-<p>还有一种初始化次序需要考虑：不同编译单元内定义之non-local static对象的初始化次序。</p>
-<p>所谓的static对象，其寿命从被构造出来直到程序结束为止，因此stack和heap-based对象都被排除。这种对象包括<br>global对象，定义于namespace作用域内的对象，在classes内，在函数内以及在file作用域内被声明为static的<br>对象。函数内的static对象成为local static对象，其它static对象成为non-local static对象。</p>
-<p>而编译单元是指产出单一目标文件的源码。基本上它是单一源码文件加上其所含入的头文件。</p>
-<p>如果某编译单元内的某一个non-local static对象的初始化动作使用了另一个编译单元内的某个non-local static对<br>象，它所用到的这个对象可能尚未被初始化，因为C++对“定义于不同编译单元内的non-local static对象”的初始化次<br>序没有明确的定义。为避免这个问题，唯一需要做的是：将每个non-local static对象搬到自己的专属函数内(该对象在函<br>数内被声明为static)。这些函数返回一个reference指向它所包含的对象。换句话说，non-local static对象被local<br>static对象替换了。这是单例模式的一个常见实现手法。</p>
-<p>这个方法的基础在于：C++保证，函数内的local static对象会在“该函数被调用期间”“首次遇上该对象之定义式”时被<br>初始化。而且，如果从未调用non-local static对象的“仿真函数”，就绝不会引发构造和析构的成本，non-local static<br>对象一定会被创建和析构。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> Tool&amp; <span class="title">Tool::getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">static</span> Tool instance;</span><br><span class="line">    <span class="keyword">return</span> instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这种实现的reference-returning函数往往十分单纯：第一行定义并初始化一个local static对象，第二行返回它。<br>虽然这种方法是线程安全的(不会因为多线程的原因创建多个对象)，但是也带有不确定性(多线程)。任何一种non-const<br>static对象，不论是不是local的，在多线程环境下“等待某事发生”都会有麻烦。处理这个麻烦的一种做法是：在程序的<br>单线程启动阶段手动调用所有reference-returning函数，这可消除与初始化有关的“竞速形势”。</p>
-<p>请记住：</p>
-<ul>
-<li>为内置型对象进行手工初始化，因为C++不保证初始化它们。</li>
-<li>构造函数最好使用成员初值列，而不要在构造函数内使用赋值操作。初值列表列出的成员变量，其排列次序应该和它们在<br>class中声明的次序一致。</li>
-<li>为免除”跨编译单元之初始化次序“问题，请以local static对象替换non-local static对象。</li>
-</ul>
-
+            <div itemprop="articleBody"><p>Qt支持自定义消息处理函数。通过<code>qInstallMessageHandler</code>方法可以安装自定义消息处理函数。该方法的返回值是一个指向之前消息处理函数的指针。Qt 库（调试模式）包含数百条警告信息，当出现内部错误（通常是函数参数无效）时，就会打印这些信息。除非在编译过程中设置了 QT_NO_WARNING_OUTPUT 或QT_NO_DEBUG_OUTPUT，否则以 release 模式构建的 Qt 也会包含此类警告信息。只能定义一个消息处理程序，因为这通常是为了控制整个应用程序的调试输出。</p>
+<p>要恢复消息处理程序，可以调用 qInstallMessageHandler(0)。</p>
+<p>例子：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">messageHandler</span><span class="params">(QtMsgType type, <span class="type">const</span> QMessageLogContext &amp;context, <span class="type">const</span> QString &amp;msg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 获取当前时间和日期</span></span><br><span class="line">    QDateTime currentDateTime = QDateTime::<span class="built_in">currentDateTime</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 打开日志文件</span></span><br><span class="line">    <span class="function">QFile <span class="title">logFile</span><span class="params">(<span class="string">&quot;log.log&quot;</span>)</span></span>;</span><br><span class="line">    logFile.<span class="built_in">open</span>(QIODevice::WriteOnly | QIODevice::Append);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 写入错误信息到日志文件中</span></span><br><span class="line">    <span class="function">QTextStream <span class="title">out</span><span class="params">(&amp;logFile)</span></span>;</span><br><span class="line">    out &lt;&lt; currentDateTime.<span class="built_in">toString</span>(<span class="string">&quot;yyyy-MM-dd hh:mm:ss&quot;</span>) &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (type)</span><br><span class="line">    &#123;</span><br><span class="line">    <span class="keyword">case</span> QtDebugMsg:</span><br><span class="line">        out &lt;&lt; <span class="string">&quot;[DEBUG] &quot;</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> QtInfoMsg:</span><br><span class="line">        out &lt;&lt; <span class="string">&quot;[INFO] &quot;</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> QtWarningMsg:</span><br><span class="line">        out &lt;&lt; <span class="string">&quot;[WARNING] &quot;</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> QtCriticalMsg:</span><br><span class="line">        out &lt;&lt; <span class="string">&quot;[CRITICAL] &quot;</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> QtFatalMsg:</span><br><span class="line">        out &lt;&lt; <span class="string">&quot;[FATAL] &quot;</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    out &lt;&lt; msg &lt;&lt; <span class="string">&quot; (&quot;</span> &lt;&lt; context.file &lt;&lt; <span class="string">&quot;:&quot;</span> &lt;&lt; context.line &lt;&lt; <span class="string">&quot;, &quot;</span> &lt;&lt; context.function &lt;&lt; <span class="string">&quot;)&quot;</span> &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 关闭日志文件</span></span><br><span class="line">    logFile.<span class="built_in">close</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">     <span class="built_in">qInstallMessageHandler</span>(messageHandler);</span><br><span class="line">     <span class="function">QApplication <span class="title">app</span><span class="params">(argc, argv)</span></span>;</span><br><span class="line">     ...</span><br><span class="line">     <span class="keyword">return</span> app.<span class="built_in">exec</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <div id="gitalk-container"></div>
 <script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
 
@@ -258,7 +224,7 @@
     <script type="text/javascript">
         $(()=>{
             new QRCode("wechat-qr", {
-                text: "https://liangxi2001.github.io/2024/06/12/EffectiveC++%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E6%9D%A1%E6%AC%BE04/",
+                text: "https://liangxi2001.github.io/2024/08/13/Qt%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0/",
                 width: 150,
                 height: 150,
                 correctLevel : QRCode.CorrectLevel.H
@@ -270,13 +236,9 @@
             const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
             const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
             const twitterBase   = "https://twitter.com/intent/tweet?";
-            const hostUrl       = "https://liangxi2001.github.io/2024/06/12/EffectiveC++%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E6%9D%A1%E6%AC%BE04/";
-            const title         = "「条款04：确定对象被使用前已被初始化」";
-            const excerpt       = `为什么要确保对象在使用前已经被初始化？因为在对于“将对象初始化”这件事上，C++似乎反复无常。比如
-1int x;
-
-在某些预警下x被初始化(为0),但在其它语境中却不保证。比如：
-12345class Point&#123;    ...`;
+            const hostUrl       = "https://liangxi2001.github.io/2024/08/13/Qt%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0/";
+            const title         = "「Qt自定义消息处理函数」";
+            const excerpt       = `Qt支持自定义消息处理函数。通过qInstallMessageHandler方法可以安装自定义消息处理函数。该方法的返回值是一个指向之前消息处理函数的指针。Qt 库（调试模式）包含数百条警告信息，当出现内部错误（通常是函数参数无效）时...`;
             let _URL;
             switch (dest) {
                 case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
@@ -295,10 +257,10 @@
             <div class="footer-tag clearfix">
                 <div class="pull-left">
                 <i class="fa fa-tags"></i>
-                    <a class="tag-none-link" href="/tags/EffectiveC/" rel="tag">EffectiveC++</a>, <a class="tag-none-link" href="/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" rel="tag">读书笔记</a>
+                    <a class="tag-none-link" href="/tags/QT/" rel="tag">QT</a>
                 </div>
                 <div class="pull-date">
-                    <time datetime="2024-06-12T12:43:36.342Z" itemprop="dateModified">最后编辑：2024-06-12</time>
+                    <time datetime="2024-08-13T14:15:33.402Z" itemprop="dateModified">最后编辑：2024-08-13</time>
                 </div>
             </div>
         </footer>
@@ -307,13 +269,9 @@
         <nav class="navigation post-navigation clearfix" role="navigation">
             
             <div class="nav-previous clearfix">
-                <a title=" 条款02：尽量以const,enum,inline替换#define" href="/2024/06/12/EffectiveC++读书笔记/条款02/">&lt; 上一篇</a>
+                <a title=" 条款04：确定对象被使用前已被初始化" href="/2024/06/12/EffectiveC++读书笔记/条款04/">&lt; 上一篇</a>
             </div>
             
-            
-            <div class="nav-next clearfix">
-                <a title=" Qt自定义消息处理函数" href="/2024/08/13/Qt自定义消息处理函数/">下一篇 &gt;</a>
-            </div>
             
         </nav>
     
