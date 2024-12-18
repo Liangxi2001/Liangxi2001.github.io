@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="https://github.com/Liangxi2001/Pictures/blob/main/resource/site_logo.png?raw=true">
+  
+  <title>使用RapidJson解析Json数据 | 凉汐</title>
+  
+  <meta name="author" content="liangxi" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="C++, 应用记录" />
+  
+  <meta name="description" content="基于RapidJson解析Json数据RapidJson简介RapidJson是腾讯开源的一个C++的JSON解析器及生成器，它的灵感来自RapidXml。RapidJson性能快且独立，不依赖外部库甚至不依赖STL。它是跨平台的，可以在MSVC(2008&#x2F;2010&#x2F;2013),GNU C++(3.8)以及Clang(3.4)平台运行。 RapidJson使用起来也很方便。它是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用RapidJson解析Json数据">
+<meta property="og:url" content="https://liangxi2001.github.io/2024/12/18/%E4%BD%BF%E7%94%A8RapidJson%E8%A7%A3%E6%9E%90Json%E6%95%B0%E6%8D%AE/index.html">
+<meta property="og:site_name" content="凉汐">
+<meta property="og:description" content="基于RapidJson解析Json数据RapidJson简介RapidJson是腾讯开源的一个C++的JSON解析器及生成器，它的灵感来自RapidXml。RapidJson性能快且独立，不依赖外部库甚至不依赖STL。它是跨平台的，可以在MSVC(2008&#x2F;2010&#x2F;2013),GNU C++(3.8)以及Clang(3.4)平台运行。 RapidJson使用起来也很方便。它是">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://github.com/Liangxi2001/Pictures/blob/main/resource/site_logo.png?raw=true">
+<meta property="article:published_time" content="2024-12-18T12:22:36.000Z">
+<meta property="article:modified_time" content="2024-12-18T12:54:31.061Z">
+<meta property="article:author" content="liangxi">
+<meta property="article:tag" content="应用记录">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/Liangxi2001/Pictures/blob/main/resource/site_logo.png?raw=true">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" media="all"></script>
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-color-dark.min.css" media="(prefers-color-scheme: dark)"></script>
+    <script src="/js/kr-dark.min.js"></script>
+  
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" media="all"></script>
+  
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></script>
+  <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></script>
+  
+  
+    <link rel="stylesheet" href="/vendors/aplayer@1.10.1/dist/APlayer.min.css"></script>
+  
+  
+    <link rel="stylesheet" href="/vendors/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css"></script>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="/vendors/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="/vendors/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+  
+  <style>
+    
+    
+  </style>
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">凉汐</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>凉汐</h2> <br />
+                        <span>凉汐小站</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    
+    <link itemprop="mainEntityOfPage" href="https://liangxi2001.github.io/2024/12/18/%E4%BD%BF%E7%94%A8RapidJson%E8%A7%A3%E6%9E%90Json%E6%95%B0%E6%8D%AE/">
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center" itemprop="name headline">使用RapidJson解析Json数据</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><time datetime="2024-12-18T12:22:36.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-12-18</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">liangxi</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~11.14K
+                        
+                        字
+                    </li>
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                <div class="icon"><i class="fa fa-warning"></i></div>
+                <div class="text"><p>本文最后编辑于 <time datetime="1734526471061"></time> 前，其中的内容可能需要更新。</p></div>
+            </div>
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8ERapidJson%E8%A7%A3%E6%9E%90Json%E6%95%B0%E6%8D%AE"><span class="toc-number">1.</span> <span class="toc-text">基于RapidJson解析Json数据</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#RapidJson%E7%AE%80%E4%BB%8B"><span class="toc-number">1.1.</span> <span class="toc-text">RapidJson简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DOM%E9%A3%8E%E6%A0%BCAPI%E4%BD%BF%E7%94%A8%E4%B8%80%E8%A7%88"><span class="toc-number">1.2.</span> <span class="toc-text">DOM风格API使用一览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">1.3.</span> <span class="toc-text">C++对象序列化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Json%E6%96%87%E4%BB%B6%E7%9A%84%E8%BE%93%E5%85%A5%E4%B8%8E%E8%BE%93%E5%87%BA"><span class="toc-number">1.4.</span> <span class="toc-text">Json文件的输入与输出</span></a></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="基于RapidJson解析Json数据"><a href="#基于RapidJson解析Json数据" class="headerlink" title="基于RapidJson解析Json数据"></a>基于RapidJson解析Json数据</h1><h2 id="RapidJson简介"><a href="#RapidJson简介" class="headerlink" title="RapidJson简介"></a>RapidJson简介</h2><p>RapidJson是腾讯开源的一个C++的JSON解析器及生成器，它的灵感来自RapidXml。RapidJson性能快且独立，不依赖外部库甚至不依赖STL。它是跨平台的，可以在MSVC(2008&#x2F;2010&#x2F;2013),GNU C++(3.8)以及Clang(3.4)平台运行。</p>
+<p>RapidJson使用起来也很方便。它是只有头文件的C++库，只需要把<code>include/rapidjson</code>目录复制到系统或项目中即可使用。RapidJson源码下载地址：<a target="_blank" rel="noopener" href="https://github.com/Tencent/rapidjson/">RapidJson下载</a>。</p>
+<h2 id="DOM风格API使用一览"><a href="#DOM风格API使用一览" class="headerlink" title="DOM风格API使用一览"></a>DOM风格API使用一览</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;rapidjson/document.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;rapidjson/writer.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;rapidjson/stringbuffer.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> rapidjson;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1. Parse a JSON string into DOM.</span></span><br><span class="line">    <span class="type">const</span> <span class="type">char</span>* json = <span class="string">R&quot;(&#123;&quot;project&quot;:&quot;rapidjson&quot;, &quot;stars&quot;:10&#125;)&quot;</span>;</span><br><span class="line">    Document d;</span><br><span class="line">    d.<span class="built_in">Parse</span>(json);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. Modify it by DOM.</span></span><br><span class="line">    Value&amp; s = d[<span class="string">&quot;stars&quot;</span>];</span><br><span class="line">    s.<span class="built_in">SetInt</span>(s.<span class="built_in">GetInt</span>() + <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. Stringify the DOM</span></span><br><span class="line">    StringBuffer buffer;</span><br><span class="line">    <span class="function">Writer&lt;StringBuffer&gt; <span class="title">writer</span><span class="params">(buffer)</span></span>;</span><br><span class="line">    d.<span class="built_in">Accept</span>(writer);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Output &#123;&quot;project&quot;:&quot;rapidjson&quot;,&quot;stars&quot;:11&#125;</span></span><br><span class="line">    std::cout &lt;&lt; buffer.<span class="built_in">GetString</span>() &lt;&lt; std::endl;</span><br></pre></td></tr></table></figure>
+
+<p>以上代码是将字符串与DOM相互转化的过程，其执行过程为：<br><img src="https://rapidjson.org/zh-cn/simpledom.png" alt="过程"></p>
+<h2 id="C-对象序列化"><a href="#C-对象序列化" class="headerlink" title="C++对象序列化"></a>C++对象序列化</h2><p>首先创建几个class，这些class最重要的就是要实现自己的序列化方法，为了统一，所有类的序列化方法都为<code>Serialize</code>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//serial.h</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;../../RapidJson/prettywriter.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> rapidjson;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Person</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Person</span>(<span class="type">const</span> std::string &amp;name, <span class="type">unsigned</span> age) : <span class="built_in">name_</span>(name), <span class="built_in">age_</span>(age) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">Person</span>(<span class="type">const</span> Person &amp;rhs) : <span class="built_in">name_</span>(rhs.name_), <span class="built_in">age_</span>(rhs.age_) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">virtual</span> ~<span class="built_in">Person</span>();</span><br><span class="line"></span><br><span class="line">    Person &amp;<span class="keyword">operator</span>=(<span class="type">const</span> Person &amp;rhs) &#123;</span><br><span class="line">        name_ = rhs.name_;</span><br><span class="line">        age_ = rhs.age_;</span><br><span class="line">        <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Writer&gt;</span></span><br><span class="line"><span class="function">    <span class="type">void</span> <span class="title">Serialize</span><span class="params">(Writer &amp;writer)</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">        <span class="comment">//这是一个基类 该Serialize方法不会直接被外界调用，因为只需要一个最简单的实现，而不必以对象的形式实现，可以如下其它类的实现作比较</span></span><br><span class="line">        writer.<span class="built_in">String</span>(<span class="string">&quot;name&quot;</span>);</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> RAPIDJSON_HAS_STDSTRING</span></span><br><span class="line">        writer.<span class="built_in">String</span>(name_);</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">        writer.<span class="built_in">String</span>(name_.<span class="built_in">c_str</span>(), <span class="built_in">static_cast</span>&lt;SizeType&gt;(name_.<span class="built_in">length</span>())); <span class="comment">// Supplying length of string is faster.</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">        writer.<span class="built_in">String</span>(<span class="string">&quot;age&quot;</span>);</span><br><span class="line">        writer.<span class="built_in">Uint</span>(age_);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::string name_;</span><br><span class="line">    <span class="type">unsigned</span> age_;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Education</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Education</span>(<span class="type">const</span> std::string &amp;school, <span class="type">double</span> GPA) : <span class="built_in">school_</span>(school), <span class="built_in">GPA_</span>(GPA) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">Education</span>(<span class="type">const</span> Education &amp;rhs) : <span class="built_in">school_</span>(rhs.school_), <span class="built_in">GPA_</span>(rhs.GPA_) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    Education &amp;<span class="keyword">operator</span>=(<span class="type">const</span> Education &amp;rhs) &#123;</span><br><span class="line">        school_ = rhs.school_;</span><br><span class="line">        GPA_ = rhs.GPA_;</span><br><span class="line">        <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Writer&gt;</span></span><br><span class="line"><span class="function">    <span class="type">void</span> <span class="title">Serialize</span><span class="params">(Writer &amp;writer)</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">        writer.<span class="built_in">StartObject</span>();</span><br><span class="line"></span><br><span class="line">        writer.<span class="built_in">String</span>(<span class="string">&quot;school&quot;</span>);</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> RAPIDJSON_HAS_STDSTRING</span></span><br><span class="line">        writer.<span class="built_in">String</span>(school_);</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">        writer.<span class="built_in">String</span>(school_.<span class="built_in">c_str</span>(), <span class="built_in">static_cast</span>&lt;SizeType&gt;(school_.<span class="built_in">length</span>()));</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">        writer.<span class="built_in">String</span>(<span class="string">&quot;GPA&quot;</span>);</span><br><span class="line">        writer.<span class="built_in">Double</span>(GPA_);</span><br><span class="line"></span><br><span class="line">        writer.<span class="built_in">EndObject</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::string school_;</span><br><span class="line">    <span class="type">double</span> GPA_;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Dependent</span> : <span class="keyword">public</span> Person &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Dependent</span>(<span class="type">const</span> std::string &amp;name, <span class="type">unsigned</span> age, Education *education = <span class="number">0</span>) : <span class="built_in">Person</span>(name, age),</span><br><span class="line">                                                                                 <span class="built_in">education_</span>(education) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">Dependent</span>(<span class="type">const</span> Dependent &amp;rhs) : <span class="built_in">Person</span>(rhs), <span class="built_in">education_</span>(<span class="literal">nullptr</span>) &#123;</span><br><span class="line">        education_ = (rhs.education_ == <span class="number">0</span>) ? <span class="number">0</span> : <span class="keyword">new</span> <span class="built_in">Education</span>(*rhs.education_);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ~<span class="built_in">Dependent</span>();</span><br><span class="line"></span><br><span class="line">    Dependent &amp;<span class="keyword">operator</span>=(<span class="type">const</span> Dependent &amp;rhs) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span> == &amp;rhs)</span><br><span class="line">            <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">        <span class="keyword">delete</span> education_;</span><br><span class="line">        education_ = (rhs.education_ == <span class="number">0</span>) ? <span class="number">0</span> : <span class="keyword">new</span> <span class="built_in">Education</span>(*rhs.education_);</span><br><span class="line">        <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Writer&gt;</span></span><br><span class="line"><span class="function">    <span class="type">void</span> <span class="title">Serialize</span><span class="params">(Writer &amp;writer)</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">        writer.<span class="built_in">StartObject</span>();</span><br><span class="line"></span><br><span class="line">        Person::<span class="built_in">Serialize</span>(writer);</span><br><span class="line"></span><br><span class="line">        writer.<span class="built_in">String</span>(<span class="string">&quot;education&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (education_)</span><br><span class="line">            education_-&gt;<span class="built_in">Serialize</span>(writer);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            writer.<span class="built_in">Null</span>();</span><br><span class="line"></span><br><span class="line">        writer.<span class="built_in">EndObject</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    Education *education_;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Employee</span> : <span class="keyword">public</span> Person &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Employee</span>(<span class="type">const</span> std::string &amp;name, <span class="type">unsigned</span> age, <span class="type">bool</span> married) : <span class="built_in">Person</span>(name, age), <span class="built_in">married_</span>(married) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">Employee</span>(<span class="type">const</span> Employee &amp;rhs) : <span class="built_in">Person</span>(rhs), <span class="built_in">dependents_</span>(rhs.dependents_), <span class="built_in">married_</span>(rhs.married_) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">virtual</span> ~<span class="built_in">Employee</span>();</span><br><span class="line"></span><br><span class="line">    Employee &amp;<span class="keyword">operator</span>=(<span class="type">const</span> Employee &amp;rhs) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span> == &amp;rhs)</span><br><span class="line">            <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">        <span class="built_in">static_cast</span>&lt;Person &amp;&gt;(*<span class="keyword">this</span>) = rhs;</span><br><span class="line">        dependents_ = rhs.dependents_;</span><br><span class="line">        married_ = rhs.married_;</span><br><span class="line">        <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">AddDependent</span><span class="params">(<span class="type">const</span> Dependent &amp;dependent)</span> </span>&#123;</span><br><span class="line">        dependents_.<span class="built_in">push_back</span>(dependent);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Writer&gt;</span></span><br><span class="line"><span class="function">    <span class="type">void</span> <span class="title">Serialize</span><span class="params">(Writer &amp;writer)</span> </span>&#123;</span><br><span class="line">        writer.<span class="built_in">StartObject</span>();</span><br><span class="line">        Person::<span class="built_in">Serialize</span>(writer);</span><br><span class="line">        writer.<span class="built_in">String</span>(<span class="string">&quot;married&quot;</span>);</span><br><span class="line">        writer.<span class="built_in">Bool</span>(married_);</span><br><span class="line"></span><br><span class="line">        writer.<span class="built_in">String</span>(<span class="string">&quot;dependents&quot;</span>);</span><br><span class="line">        writer.<span class="built_in">StartArray</span>();</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">const</span> <span class="keyword">auto</span> &amp;item: dependents_)</span><br><span class="line">            item.<span class="built_in">Serialize</span>(writer);</span><br><span class="line">        writer.<span class="built_in">EndArray</span>();</span><br><span class="line"></span><br><span class="line">        writer.<span class="built_in">EndObject</span>();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::vector&lt;Dependent&gt; dependents_;</span><br><span class="line">    <span class="type">bool</span> married_;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">testSerial</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//serial.cpp</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;../../../Header/example/serial/serial.h&quot;</span></span></span><br><span class="line"></span><br><span class="line">Dependent::~<span class="built_in">Dependent</span>() &#123;</span><br><span class="line">    <span class="keyword">delete</span> education_;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Person::~<span class="built_in">Person</span>() &#123;&#125;</span><br><span class="line"></span><br><span class="line">Employee::~<span class="built_in">Employee</span>() &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//测试方法</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">testSerial</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::vector&lt;Employee&gt; employees;</span><br><span class="line">    employees.<span class="built_in">push_back</span>(<span class="built_in">Employee</span>(<span class="string">&quot;Lihua&quot;</span>, <span class="number">34</span>, <span class="literal">true</span>));</span><br><span class="line">    employees.<span class="built_in">back</span>().<span class="built_in">AddDependent</span>(<span class="built_in">Dependent</span>(<span class="string">&quot;Lua&quot;</span>, <span class="number">3</span>, <span class="keyword">new</span> <span class="built_in">Education</span>(<span class="string">&quot;Happy Kindergarten&quot;</span>, <span class="number">3.5</span>)));</span><br><span class="line">    employees.<span class="built_in">back</span>().<span class="built_in">AddDependent</span>(<span class="built_in">Dependent</span>(<span class="string">&quot;Mio&quot;</span>, <span class="number">1</span>));</span><br><span class="line"></span><br><span class="line">    employees.<span class="built_in">push_back</span>(<span class="built_in">Employee</span>(<span class="string">&quot;Percy&quot;</span>, <span class="number">30</span>, <span class="literal">false</span>));</span><br><span class="line"></span><br><span class="line">    StringBuffer sb;</span><br><span class="line">    <span class="function">PrettyWriter&lt;StringBuffer&gt; <span class="title">writer</span><span class="params">(sb)</span></span>;</span><br><span class="line">    writer.<span class="built_in">StartArray</span>();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;item: employees)</span><br><span class="line">        <span class="comment">//将employees的内容序列化到sb中</span></span><br><span class="line">        item.<span class="built_in">Serialize</span>(writer);</span><br><span class="line">    writer.<span class="built_in">EndArray</span>();</span><br><span class="line">    <span class="built_in">puts</span>(sb.<span class="built_in">GetString</span>());</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用<code>testSerial</code>方法，输出为：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">        &quot;name&quot;: &quot;Lihua&quot;,</span><br><span class="line">        &quot;age&quot;: 34,</span><br><span class="line">        &quot;married&quot;: true,</span><br><span class="line">        &quot;dependents&quot;: [</span><br><span class="line">            &#123;</span><br><span class="line">                &quot;name&quot;: &quot;Lua&quot;,</span><br><span class="line">                &quot;age&quot;: 3,</span><br><span class="line">                &quot;education&quot;: &#123;</span><br><span class="line">                    &quot;school&quot;: &quot;Happy Kindergarten&quot;,</span><br><span class="line">                    &quot;GPA&quot;: 3.5</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">                &quot;name&quot;: &quot;Mio&quot;,</span><br><span class="line">                &quot;age&quot;: 1,</span><br><span class="line">                &quot;education&quot;: null</span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        &quot;name&quot;: &quot;Percy&quot;,</span><br><span class="line">        &quot;age&quot;: 30,</span><br><span class="line">        &quot;married&quot;: false,</span><br><span class="line">        &quot;dependents&quot;: []</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h2 id="Json文件的输入与输出"><a href="#Json文件的输入与输出" class="headerlink" title="Json文件的输入与输出"></a>Json文件的输入与输出</h2><p>上文介绍了如何将C++对象序列化，接下来会以此为基础，将json字符串写到文件中，并从文件中读取，解析，看以下示例：</p>
+<ol>
+<li>将封装的一些函数声明在头文件中；</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//fileReadAndOutput.h</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;../../../Header/RapidJson/filereadstream.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;../../../Header/RapidJson/filewritestream.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;../../RapidJson/document.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;../../../Header/RapidJson/writer.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdio&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> rapidjson;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*!</span></span><br><span class="line"><span class="comment"> * 修改要写入/读取的文件名</span></span><br><span class="line"><span class="comment"> * @param name 要写入/读取的文件名</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">setFileName</span><span class="params">(<span class="type">char</span> *name)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*!</span></span><br><span class="line"><span class="comment"> * 读取Json文件并返回一个Document对象</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function">Document <span class="title">readJsonFromFile</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*!</span></span><br><span class="line"><span class="comment"> * 将Document写入文件中</span></span><br><span class="line"><span class="comment"> * @param document 目标对象</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">writeJsonToFile</span><span class="params">(<span class="type">const</span> Document &amp;document)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">///测试方法</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">testReadWriteJsonWithFile</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>函数实现；</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//fileReadAndOutput.cpp</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;../../../Header/example/file/fileReadAndOutput.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;../../../Header/example/serial/serial.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> rapidjson;</span><br><span class="line"></span><br><span class="line"><span class="type">char</span> *fileName = <span class="string">&quot;JsonData.json&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">setFileName</span><span class="params">(<span class="type">char</span> *name)</span> </span>&#123;</span><br><span class="line">    fileName = name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Document <span class="title">readJsonFromFile</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    FILE *fp = <span class="built_in">fopen</span>(fileName, <span class="string">&quot;rb&quot;</span>);</span><br><span class="line">    <span class="type">char</span> readBuffer[<span class="number">65536</span>];</span><br><span class="line">    <span class="function">FileReadStream <span class="title">is</span><span class="params">(fp, readBuffer, <span class="keyword">sizeof</span>(readBuffer))</span></span>;</span><br><span class="line"></span><br><span class="line">    Document d;</span><br><span class="line">    d.<span class="built_in">ParseStream</span>(is);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">fclose</span>(fp);</span><br><span class="line">    <span class="keyword">return</span> d;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">writeJsonToFile</span><span class="params">(<span class="type">const</span> Document &amp;document)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    FILE *fp = <span class="built_in">fopen</span>(fileName, <span class="string">&quot;wb&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">char</span> writeBuffer[<span class="number">65536</span>];</span><br><span class="line">    <span class="function">FileWriteStream <span class="title">os</span><span class="params">(fp, writeBuffer, <span class="keyword">sizeof</span>(writeBuffer))</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//写入的更规范，但性能会降低</span></span><br><span class="line">    <span class="function">PrettyWriter&lt;FileWriteStream&gt; <span class="title">writer</span><span class="params">(os)</span></span>;</span><br><span class="line">    document.<span class="built_in">Accept</span>(writer);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">fclose</span>(fp);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">testReadWriteJsonWithFile</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">setFileName</span>(<span class="string">&quot;demo.json&quot;</span>);</span><br><span class="line">    std::vector&lt;Employee&gt; employees;</span><br><span class="line">    employees.<span class="built_in">push_back</span>(<span class="built_in">Employee</span>(<span class="string">&quot;Lihua&quot;</span>, <span class="number">34</span>, <span class="literal">true</span>));</span><br><span class="line">    employees.<span class="built_in">back</span>().<span class="built_in">AddDependent</span>(<span class="built_in">Dependent</span>(<span class="string">&quot;Lua&quot;</span>, <span class="number">3</span>, <span class="keyword">new</span> <span class="built_in">Education</span>(<span class="string">&quot;Happy Kindergarten&quot;</span>, <span class="number">3.5</span>)));</span><br><span class="line">    employees.<span class="built_in">back</span>().<span class="built_in">AddDependent</span>(<span class="built_in">Dependent</span>(<span class="string">&quot;Mio&quot;</span>, <span class="number">1</span>));</span><br><span class="line"></span><br><span class="line">    employees.<span class="built_in">push_back</span>(<span class="built_in">Employee</span>(<span class="string">&quot;Percy&quot;</span>, <span class="number">50</span>, <span class="literal">false</span>));</span><br><span class="line"></span><br><span class="line">    StringBuffer sb;</span><br><span class="line">    <span class="function">PrettyWriter&lt;StringBuffer&gt; <span class="title">writer</span><span class="params">(sb)</span></span>;</span><br><span class="line">    writer.<span class="built_in">StartArray</span>();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;item: employees)</span><br><span class="line">        item.<span class="built_in">Serialize</span>(writer);</span><br><span class="line">    writer.<span class="built_in">EndArray</span>();</span><br><span class="line">    <span class="built_in">puts</span>(sb.<span class="built_in">GetString</span>());</span><br><span class="line"></span><br><span class="line">    <span class="comment">//以上 JSON数据放入sb中</span></span><br><span class="line"></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;解析数据到Document开始....&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    Document doc;</span><br><span class="line">    doc.<span class="built_in">Parse</span>(sb.<span class="built_in">GetString</span>());</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;解析数据到Document完成....&quot;</span> &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;写数据到文件开始....&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    <span class="built_in">writeJsonToFile</span>(doc);</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;写数据到文件完成....&quot;</span> &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;读文件数据开始....&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    <span class="keyword">auto</span> d = <span class="built_in">readJsonFromFile</span>();</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;读文件数据完成....&quot;</span> &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;输出所读数据....&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    StringBuffer readBuffer;</span><br><span class="line">    <span class="function">PrettyWriter&lt;StringBuffer&gt; <span class="title">readBuffer1</span><span class="params">(readBuffer)</span></span>;</span><br><span class="line">    d.<span class="built_in">Accept</span>(readBuffer1);</span><br><span class="line">    <span class="built_in">puts</span>(readBuffer.<span class="built_in">GetString</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>最后，调用<code>testReadWriteJsonWithFile</code>进行测试；</li>
+</ol>
+<p><strong>结语，RapidJson还有很多特性可以使用，本文只是浅显的介绍了用法，更深入学习请访问开篇的下载地址。</strong></p>
+
+<div id="gitalk-container"></div>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+		<script>
+		var gitalkConfig = {"clientID":"80e65e0628ad6f63ce37","clientSecret":"20fa4f566bebcdb8438b1f324b114f3cc55fb34c","repo":"Liangxi2001.github.io","owner":"Liangxi2001","admin":["Liangxi2001"],"distractionFreeMode":false,"pagerDirection":"last","perPage":20,"language":"zh-CN"};
+	    gitalkConfig.id = md5(location.pathname);
+		var gitalk = new Gitalk(gitalkConfig);
+	    gitalk.render("gitalk-container");
+	    </script></div>
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5 itemprop="copyrightNotice">本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "https://liangxi2001.github.io/2024/12/18/%E4%BD%BF%E7%94%A8RapidJson%E8%A7%A3%E6%9E%90Json%E6%95%B0%E6%8D%AE/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "https://liangxi2001.github.io/2024/12/18/%E4%BD%BF%E7%94%A8RapidJson%E8%A7%A3%E6%9E%90Json%E6%95%B0%E6%8D%AE/";
+            const title         = "「使用RapidJson解析Json数据」";
+            const excerpt       = `基于RapidJson解析Json数据RapidJson简介RapidJson是腾讯开源的一个C++的JSON解析器及生成器，它的灵感来自RapidXml。RapidJson性能快且独立，不依赖外部库甚至不依赖STL。它是跨平台的，可...`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/C/" rel="tag">C++</a>, <a class="tag-none-link" href="/tags/%E5%BA%94%E7%94%A8%E8%AE%B0%E5%BD%95/" rel="tag">应用记录</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-12-18T12:54:31.061Z" itemprop="dateModified">最后编辑：2024-12-18</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" Qt自定义消息处理函数" href="/2024/08/13/Qt自定义消息处理函数/">&lt; 上一篇</a>
+            </div>
+            
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+            
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="https://github.com/Liangxi2001/Pictures/blob/main/resource/avatar.png?raw=true" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">编程笔记，生活随笔，gal杂谈</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                11
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                0
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                10
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8ERapidJson%E8%A7%A3%E6%9E%90Json%E6%95%B0%E6%8D%AE"><span class="toc-text">基于RapidJson解析Json数据</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#RapidJson%E7%AE%80%E4%BB%8B"><span class="toc-text">RapidJson简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DOM%E9%A3%8E%E6%A0%BCAPI%E4%BD%BF%E7%94%A8%E4%B8%80%E8%A7%88"><span class="toc-text">DOM风格API使用一览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-text">C++对象序列化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Json%E6%96%87%E4%BB%B6%E7%9A%84%E8%BE%93%E5%85%A5%E4%B8%8E%E8%BE%93%E5%87%BA"><span class="toc-text">Json文件的输入与输出</span></a></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/C/" style="font-size: 0.7em;">C++</a> <a href="/tags/EffectiveC/" style="font-size: 0.8em;">EffectiveC++</a> <a href="/tags/Linux/" style="font-size: 0.6em;">Linux</a> <a href="/tags/QT/" style="font-size: 0.6em;">QT</a> <a href="/tags/cmake/" style="font-size: 0.6em;">cmake</a> <a href="/tags/%E5%BA%94%E7%94%A8%E8%AE%B0%E5%BD%95/" style="font-size: 0.6em;">应用记录</a> <a href="/tags/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/" style="font-size: 0.6em;">日常记录</a> <a href="/tags/%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94/" style="font-size: 0.6em;">生活随笔</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 0.6em;">设计模式</a> <a href="/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" style="font-size: 0.8em;">读书笔记</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/12/18/%E4%BD%BF%E7%94%A8RapidJson%E8%A7%A3%E6%9E%90Json%E6%95%B0%E6%8D%AE/"><i class="fa  fa-book"></i> 使用RapidJson解析Json数据</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/08/13/Qt%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0/"><i class="fa  fa-book"></i> Qt自定义消息处理函数</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/06/12/EffectiveC++%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E6%9D%A1%E6%AC%BE04/"><i class="fa  fa-book"></i> 条款04：确定对象被使用前已被初始化</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/06/12/EffectiveC++%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E6%9D%A1%E6%AC%BE02/"><i class="fa  fa-book"></i> 条款02：尽量以const,enum,inline替换#define</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/06/12/EffectiveC++%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E6%9D%A1%E6%AC%BE01/"><i class="fa  fa-book"></i> 条款01：视C++为一个语言联邦</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+        
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  class="ap-lrc"  >
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        <!-- Keep for compatibility -->
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <!-- New links -->
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 凉汐 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by liangxi.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            <li>Hosted on <a href="https://github.io" target="_blank">Github Pages</a></li>
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="/vendors/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+<script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+    <script async src="/js/candy.min.js"></script>
+
+
+
+    <script defer src="/vendors/aplayer@1.10.1/dist/APlayer.min.js"></script>
+    
+    <script defer src="/vendors/meting@2.0.1/dist/Meting.min.js"></script>
+    <meting-js
+        server="netease"
+        type="playlist"
+        id="3204190542"
+        order="random"
+        fixed="true"
+    >
+    </meting-js>
+
+
+
+    <script defer src="/vendors/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    </body>
+</html>
