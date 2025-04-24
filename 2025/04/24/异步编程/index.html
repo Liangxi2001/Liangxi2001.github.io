@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <link rel="icon" href="https://github.com/Liangxi2001/Pictures/blob/main/resource/site_logo.png?raw=true">
   
-  <title>条款01：视C++为一个语言联邦 | 凉汐</title>
+  <title>异步编程 | 凉汐</title>
   
   <meta name="author" content="liangxi" />
   <meta http-equiv="Cache-Control" content="no-transform" />
@@ -15,21 +15,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <meta name="format-detection" content="telphone=no, email=no" />
   
-    <meta name="keywords" content="EffectiveC++, 读书笔记" />
+    <meta name="keywords" content="C++" />
   
-  <meta name="description" content="C++最初只是在C的基础上添加一些面向对象特性，即C with Classes。但是随着时间的推移，C++开始接受各种观念，特性和编程战略。Exceptions对函数的结构化带来不同的做法(条款29)，templates带来新的设计思考方式(条款41)，STL定义了一个前所未见的伸展性做法。 今天的C++已经是个多重范型编程语言，一个同时支持过程形式，面向对象形式，函数形式，泛型形式，元编程形式的">
+  <meta name="description" content="C++异步编程std::future和std::std::async方式一，使用C++实现异步编程的方法之一是通过std::future和std::std::async的配合： 12345678910111213int async_task(int x) &amp;#123;    _sleep(4000);    std::cout &lt;&lt; &quot;async_task start&amp;quo">
 <meta property="og:type" content="article">
-<meta property="og:title" content="条款01：视C++为一个语言联邦">
-<meta property="og:url" content="https://liangxi2001.github.io/2024/06/12/EffectiveC++%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E6%9D%A1%E6%AC%BE01/index.html">
+<meta property="og:title" content="异步编程">
+<meta property="og:url" content="https://liangxi2001.github.io/2025/04/24/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/index.html">
 <meta property="og:site_name" content="凉汐">
-<meta property="og:description" content="C++最初只是在C的基础上添加一些面向对象特性，即C with Classes。但是随着时间的推移，C++开始接受各种观念，特性和编程战略。Exceptions对函数的结构化带来不同的做法(条款29)，templates带来新的设计思考方式(条款41)，STL定义了一个前所未见的伸展性做法。 今天的C++已经是个多重范型编程语言，一个同时支持过程形式，面向对象形式，函数形式，泛型形式，元编程形式的">
+<meta property="og:description" content="C++异步编程std::future和std::std::async方式一，使用C++实现异步编程的方法之一是通过std::future和std::std::async的配合： 12345678910111213int async_task(int x) &amp;#123;    _sleep(4000);    std::cout &lt;&lt; &quot;async_task start&amp;quo">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://github.com/Liangxi2001/Pictures/blob/main/resource/site_logo.png?raw=true">
-<meta property="article:published_time" content="2024-06-12T12:25:30.000Z">
-<meta property="article:modified_time" content="2024-06-12T12:46:35.811Z">
+<meta property="article:published_time" content="2025-04-24T11:05:08.000Z">
+<meta property="article:modified_time" content="2025-04-24T11:06:57.263Z">
 <meta property="article:author" content="liangxi">
-<meta property="article:tag" content="读书笔记">
-<meta property="article:tag" content="EffectiveC++">
+<meta property="article:tag" content="C++">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://github.com/Liangxi2001/Pictures/blob/main/resource/site_logo.png?raw=true">
   
@@ -125,15 +124,15 @@
 
             <article itemscope itemtype="https://schema.org/Article">
     
-    <link itemprop="mainEntityOfPage" href="https://liangxi2001.github.io/2024/06/12/EffectiveC++%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E6%9D%A1%E6%AC%BE01/">
+    <link itemprop="mainEntityOfPage" href="https://liangxi2001.github.io/2025/04/24/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/">
     <div class="kratos-hentry kratos-post-inner clearfix">
         <header class="kratos-entry-header">
             
-                <h1 class="kratos-entry-title text-center" itemprop="name headline">条款01：视C++为一个语言联邦</h1>
+                <h1 class="kratos-entry-title text-center" itemprop="name headline">异步编程</h1>
             
             
             <ul class="kratos-post-meta text-center">
-                <li><time datetime="2024-06-12T12:25:30.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-06-12</time></li>
+                <li><time datetime="2025-04-24T11:05:08.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2025-04-24</time></li>
                 <li itemprop="author" itemscope itemtype="https://schema.org/Person">
                     <i class="fa fa-user"></i> 作者 <span itemprop="name">liangxi</span>
                 </li>
@@ -142,7 +141,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            1221
+                            ~2.88K
                         
                         字
                     </li>
@@ -154,23 +153,36 @@
             
             <div id="expire-alert" class="alert alert-warning hidden" role="alert">
                 <div class="icon"><i class="fa fa-warning"></i></div>
-                <div class="text"><p>本文最后编辑于 <time datetime="1718196395811"></time> 前，其中的内容可能需要更新。</p></div>
+                <div class="text"><p>本文最后编辑于 <time datetime="1745492817263"></time> 前，其中的内容可能需要更新。</p></div>
             </div>
             
             
             
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#C-%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">C++异步编程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#std-future%E5%92%8Cstd-std-async"><span class="toc-number">1.1.</span> <span class="toc-text">std::future和std::std::async</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#thread%E5%92%8Cfuture%E5%92%8Cpromise"><span class="toc-number">1.2.</span> <span class="toc-text">thread和future和promise</span></a></li></ol></li></ol>
+                </div>
+            
             <hr />
-            <div itemprop="articleBody"><p>C++最初只是在C的基础上添加一些面向对象特性，即<em>C with Classes</em>。但是随着时间的推移，C++开始接受各种观念，特性和编程战略。Exceptions对函数的结构化带来不同的做法(条款29)，templates带来新的设计思考方式(条款41)，STL定义了一个前所未见的伸展性做法。</p>
-<p>今天的C++已经是个多重范型编程语言，一个同时支持过程形式，面向对象形式，函数形式，泛型形式，元编程形式的语言。这些使得C++成为一个无可匹敌的工具，但也会让它显得臃肿，无法理解，甚至不知道该做什么。</p>
-<p>简单的做法是将C++视为一个语言联邦，在其某个次语言(sublanguage)中，都有其守则与通例。当从一个次语言变到另一个次语言时，守则可能改变。幸运的是，C++的主要次语言有四个：</p>
-<ul>
-<li>C。C++终究是以C为基础。区块，语句，预处理器，内置数据类型，数组，指针等统统来自C。许多时候C++对问题的解法其实不过是较高级的C解法(例如用对象管理资源)，但是以C部分工作时，将体现出C的局限：没有模板，没有异常，没有重载…</li>
-<li>Object-Oriented C++。这部分就是C with Classes需要的：classes，封装，继承，多态，动态绑定等等。</li>
-<li>Template C++。这是C++中泛型编程的部分。由于templates威力强大，它们带来了崭新的编程范型，也就是所谓的template metaprogramming(TMP，模板元编程)。</li>
-<li>STL。STL是个template程序库。它对容器，迭代器，算法以及函数对象的规约有极佳的配合与协调。</li>
-</ul>
-<p>因为这些次语言，当从某个此语言切换到另一个，导致高效编程守则要求改变策略时，不要感到惊讶。例如对内置类型而言<em>pass-by-value</em>通常比<em>pass-by-reference</em>高效。</p>
-<p>因此，C++高效编程守则视状况而变化，这取决于使用C++的哪一部分。</p>
+            <div itemprop="articleBody"><h1 id="C-异步编程"><a href="#C-异步编程" class="headerlink" title="C++异步编程"></a>C++异步编程</h1><h2 id="std-future和std-std-async"><a href="#std-future和std-std-async" class="headerlink" title="std::future和std::std::async"></a>std::future和std::std::async</h2><p>方式一，使用C++实现异步编程的方法之一是通过std::future和std::std::async的配合：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">async_task</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">    _sleep(<span class="number">4000</span>);</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;async_task start&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    <span class="keyword">return</span> x * x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::future&lt;<span class="type">int</span>&gt; future = std::<span class="built_in">async</span>(std::launch::async, async_task, <span class="number">10</span>);</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;-------------------\n&quot;</span>;</span><br><span class="line">    _sleep(<span class="number">3000</span>);</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;async_task:\n&quot;</span> &lt;&lt; future.<span class="built_in">get</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>std::launch::async</code>标志要异步执行，<code>std::launch::deferred</code>标志同步执行。默认情况下，该值为<code>std::launch::async|std::launch::deferred</code>。<br>上面这个例子中，输出为:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-------------------</span><br><span class="line">async_task:             //3S后输出</span><br><span class="line">async_task start        //4S后输出</span><br><span class="line">100</span><br></pre></td></tr></table></figure>
+
+<p>程序会在<code>get</code>\作用域结束的时候等待异步任务运行的结果。加入，不调用<code>get</code>会怎么样呢？</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">async_task</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">    _sleep(<span class="number">4000</span>);</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;async_task start&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    <span class="keyword">return</span> x * x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::future&lt;<span class="type">int</span>&gt; future = std::<span class="built_in">async</span>(std::launch::async, async_task, <span class="number">10</span>);</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;-------------------\n&quot;</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//-------------------</span></span><br><span class="line"><span class="comment">//async_task start  //4S后输出</span></span><br></pre></td></tr></table></figure>
+
+<p>程序依然会等待异步任务执行完毕后再结束。</p>
+<h2 id="thread和future和promise"><a href="#thread和future和promise" class="headerlink" title="thread和future和promise"></a>thread和future和promise</h2><p>方式二，使用thread，future和promise配合：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">async_task</span><span class="params">(std::promise&lt;<span class="type">int</span>&gt; promise, <span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">    _sleep(<span class="number">3000</span>);</span><br><span class="line">    promise.<span class="built_in">set_value</span>(x * x);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    std::promise&lt;<span class="type">int</span>&gt; promise;</span><br><span class="line">    std::future&lt;<span class="type">int</span>&gt; future = promise.<span class="built_in">get_future</span>();</span><br><span class="line">    <span class="function">std::thread <span class="title">t</span><span class="params">(async_task, std::move(promise), <span class="number">10</span>)</span></span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;-------------------&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    _sleep(<span class="number">1000</span>);</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;async_task:\n&quot;</span> &lt;&lt; future.<span class="built_in">get</span>();</span><br><span class="line">    t.<span class="built_in">join</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样看起来会麻烦一些，还是需要通过std::future来传递异步任务的结果:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-------------------</span><br><span class="line">async_task: //1S后输出</span><br><span class="line">100         //3S后输出   </span><br></pre></td></tr></table></figure>
+
+<p>如果把<code>t.join();</code>注释掉，程序输出如上，但是最后会抛出异常。也就是说，在执行到get的时候，程序会被阻塞，任务完成。<br>除此之外，std::promise还可以这样用：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">async_task</span><span class="params">(std::promise&lt;<span class="type">int</span>&gt; promise)</span> </span>&#123;</span><br><span class="line">    std::future&lt;<span class="type">int</span>&gt; future = promise.<span class="built_in">get_future</span>();</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;async_task:&quot;</span> &lt;&lt; future.<span class="built_in">get</span>() &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    std::promise&lt;<span class="type">int</span>&gt; promise;</span><br><span class="line">    promise.<span class="built_in">set_value</span>(<span class="number">100</span>);         <span class="comment">//向异步任务传递数据</span></span><br><span class="line">    <span class="function">std::thread <span class="title">t</span><span class="params">(async_task, std::move(promise))</span></span>;</span><br><span class="line">    _sleep(<span class="number">2000</span>);</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;-------------------&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    t.<span class="built_in">join</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">*   async_task:100</span></span><br><span class="line"><span class="comment">    ------------------- //2S后输出</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+
 
 <div id="gitalk-container"></div>
 <script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
@@ -233,7 +245,7 @@
     <script type="text/javascript">
         $(()=>{
             new QRCode("wechat-qr", {
-                text: "https://liangxi2001.github.io/2024/06/12/EffectiveC++%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E6%9D%A1%E6%AC%BE01/",
+                text: "https://liangxi2001.github.io/2025/04/24/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/",
                 width: 150,
                 height: 150,
                 correctLevel : QRCode.CorrectLevel.H
@@ -245,9 +257,10 @@
             const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
             const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
             const twitterBase   = "https://twitter.com/intent/tweet?";
-            const hostUrl       = "https://liangxi2001.github.io/2024/06/12/EffectiveC++%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E6%9D%A1%E6%AC%BE01/";
-            const title         = "「条款01：视C++为一个语言联邦」";
-            const excerpt       = `C++最初只是在C的基础上添加一些面向对象特性，即C with Classes。但是随着时间的推移，C++开始接受各种观念，特性和编程战略。Exceptions对函数的结构化带来不同的做法(条款29)，templates带来新的设计思...`;
+            const hostUrl       = "https://liangxi2001.github.io/2025/04/24/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/";
+            const title         = "「异步编程」";
+            const excerpt       = `C++异步编程std::future和std::std::async方式一，使用C++实现异步编程的方法之一是通过std::future和std::std::async的配合：
+12345678910111213int async_t...`;
             let _URL;
             switch (dest) {
                 case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
@@ -266,10 +279,10 @@
             <div class="footer-tag clearfix">
                 <div class="pull-left">
                 <i class="fa fa-tags"></i>
-                    <a class="tag-none-link" href="/tags/EffectiveC/" rel="tag">EffectiveC++</a>, <a class="tag-none-link" href="/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" rel="tag">读书笔记</a>
+                    <a class="tag-none-link" href="/tags/C/" rel="tag">C++</a>
                 </div>
                 <div class="pull-date">
-                    <time datetime="2024-06-12T12:46:35.811Z" itemprop="dateModified">最后编辑：2024-06-12</time>
+                    <time datetime="2025-04-24T11:06:57.263Z" itemprop="dateModified">最后编辑：2025-04-24</time>
                 </div>
             </div>
         </footer>
@@ -278,13 +291,9 @@
         <nav class="navigation post-navigation clearfix" role="navigation">
             
             <div class="nav-previous clearfix">
-                <a title=" Linux学习笔记" href="/2024/05/02/Linux学习笔记/">&lt; 上一篇</a>
+                <a title=" Qt同一信号与槽重复连接问题" href="/2025/04/10/Qt同一信号与槽重复连接问题/">&lt; 上一篇</a>
             </div>
             
-            
-            <div class="nav-next clearfix">
-                <a title=" 条款02：尽量以const,enum,inline替换#define" href="/2024/06/12/EffectiveC++读书笔记/条款02/">下一篇 &gt;</a>
-            </div>
             
         </nav>
     
@@ -343,6 +352,18 @@
 </aside>
             
                     <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#C-%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B"><span class="toc-text">C++异步编程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#std-future%E5%92%8Cstd-std-async"><span class="toc-text">std::future和std::std::async</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#thread%E5%92%8Cfuture%E5%92%8Cpromise"><span class="toc-text">thread和future和promise</span></a></li></ol></li></ol>
+    </div>
+</aside>
                 
                 
 
