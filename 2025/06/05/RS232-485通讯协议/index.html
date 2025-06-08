@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <link rel="icon" href="https://github.com/Liangxi2001/Pictures/blob/main/resource/site_logo.png?raw=true">
   
-  <title>Qt自定义消息处理函数 | 凉汐</title>
+  <title>RS232/485通讯协议 | 凉汐</title>
   
   <meta name="author" content="liangxi" />
   <meta http-equiv="Cache-Control" content="no-transform" />
@@ -15,20 +15,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <meta name="format-detection" content="telphone=no, email=no" />
   
-    <meta name="keywords" content="QT" />
+    <meta name="keywords" content="通讯协议" />
   
-  <meta name="description" content="Qt支持自定义消息处理函数。通过qInstallMessageHandler方法可以安装自定义消息处理函数。该方法的返回值是一个指向之前消息处理函数的指针。Qt 库（调试模式）包含数百条警告信息，当出现内部错误（通常是函数参数无效）时，就会打印这些信息。除非在编译过程中设置了 QT_NO_WARNING_OUTPUT 或QT_NO_DEBUG_OUTPUT，否则以 release 模式构建的 Qt">
+  <meta name="description" content="RS232&#x2F;RS485与其说是一种协议，不如说是一种标准。RS232&#x2F;RS485是基于UART通信协议产生的概念。但是UART通信协议只是规定了数据应该怎么发，什么时候发，没有规定具体的标准。比如高电平位1，低电平为0，那么高电平到底是多少V呢？3V？5V？UART协议没有给出，同理，低电平也有这样的疑问。而且还有抗干扰能力差，通信距离短等特点。所以有了RS232&#x2F;R">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Qt自定义消息处理函数">
-<meta property="og:url" content="https://liangxi2001.github.io/2024/08/13/Qt%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0/index.html">
+<meta property="og:title" content="RS232&#x2F;485通讯协议">
+<meta property="og:url" content="https://liangxi2001.github.io/2025/06/05/RS232-485%E9%80%9A%E8%AE%AF%E5%8D%8F%E8%AE%AE/index.html">
 <meta property="og:site_name" content="凉汐">
-<meta property="og:description" content="Qt支持自定义消息处理函数。通过qInstallMessageHandler方法可以安装自定义消息处理函数。该方法的返回值是一个指向之前消息处理函数的指针。Qt 库（调试模式）包含数百条警告信息，当出现内部错误（通常是函数参数无效）时，就会打印这些信息。除非在编译过程中设置了 QT_NO_WARNING_OUTPUT 或QT_NO_DEBUG_OUTPUT，否则以 release 模式构建的 Qt">
+<meta property="og:description" content="RS232&#x2F;RS485与其说是一种协议，不如说是一种标准。RS232&#x2F;RS485是基于UART通信协议产生的概念。但是UART通信协议只是规定了数据应该怎么发，什么时候发，没有规定具体的标准。比如高电平位1，低电平为0，那么高电平到底是多少V呢？3V？5V？UART协议没有给出，同理，低电平也有这样的疑问。而且还有抗干扰能力差，通信距离短等特点。所以有了RS232&#x2F;R">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://github.com/Liangxi2001/Pictures/blob/main/resource/site_logo.png?raw=true">
-<meta property="article:published_time" content="2024-08-13T14:13:41.000Z">
-<meta property="article:modified_time" content="2024-08-13T14:15:33.402Z">
+<meta property="article:published_time" content="2025-06-05T10:02:02.000Z">
+<meta property="article:modified_time" content="2025-06-08T03:18:19.132Z">
 <meta property="article:author" content="liangxi">
-<meta property="article:tag" content="QT">
+<meta property="article:tag" content="通讯协议">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://github.com/Liangxi2001/Pictures/blob/main/resource/site_logo.png?raw=true">
   
@@ -124,15 +124,15 @@
 
             <article itemscope itemtype="https://schema.org/Article">
     
-    <link itemprop="mainEntityOfPage" href="https://liangxi2001.github.io/2024/08/13/Qt%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0/">
+    <link itemprop="mainEntityOfPage" href="https://liangxi2001.github.io/2025/06/05/RS232-485%E9%80%9A%E8%AE%AF%E5%8D%8F%E8%AE%AE/">
     <div class="kratos-hentry kratos-post-inner clearfix">
         <header class="kratos-entry-header">
             
-                <h1 class="kratos-entry-title text-center" itemprop="name headline">Qt自定义消息处理函数</h1>
+                <h1 class="kratos-entry-title text-center" itemprop="name headline">RS232/485通讯协议</h1>
             
             
             <ul class="kratos-post-meta text-center">
-                <li><time datetime="2024-08-13T14:13:41.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-08-13</time></li>
+                <li><time datetime="2025-06-05T10:02:02.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2025-06-05</time></li>
                 <li itemprop="author" itemscope itemtype="https://schema.org/Person">
                     <i class="fa fa-user"></i> 作者 <span itemprop="name">liangxi</span>
                 </li>
@@ -141,7 +141,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~2.05K
+                            1156
                         
                         字
                     </li>
@@ -153,16 +153,37 @@
             
             <div id="expire-alert" class="alert alert-warning hidden" role="alert">
                 <div class="icon"><i class="fa fa-warning"></i></div>
-                <div class="text"><p>本文最后编辑于 <time datetime="1723558533402"></time> 前，其中的内容可能需要更新。</p></div>
+                <div class="text"><p>本文最后编辑于 <time datetime="1749352699132"></time> 前，其中的内容可能需要更新。</p></div>
             </div>
             
             
             
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#RS232"><span class="toc-number">1.</span> <span class="toc-text">RS232</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#RS485"><span class="toc-number">2.</span> <span class="toc-text">RS485</span></a></li></ol>
+                </div>
+            
             <hr />
-            <div itemprop="articleBody"><p>Qt支持自定义消息处理函数。通过<code>qInstallMessageHandler</code>方法可以安装自定义消息处理函数。该方法的返回值是一个指向之前消息处理函数的指针。Qt 库（调试模式）包含数百条警告信息，当出现内部错误（通常是函数参数无效）时，就会打印这些信息。除非在编译过程中设置了 QT_NO_WARNING_OUTPUT 或QT_NO_DEBUG_OUTPUT，否则以 release 模式构建的 Qt 也会包含此类警告信息。只能定义一个消息处理程序，因为这通常是为了控制整个应用程序的调试输出。</p>
-<p>要恢复消息处理程序，可以调用 qInstallMessageHandler(0)。</p>
-<p>例子：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">messageHandler</span><span class="params">(QtMsgType type, <span class="type">const</span> QMessageLogContext &amp;context, <span class="type">const</span> QString &amp;msg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 获取当前时间和日期</span></span><br><span class="line">    QDateTime currentDateTime = QDateTime::<span class="built_in">currentDateTime</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 打开日志文件</span></span><br><span class="line">    <span class="function">QFile <span class="title">logFile</span><span class="params">(<span class="string">&quot;log.log&quot;</span>)</span></span>;</span><br><span class="line">    logFile.<span class="built_in">open</span>(QIODevice::WriteOnly | QIODevice::Append);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 写入错误信息到日志文件中</span></span><br><span class="line">    <span class="function">QTextStream <span class="title">out</span><span class="params">(&amp;logFile)</span></span>;</span><br><span class="line">    out &lt;&lt; currentDateTime.<span class="built_in">toString</span>(<span class="string">&quot;yyyy-MM-dd hh:mm:ss&quot;</span>) &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (type)</span><br><span class="line">    &#123;</span><br><span class="line">    <span class="keyword">case</span> QtDebugMsg:</span><br><span class="line">        out &lt;&lt; <span class="string">&quot;[DEBUG] &quot;</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> QtInfoMsg:</span><br><span class="line">        out &lt;&lt; <span class="string">&quot;[INFO] &quot;</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> QtWarningMsg:</span><br><span class="line">        out &lt;&lt; <span class="string">&quot;[WARNING] &quot;</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> QtCriticalMsg:</span><br><span class="line">        out &lt;&lt; <span class="string">&quot;[CRITICAL] &quot;</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> QtFatalMsg:</span><br><span class="line">        out &lt;&lt; <span class="string">&quot;[FATAL] &quot;</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    out &lt;&lt; msg &lt;&lt; <span class="string">&quot; (&quot;</span> &lt;&lt; context.file &lt;&lt; <span class="string">&quot;:&quot;</span> &lt;&lt; context.line &lt;&lt; <span class="string">&quot;, &quot;</span> &lt;&lt; context.function &lt;&lt; <span class="string">&quot;)&quot;</span> &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 关闭日志文件</span></span><br><span class="line">    logFile.<span class="built_in">close</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">     <span class="built_in">qInstallMessageHandler</span>(messageHandler);</span><br><span class="line">     <span class="function">QApplication <span class="title">app</span><span class="params">(argc, argv)</span></span>;</span><br><span class="line">     ...</span><br><span class="line">     <span class="keyword">return</span> app.<span class="built_in">exec</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+            <div itemprop="articleBody"><p>RS232&#x2F;RS485与其说是一种协议，不如说是一种标准。RS232&#x2F;RS485是基于UART通信协议产生的概念。但是UART通信协议只是规定了数据应该怎么发，什么时候发，没有规定具体的标准。比如高电平位1，低电平为0，那么高电平到底是多少V呢？3V？5V？UART协议没有给出，同理，低电平也有这样的疑问。而且还有抗干扰能力差，通信距离短等特点。所以有了RS232&#x2F;RS485等标准。</p>
+<h1 id="RS232"><a href="#RS232" class="headerlink" title="RS232"></a>RS232</h1><p>RS232从接口和信号两个方面进行了规范：</p>
+<ul>
+<li>接口</li>
+</ul>
+<p>RS232规定，使用一个25引脚的DB-25连接器，并对连接器中的每个引脚的信号内容进行规定，还对各种信号的电平加以规定；后来IBM将RS232简化成了DB-9连接器。目前工业控制的RS-232接口一般只使用RXD，TXD，GND三条线；</p>
+<ul>
+<li>信号</li>
+</ul>
+<p>标准规定，逻辑”1”的电平为-5v到-15v，逻辑”0”的电平为+5v到+15v(相对于GND的电压)，选用此电气标准的目的在于提高抗干扰能力，增大通信距离，一般传送距离可达15m；</p>
+<h1 id="RS485"><a href="#RS485" class="headerlink" title="RS485"></a>RS485</h1><p>RS485再次进行改进，实现在远距离条件下以及电子噪声大的环境下有效传输。该标准允许连接多个收发器，可以搭建一个设备网络。</p>
+<ul>
+<li>信号</li>
+</ul>
+<p>RS485规定采用差分信号进行数据传输，两线之间电压差-2v到-6v表示逻辑”0”，两线之间电压差+2v到+6v表示逻辑”1”。以此减少噪声信号干扰，延长通信距离，可以达到1500m；因为电平信号低，所以不易损坏接口电路的芯片；</p>
+<ul>
+<li>接口</li>
+</ul>
+<p>RS485采用两线制，这种接线方式为总线式拓扑结构，在同一总线上可以同时存在多个节点；因为采用两线制，数据的发送和接收都需要使用这对差分信号线，所以只能采用<strong>半双工</strong>的方式工作。</p>
+<p><img src="https://github.com/Liangxi2001/Pictures/blob/main/resource/2025/RS232-485%E9%80%9A%E8%AE%AF%E5%8D%8F%E8%AE%AE/image.png" alt="RS485接线图"></p>
+
 <div id="gitalk-container"></div>
 <script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
 
@@ -224,7 +245,7 @@
     <script type="text/javascript">
         $(()=>{
             new QRCode("wechat-qr", {
-                text: "https://liangxi2001.github.io/2024/08/13/Qt%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0/",
+                text: "https://liangxi2001.github.io/2025/06/05/RS232-485%E9%80%9A%E8%AE%AF%E5%8D%8F%E8%AE%AE/",
                 width: 150,
                 height: 150,
                 correctLevel : QRCode.CorrectLevel.H
@@ -236,9 +257,9 @@
             const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
             const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
             const twitterBase   = "https://twitter.com/intent/tweet?";
-            const hostUrl       = "https://liangxi2001.github.io/2024/08/13/Qt%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0/";
-            const title         = "「Qt自定义消息处理函数」";
-            const excerpt       = `Qt支持自定义消息处理函数。通过qInstallMessageHandler方法可以安装自定义消息处理函数。该方法的返回值是一个指向之前消息处理函数的指针。Qt 库（调试模式）包含数百条警告信息，当出现内部错误（通常是函数参数无效）时...`;
+            const hostUrl       = "https://liangxi2001.github.io/2025/06/05/RS232-485%E9%80%9A%E8%AE%AF%E5%8D%8F%E8%AE%AE/";
+            const title         = "「RS232/485通讯协议」";
+            const excerpt       = `RS232&#x2F;RS485与其说是一种协议，不如说是一种标准。RS232&#x2F;RS485是基于UART通信协议产生的概念。但是UART通信协议只是规定了数据应该怎么发，什么时候发，没有规定具体的标准。比如高电平位1，低电平...`;
             let _URL;
             switch (dest) {
                 case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
@@ -257,10 +278,10 @@
             <div class="footer-tag clearfix">
                 <div class="pull-left">
                 <i class="fa fa-tags"></i>
-                    <a class="tag-none-link" href="/tags/QT/" rel="tag">QT</a>
+                    <a class="tag-none-link" href="/tags/%E9%80%9A%E8%AE%AF%E5%8D%8F%E8%AE%AE/" rel="tag">通讯协议</a>
                 </div>
                 <div class="pull-date">
-                    <time datetime="2024-08-13T14:15:33.402Z" itemprop="dateModified">最后编辑：2024-08-13</time>
+                    <time datetime="2025-06-08T03:18:19.132Z" itemprop="dateModified">最后编辑：2025-06-08</time>
                 </div>
             </div>
         </footer>
@@ -269,12 +290,12 @@
         <nav class="navigation post-navigation clearfix" role="navigation">
             
             <div class="nav-previous clearfix">
-                <a title=" 条款04：确定对象被使用前已被初始化" href="/2024/06/12/EffectiveC++读书笔记/条款04/">&lt; 上一篇</a>
+                <a title=" UART通讯协议" href="/2025/06/05/UART通讯协议/">&lt; 上一篇</a>
             </div>
             
             
             <div class="nav-next clearfix">
-                <a title=" 使用RapidJson解析Json数据" href="/2024/12/18/使用RapidJson解析Json数据/">下一篇 &gt;</a>
+                <a title=" IIC通讯协议" href="/2025/06/05/IIC通讯协议/">下一篇 &gt;</a>
             </div>
             
         </nav>
@@ -334,6 +355,18 @@
 </aside>
             
                     <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#RS232"><span class="toc-text">RS232</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#RS485"><span class="toc-text">RS485</span></a></li></ol>
+    </div>
+</aside>
                 
                 
 
